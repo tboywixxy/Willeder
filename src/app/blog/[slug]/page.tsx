@@ -1,6 +1,5 @@
-// src/app/blogs/[slug]/page.tsx
+// src/app/blog/[slug]/page.tsx
 import { headers } from "next/headers";
-// src/app/blogs/[slug]/page.tsx
 import { notFound } from "next/navigation";
 import DetailFrame from "../../../../components/blogDetail/DetailFrame";
 import DetailBlocks from "../../../../components/blogDetail/DetailBlocks";
@@ -21,9 +20,9 @@ type Blog = {
   thumbnail: string;
   tags: string[];
   createdAt: string;
+  content?: string;
   detail?: DetailPayload;
 };
-
 
 function baseUrlFromHeaders() {
   const h = headers();
@@ -32,21 +31,25 @@ function baseUrlFromHeaders() {
   return `${proto}://${host}`;
 }
 
-async function getPost(slug: string): Promise<Blog | null> {
-  const url = `${baseUrlFromHeaders()}/api/blogs/${slug}`;
-  const r = await fetch(url, { next: { revalidate: 60 } });
+async function getPost(base: string, slug: string): Promise<Blog | null> {
+  const r = await fetch(`${base}/api/blogs/${encodeURIComponent(slug)}`, {
+    next: { revalidate: 60 },
+  });
   if (!r.ok) return null;
   return r.json();
 }
 
+// 👇 Next.js 15: params is a Promise — await it.
+export default async function BlogDetailPage(
+  props: { params: Promise<{ slug: string }> }
+) {
+  const { slug } = await props.params;
+  const base = baseUrlFromHeaders();
 
-export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
-  const post = await getPost(params.slug);
+  const post = await getPost(base, slug);
   if (!post) return notFound();
 
   const d = post.detail || {};
-
-  // Ensure the three inner images always have something to show
   const img1 = d.img1?.src || post.thumbnail;
   const img2 = d.img2?.src || post.thumbnail;
   const img3 = d.img3?.src || post.thumbnail;

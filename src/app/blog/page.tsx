@@ -71,10 +71,6 @@ export default function BlogsPage() {
   const hasPrev = page > 1;
   const hasNext = page < pageCount;
 
-  // Example of using firstImageSrcs (not required for the grid):
-  items.forEach(b => {
-    // you could choose to override thumbnail with firstImg if desired
-  });
 
   return (
     <section>

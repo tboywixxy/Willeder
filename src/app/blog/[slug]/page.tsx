@@ -24,29 +24,25 @@ type Blog = {
   detail?: DetailPayload;
 };
 
-function baseUrlFromHeaders() {
-  const h = headers();
+// Build absolute URL using request headers (works on Vercel & local)
+async function getPost(slug: string): Promise<Blog | null> {
+  const h = await headers(); // <-- await is required in Next 15.5
   const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
   const proto = h.get("x-forwarded-proto") ?? "http";
-  return `${proto}://${host}`;
-}
+  const url = `${proto}://${host}/api/blogs/${slug}`;
 
-async function getPost(base: string, slug: string): Promise<Blog | null> {
-  const r = await fetch(`${base}/api/blogs/${encodeURIComponent(slug)}`, {
-    next: { revalidate: 60 },
-  });
+  const r = await fetch(url, { next: { revalidate: 60 } });
   if (!r.ok) return null;
   return r.json();
 }
 
-// 👇 Next.js 15: params is a Promise — await it.
+// Note: Next 15’s `params` can be a Promise in types, so we await it.
 export default async function BlogDetailPage(
   props: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await props.params;
-  const base = baseUrlFromHeaders();
 
-  const post = await getPost(base, slug);
+  const post = await getPost(slug);
   if (!post) return notFound();
 
   const d = post.detail || {};

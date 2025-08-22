@@ -20,7 +20,7 @@ async function fetchBySlug(slug: string): Promise<Blog | null> {
 
   // PROD (or when JSON Server isn't set): use your local data source
   // NOTE: path is relative to this file's folder
-  const { blogPosts } = await import("../../../../lib/server/blogData");
+  const { blogPosts } = await import("../../../lib/server/blogData");
   const found = (blogPosts as Blog[]).find((b) => b.slug === slug) ?? null;
   return found;
 }

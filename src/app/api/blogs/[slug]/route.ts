@@ -65,8 +65,9 @@ export async function GET(
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
     return NextResponse.json(ensureContent(post));
-  } catch (e) {
-    console.error(e);
+  } catch (e: unknown) {
+    const err = e as Error;
+    console.error(err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

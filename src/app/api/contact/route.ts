@@ -43,11 +43,10 @@ export async function POST(req: Request) {
     });
 
     // Optional: see the Ethereal preview URL in your terminal
-    try {
-      // @ts-ignore
-      const url = nodemailer.getTestMessageUrl?.(info);
-      if (url) console.log("Preview URL:", url);
-    } catch {}
+try {
+  const url = nodemailer.getTestMessageUrl?.(info);
+  if (url) console.log("Preview URL:", url);
+} catch {}
 
     return NextResponse.json({ ok: true });
   } catch (e) {

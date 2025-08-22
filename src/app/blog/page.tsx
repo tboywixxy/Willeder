@@ -73,7 +73,6 @@ export default function BlogsPage() {
 
   // Example of using firstImageSrcs (not required for the grid):
   items.forEach(b => {
-    const firstImg = firstImageSrcs(b.content, 1)[0];
     // you could choose to override thumbnail with firstImg if desired
   });
 

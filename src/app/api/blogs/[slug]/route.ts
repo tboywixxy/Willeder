@@ -19,8 +19,8 @@ async function fetchBySlug(slug: string): Promise<Blog | null> {
   }
 
   // PROD (or when JSON Server isn't set): use your local data source
-  // NOTE: path is relative to this file's folder (src/app/api/blogs/[slug]/)
-  const { blogPosts } = await import("../../../lib/server/blogData");
+  // NOTE: path is relative to this file's folder
+  const { blogPosts } = await import("../../../../lib/server/blogData");
   const found = (blogPosts as Blog[]).find((b) => b.slug === slug) ?? null;
   return found;
 }
@@ -37,7 +37,6 @@ function ensureContent(post: Blog): Blog {
     return post;
   }
 
-  // Safely type the optional detail block
   const d = (post.detail ?? {}) as NonNullable<Blog["detail"]>;
   const text = (...xs: (string | undefined)[]) => xs.filter(Boolean).join(" ");
 
@@ -58,12 +57,19 @@ function ensureContent(post: Blog): Blog {
   return { ...post, content: pad(html) };
 }
 
-export async function GET(
-  _req: Request,
-  { params }: { params: { slug: string } }
-) {
+export async function GET(req: Request) {
   try {
-    const post = await fetchBySlug(params.slug);
+    // Derive slug from the URL path instead of using the typed 2nd arg
+    const { pathname } = new URL(req.url);
+    // pathname looks like: /api/blogs/some-slug
+    const parts = pathname.split("/");
+    const slug = decodeURIComponent(parts[parts.length - 1] || "");
+
+    if (!slug) {
+      return NextResponse.json({ error: "Bad request" }, { status: 400 });
+    }
+
+    const post = await fetchBySlug(slug);
     if (!post) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }

@@ -4,7 +4,6 @@
 import { useEffect, useState } from "react";
 import BlogTopBar from "../../../components/blogs/BlogTopBar";
 import BlogList from "../../../components/blogs/BlogList";
-import { firstImageSrcs } from "../lib/htmlUtils"; // optional utility (available if you need it)
 
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 

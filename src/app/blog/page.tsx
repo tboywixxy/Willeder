@@ -1,126 +1,211 @@
-// src/app/blogs/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import BlogTopBar from "../../../components/blogs/BlogTopBar";
 import BlogList from "../../../components/blogs/BlogList";
 
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
+const PAGE_SIZE = 9;
 
 type Blog = {
-  id: string;
+  id: string | number;
   slug: string;
   title: string;
   thumbnail: string;
   tags: string[];
   createdAt: string;
-  content: string; // returned by the API (used if you want to derive images)
 };
 
-export default function BlogsPage() {
-  // search UX: user types in `input`; pressing Search applies it to `query`
-  const [input, setInput] = useState("");
-  const [query, setQuery] = useState("");
+export default function BlogIndexPage() {
+  const router = useRouter();
+  const sp = useSearchParams();
 
-  // tag filter (OR semantics)
-  const [selected, setSelected] = useState<string[]>([]);
+  // URL → state (source of truth)
+  const urlQ = sp.get("q") || "";
+  const urlTagCSV = sp.get("tag") || "";
+  const urlTags = urlTagCSV ? urlTagCSV.split(",").map((s) => s.trim()).filter(Boolean) : [];
+  const urlPage = Math.max(1, parseInt(sp.get("page") || "1", 10));
 
-  // pagination
-  const [page, setPage] = useState(1);
-  const limit = 9;
+  // Controlled inputs
+  const [input, setInput] = useState(urlQ);
+  const [query, setQuery] = useState(urlQ);
+  const [selected, setSelected] = useState<string[]>(urlTags);
+  const [page, setPage] = useState(urlPage);
 
-  // data + ui
+  // Data
   const [items, setItems] = useState<Blog[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  // Fetch blogs from unified API (dev: proxies JSON Server; prod: in-repo data)
-  const fetchBlogs = async () => {
-    setLoading(true);
+  // Keep local controls in sync with URL (back/forward/share)
+  useEffect(() => {
+    setInput(urlQ);
+    setQuery(urlQ);
+    setSelected(urlTags);
+    setPage(urlPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlQ, urlTagCSV, urlPage]);
 
+  const totalPages = useMemo(() => Math.max(1, Math.ceil(total / PAGE_SIZE)), [total]);
+
+  // Build URL and push (keeps it shareable / crawlable)
+  const pushState = (nextPage = page, nextQuery = query, nextTags = selected) => {
     const params = new URLSearchParams();
-    params.set("page", String(page));
-    params.set("limit", String(limit));
-    if (query) params.set("q", query);
-    if (selected.length) params.set("tag", selected.join(","));
+    if (nextQuery) params.set("q", nextQuery);
+    if (nextTags.length) params.set("tag", nextTags.join(","));
+    params.set("page", String(nextPage));
+    router.push(`/blog?${params.toString()}`);
+  };
 
+  // Fetch blogs (API already filters and returns total AFTER filtering)
+  async function fetchBlogs() {
+    setLoading(true);
     try {
+      const params = new URLSearchParams();
+      params.set("page", String(page));
+      params.set("limit", String(PAGE_SIZE)); // <= hard cap 9 per page
+      if (query) params.set("q", query);
+      if (selected.length) params.set("tag", selected.join(","));
+
       const r = await fetch(`/api/blogs?${params.toString()}`, { cache: "no-store" });
       const data = await r.json();
       setItems(data.items || []);
-      setTotal(Number(data.total || 0));
+      setTotal(data.total || 0);
     } finally {
       setLoading(false);
     }
-  };
+  }
 
-  // Apply the text search
-  const runSearch = () => {
-    setPage(1);
-    setQuery(input);
-  };
-
-  // Re-fetch when filters or page change
+  // Initial + on changes
   useEffect(() => {
     fetchBlogs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, selected, page]);
+  }, [page, query, selected.join(",")]);
 
-  const pageCount = Math.max(1, Math.ceil(total / limit));
-  const hasPrev = page > 1;
-  const hasNext = page < pageCount;
+  // If the user is on page N and then applies filters that reduce total pages,
+  // clamp the page into the new valid range (and refetch).
+  useEffect(() => {
+    const newTotalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    if (page > newTotalPages) {
+      setPage(newTotalPages);
+      pushState(newTotalPages, query, selected);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [total]);
 
+  // Actions
+  function onSubmit() {
+    setPage(1);
+    setQuery(input);
+    pushState(1, input, selected);
+  }
+
+  function onToggleTag(tag: string) {
+    const next = selected.includes(tag) ? selected.filter((t) => t !== tag) : [...selected, tag];
+    setSelected(next);
+    setPage(1);
+    pushState(1, query, next);
+  }
+
+  function onClearTags() {
+    setSelected([]);
+    setPage(1);
+    pushState(1, query, []);
+  }
+
+  function goTo(p: number) {
+    const next = Math.min(Math.max(1, p), totalPages);
+    setPage(next);
+    pushState(next, query, selected);
+  }
+
+  // Small “X–Y of Z” helper
+  const fromIdx = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
+  const toIdx = Math.min(page * PAGE_SIZE, total);
+
+  // Optional: moving window for page numbers
+  const pageWindow = (() => {
+    const span = 7;
+    const half = Math.floor(span / 2);
+    let start = Math.max(1, page - half);
+    let end = Math.min(totalPages, start + span - 1);
+    start = Math.max(1, end - span + 1);
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  })();
 
   return (
-    <section>
-      <div className="mx-auto w-full max-w-[1440px] px-4 md:px-20 pt-24 pb-40 space-y-12">
-        <BlogTopBar
-          headingTop="GGS"
-          headingMain="BLOG"
-          inputValue={input}
-          onInputChange={setInput}
-          onSubmit={runSearch}
-          tags={FIXED_TAGS}
-          selected={selected}
-          onToggleTag={(t) => {
-            setSelected((prev) =>
-              prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]
-            );
-            setPage(1); // reset when filters change
-          }}
-          onClearTags={() => {
-            setSelected([]);
-            setPage(1);
-          }}
-        />
+    <div className="bg-[#F1F2F4]">
+      <section className="pt-10 md:pt-16">
+        <div className="mx-auto w-full max-w-[1440px] px-4 md:px-20 space-y-8">
+          <BlogTopBar
+            inputValue={input}
+            onInputChange={setInput}
+            onSubmit={onSubmit}
+            tags={FIXED_TAGS}
+            selected={selected}
+            onToggleTag={onToggleTag}
+            onClearTags={onClearTags}
+          />
 
-        <BlogList posts={items} loading={loading} />
-
-        {/* Bottom-right pager */}
-        <div className="w-full flex justify-end">
-          <div className="flex items-center gap-3">
-            <button
-              className="border px-3 py-1 rounded disabled:opacity-50"
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={!hasPrev || loading}
-              aria-disabled={!hasPrev}
-            >
-              Prev
-            </button>
-
-            <span className="text-sm tabular-nums">{page} / {pageCount}</span>
-
-            <button
-              className="border px-3 py-1 rounded disabled:opacity-50"
-              onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
-              disabled={!hasNext || loading}
-              aria-disabled={!hasNext}
-            >
-              Next
-            </button>
+          {/* Results summary stays visible for any filter/search */}
+          <div className="mx-auto w-full max-w-[1280px] -mt-2 text-sm text-gray-600">
+            {total > 0 ? (
+              <span>
+                Showing <strong>{fromIdx}</strong>–<strong>{toIdx}</strong> of <strong>{total}</strong> result{total === 1 ? "" : "s"}
+              </span>
+            ) : (
+              <span>No results</span>
+            )}
           </div>
+
+          <BlogList posts={items} loading={loading} />
+
+          {/* Pagination is ALWAYS shown when totalPages > 1, even with filters/search */}
+          {totalPages > 1 && (
+            <nav
+              className="mx-auto w-full max-w-[1280px] flex items-center justify-center gap-2 pb-16"
+              role="navigation"
+              aria-label="Pagination"
+            >
+              <button
+                type="button"
+                onClick={() => goTo(page - 1)}
+                disabled={page <= 1}
+                className="px-3 py-2 rounded-md border border-black disabled:opacity-40 hover:bg-black hover:text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+              >
+                Prev
+              </button>
+
+              {pageWindow.map((n) => {
+                const active = n === page;
+                return (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => goTo(n)}
+                    aria-current={active ? "page" : undefined}
+                    className={`px-3 py-2 rounded-md border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-black ${
+                      active ? "border-black bg-black text-white" : "border-black hover:bg-black hover:text-white"
+                    }`}
+                  >
+                    {n}
+                  </button>
+                );
+              })}
+
+              <button
+                type="button"
+                onClick={() => goTo(page + 1)}
+                disabled={page >= totalPages}
+                className="px-3 py-2 rounded-md border border-black disabled:opacity-40 hover:bg-black hover:text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+              >
+                Next
+              </button>
+            </nav>
+          )}
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

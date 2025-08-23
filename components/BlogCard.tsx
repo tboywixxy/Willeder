@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 type Props = {
@@ -10,13 +10,12 @@ type Props = {
   thumbnail: string;
   createdAt: string;
   variant?: "default" | "showcase";
-  /** If provided, shown exactly (e.g. "2025.08.10"); otherwise formats createdAt */
   displayDate?: string;
-  /** Tags that should render in gray (#B9BDC6). Any tag not listed renders in black. */
   grayTags?: string[];
+  /** When provided, the card link appends ?from=<fromSlug> so Prev knows where to go */
+  fromSlug?: string;
 };
 
-// Fixed tag set (rendered on every card, grey/black per grayTags)
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 
 export default function BlogCard({
@@ -27,30 +26,29 @@ export default function BlogCard({
   variant = "showcase",
   displayDate,
   grayTags = [],
+  fromSlug,
 }: Props) {
   const isShowcase = variant === "showcase";
+
+  const href = fromSlug
+    ? `/blog/${encodeURIComponent(slug)}?from=${encodeURIComponent(fromSlug)}`
+    : `/blog/${encodeURIComponent(slug)}`;
 
   return (
     <motion.li
       layout
       className={
         isShowcase
-          ? "rounded-[16px] overflow-hidden bg-white border-l-4 border-r-4 border-gray-200"
-          : "border rounded-lg overflow-hidden bg-white shadow-sm"
+          ? "rounded-[16px] overflow-hidden bg-white border-l-4 border-r-4 border-gray-200 shadow-[0_12px_28px_-10px_rgba(0,0,0,0.28)]"
+          : "border rounded-lg overflow-hidden bg-white shadow-[0_12px_28px_-10px_rgba(0,0,0,0.28)]"
       }
     >
       <Link
-        href={`/blog/${slug}`}
+        href={href}
         className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
       >
         {/* IMAGE */}
-        <div
-          className={
-            isShowcase
-              ? "relative w-full h-[180px] sm:h-[240px] md:h-[308px]"
-              : "relative aspect-[1200/630]"
-          }
-        >
+        <div className={isShowcase ? "relative w-full h-[180px] sm:h-[240px] md:h-[308px]" : "relative aspect-[1200/630]"}>
           <Image
             src={thumbnail}
             alt={title}
@@ -63,9 +61,7 @@ export default function BlogCard({
 
         {/* CONTENT */}
         <div className="sm:h-[189px] h-auto pt-1 pr-2 pb-4 pl-2 flex flex-col gap-6">
-          {/* Date + Title block */}
           <div className="w-full sm:h-[97px] h-auto flex flex-col gap-2">
-            {/* Date */}
             <time
               dateTime={new Date(createdAt).toISOString()}
               className="w-[75px] h-[21px] text-[13px] leading-[21px] text-[#737B8C]"
@@ -73,13 +69,12 @@ export default function BlogCard({
               {displayDate ?? new Date(createdAt).toLocaleDateString()}
             </time>
 
-            {/* Title */}
             <h3 className="sm:h-[72px] h-auto overflow-hidden font-semibold text-lg leading-tight line-clamp-2">
               {title}
             </h3>
           </div>
 
-          {/* TAGS row (fixed set; grey/black per grayTags) */}
+          {/* TAGS */}
           <div className="w-full sm:h-[48px] h-auto flex flex-wrap content-start gap-1">
             {FIXED_TAGS.map((t) => {
               const isGray = grayTags.includes(t);

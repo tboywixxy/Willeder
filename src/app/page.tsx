@@ -1,7 +1,7 @@
 import Hero from "../../components/Hero";
-import BlogSection from "../../components/BlogSection";
 import ServiceSection from "../../components/ServiceSection";
 import StanSection from "../../components/StanSection";
+import LatestBlogShowcase from "../../components/LatestBlogShowcase";
 import { MOCK_BLOGS } from "../../lib/mockBlogs";
 
 export default function HomePage() {
@@ -17,7 +17,7 @@ export default function HomePage() {
     <div>
       <Hero />
       <ServiceSection />
-      <BlogSection posts={latest} displayDates={displayDates} graySets={graySets} />
+      <LatestBlogShowcase />
       <StanSection />
     </div>
   );

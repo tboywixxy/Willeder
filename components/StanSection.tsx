@@ -1,54 +1,118 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { notoSansJp } from "@/app/fonts";
 
 type Props = {
-  heading?: string;         // centered text in the top bar
-  buttonText?: string;      // CTA text
-  buttonHref?: string;      // link target
-  iconSrc?: string;         // small icon (34x24)
+  heading?: string;     // centered text in the top bar
+  buttonText?: string;  // CTA text
+  buttonHref?: string;  // link target
+  iconSrc?: string;     // icon path
 };
 
 export default function StanSection({
-  heading = "STAN here to shine big bigger biggest",
-  buttonText = "See more things here at the road",
-  buttonHref = "/blogs",
+  heading = "どんな内容でも、お気軽にご相談ください。",
+  buttonText = "お問い合わせはこちら",
+  buttonHref = "/blog",
   iconSrc = "/images/services/arrow 2.png",
 }: Props) {
+  // Figma text style: Noto Sans JP, 700, line-height 150%, letter-spacing 5%, centered
+  const figmaTextCommon =
+    `${notoSansJp.className} font-bold leading-[150%] tracking-[0.05em] text-center`;
+
   return (
-    <section className="bg-[#B9BDC6]">
-      {/* Full section box — 1440×328 with paddings: pt=96, pr=80, pb=96, pl=80; gap=32 */}
-      <div className="mx-auto w-full max-w-[1440px] px-4 md:px-20 pt-24 pb-24 space-y-8 md:h-[328px]">
-        {/* Centered heading box — 1280×36 */}
-        <div className="mx-auto w-full max-w-[1280px] md:h-[36px] flex items-center justify-center">
-          <h2 className="text-black text-[clamp(18px,2vw,24px)] font-semibold text-center">
+    <section className="bg-[#B9BDC6] dark:bg-[#B9BDC6]">
+      {/* Whole box
+          - Mobile (375–600): 375×334, p: 96/16, gap: 32
+          - 600–1024: 768×328, p: 96/24, gap: 32
+          - Desktop: 1440×328, p: 96/80, gap: 32
+      */}
+      <div
+        className="
+          mx-auto w-full max-w-[1440px]
+          h-[334px] sm:h-[328px] md:h-[328px]
+          pt-24 pb-24
+          px-4 sm:px-6 md:px-6 lg:px-20
+          space-y-8
+        "
+      >
+        {/* Centered heading box
+            - Mobile: max-w 343, h 48
+            - ≥600: max-w 720, h 36
+            - ≥1024: max-w 1280, h 36
+        */}
+        <div
+          className="
+            mx-auto w-full
+            max-w-[343px] h-12
+            sm:max-w-[720px] sm:h-9
+            lg:max-w-[1280px]
+            flex items-center justify-center
+          "
+        >
+          <h2
+            className={`
+              ${figmaTextCommon}
+              text-[16px] sm:text-[24px]
+              text-black dark:text-black
+            `}
+          >
             {heading}
           </h2>
         </div>
 
-        {/* Button row (centered). Button — 405×68; pY=16, pX=48; gap=24; radius=16; bg #AD002D, white text */}
+        {/* Button row (centered) */}
         <div className="mx-auto w-full flex items-center justify-center">
           <Link
             href={buttonHref}
-            className="
-              inline-flex items-center justify-center gap-6
-              px-12 py-4
-              text-white font-medium
-              bg-[#AD002D]
+            className={`
+              inline-flex items-center justify-center
+              gap-4 sm:gap-6
+              w-[298px] h-[62px] sm:w-[405px] sm:h-[68px]
+              px-6 py-4 sm:px-12 sm:py-4
               rounded-[16px]
+              bg-[#AD002D] dark:bg-[#AD002D]
+              text-white dark:text-white
               shadow-sm
               focus:outline-none focus-visible:ring-2 focus-visible:ring-black
-            "
+            `}
+            aria-label={buttonText}
           >
-            <span>{buttonText}</span>
-            <span className="relative block w-[34px] h-[24px]">
-              <Image
-                src={iconSrc}
-                alt=""
-                fill
-                className="object-contain"
-                sizes="34px"
-                priority={false}
-              />
+            {/* Button text (Figma: Noto Sans JP 700, 24 on ≥600; 16 on mobile) */}
+            <span
+              className={`${figmaTextCommon} text-white dark:text-white text-[16px] sm:text-[24px]`}
+              style={{ lineHeight: "150%" }}
+            >
+              {buttonText}
+            </span>
+
+            {/* Icon:
+               - Mobile: 25×18
+               - ≥600: 21×24.248… with tiny upward nudge (-0.12px)
+            */}
+            <span className="relative block">
+              {/* Mobile icon */}
+              <span className="sm:hidden inline-block align-middle">
+                <Image
+                  src={iconSrc}
+                  alt=""
+                  width={25}
+                  height={18}
+                  className="object-contain"
+                  priority={false}
+                />
+              </span>
+
+              {/* ≥600 icon */}
+              <span className="hidden sm:inline-block align-middle relative top-[-0.12px]">
+                <Image
+                  src={iconSrc}
+                  alt=""
+                  width={21}
+                  height={24.24825668334961}
+                  className="object-contain"
+                  priority={false}
+                />
+              </span>
             </span>
           </Link>
         </div>

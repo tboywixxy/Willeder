@@ -1,4 +1,3 @@
-// src/app/contact/FormClient.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -13,7 +12,6 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
   const [msg, setMsg] = useState("");
   const [bannerOpen, setBannerOpen] = useState(false);
   const [bannerKind, setBannerKind] = useState<Kind>("info");
-  const [canSubmit, setCanSubmit] = useState(false);
   const timer = useRef<number | null>(null);
 
   const showBanner = (kind: Kind, text: string, autoHideMs = 2000) => {
@@ -31,23 +29,6 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
     }, autoHideMs);
   };
 
-  // Track validity of the form
-  useEffect(() => {
-    const form = formRef.current;
-    if (!form) return;
-
-    const updateValidity = () => setCanSubmit(form.checkValidity());
-
-    updateValidity();
-    form.addEventListener("input", updateValidity);
-    form.addEventListener("change", updateValidity);
-
-    return () => {
-      form.removeEventListener("input", updateValidity);
-      form.removeEventListener("change", updateValidity);
-    };
-  }, []);
-
   useEffect(() => {
     return () => {
       if (timer.current) window.clearTimeout(timer.current);
@@ -62,9 +43,7 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
           className={[
             "px-4 py-3 rounded-md shadow-md pointer-events-auto",
             "transform transition-transform duration-300 transition-opacity",
-            bannerOpen
-              ? "translate-y-2 opacity-100"
-              : "-translate-y-[150%] opacity-0",
+            bannerOpen ? "translate-y-2 opacity-100" : "-translate-y-[150%] opacity-0",
             bannerKind === "success"
               ? "bg-green-600 text-white"
               : bannerKind === "error"
@@ -92,6 +71,7 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
           e.preventDefault();
           const formEl = e.currentTarget;
 
+          // Let the red button trigger validation; show banner if invalid
           if (!formEl.checkValidity()) {
             setStatus("error");
             showBanner("error", "Please complete all required fields.");
@@ -111,7 +91,6 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
               setStatus("ok");
               showBanner("success", "Thanks! Your message has been sent.");
               formEl.reset();
-              setCanSubmit(formEl.checkValidity());
             } else {
               setStatus("error");
               showBanner("error", data?.error || "Something went wrong.");
@@ -121,23 +100,17 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
             showBanner("error", "Network error. Please try again.");
           }
         }}
-        className="mx-auto w-full flex flex-col items-center gap-6"
+        /* Key spacing for filling the #F1F2F4 box evenly */
+        className="
+          mx-auto w-full flex flex-col items-center
+          gap-12 md:gap-14 lg:gap-16           /* even vertical rhythm between groups */
+          py-6 md:py-8                          /* top/bottom breathing space */
+        "
         noValidate
         aria-live="polite"
       >
         {children}
-
-        {/* Submit button goes here */}
-        <button
-          type="submit"
-          disabled={!canSubmit || status === "sending"}
-          className={`px-6 py-2 rounded-md text-white font-medium transition 
-            ${!canSubmit || status === "sending"
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-600 hover:bg-blue-700"}`}
-        >
-          {status === "sending" ? "Sending..." : "Send Message"}
-        </button>
+        {/* The red submit button is rendered as part of children in page.tsx */}
       </form>
     </>
   );

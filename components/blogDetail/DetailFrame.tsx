@@ -1,4 +1,3 @@
-// src/components/blogDetail/DetailFrame.tsx
 import Image from "next/image";
 
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
@@ -20,8 +19,8 @@ export default function DetailFrame({
   heroSrc: string;
   heroAlt: string;
   date: string;
-  tags: string[];        // active/included tags for this post
-  allTags?: string[];    // full list to render (defaults to FIXED_TAGS)
+  tags: string[];
+  allTags?: string[];
   children: React.ReactNode;
 }) {
   return (
@@ -33,7 +32,7 @@ export default function DetailFrame({
         flex flex-col items-center gap-12
       "
     >
-      {/* Title area box: 1280×198; inner: 1062×144 (title), then 1062×30 (date+tags) */}
+      {/* Title + date + chips */}
       <header className="w-full h-auto md:h-[198px] px-0 md:px-[109px] flex flex-col gap-6">
         <div className="w-full md:w-[1062px] h-auto md:h-[144px]">
           <h1 className="text-left text-[clamp(22px,3.2vw,36px)] font-semibold leading-tight">
@@ -46,10 +45,10 @@ export default function DetailFrame({
             {formatDotDate(date)}
           </time>
 
-          {/* Render all chips; black if active, gray if not */}
+          {/* Chips: active if case-insensitive match */}
           <div className="flex flex-wrap items-center gap-2">
             {allTags.map((t) => {
-              const active = tags.includes(t);
+              const active = tags.some((x) => x.toLowerCase() === t.toLowerCase());
               const color = active ? "#000000" : "#B9BDC6";
               return (
                 <span

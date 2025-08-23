@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-export const runtime = "nodejs";     // important for Nodemailer
+export const runtime = "nodejs"; // important for Nodemailer
 
 function isEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -19,7 +19,10 @@ export async function POST(req: Request) {
     const message = (form.get("message") as string) || "";
 
     if (!name || !email || !message || !isEmail(email)) {
-      return NextResponse.json({ ok: false, error: "Please fill all fields with a valid email." }, { status: 400 });
+      return NextResponse.json(
+        { ok: false, error: "Please fill all fields with a valid email." },
+        { status: 400 }
+      );
     }
 
     const transporter = nodemailer.createTransport({
@@ -42,11 +45,10 @@ export async function POST(req: Request) {
              <p style="white-space:pre-wrap">${message}</p>`,
     });
 
-    // Optional: see the Ethereal preview URL in your terminal
-try {
-  const url = nodemailer.getTestMessageUrl?.(info);
-  if (url) console.log("Preview URL:", url);
-} catch {}
+    try {
+      const url = (nodemailer as any).getTestMessageUrl?.(info);
+      if (url) console.log("Preview URL:", url);
+    } catch {}
 
     return NextResponse.json({ ok: true });
   } catch (e) {

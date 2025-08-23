@@ -1,75 +1,89 @@
 import Image from "next/image";
 import Link from "next/link";
+import { notoSansJp, jost } from "@/app/fonts";
 
 export default function Footer() {
+  const navText = `${notoSansJp.className} font-bold text-[12px] leading-[150%] tracking-[0.05em] align-middle`;
+  const smallText = `${notoSansJp.className} font-medium text-[12px] leading-[150%] tracking-[0.05em] align-middle`;
+  const reservedText = `${jost.className} font-medium text-[10px] leading-[150%] tracking-[0.1em] text-center`;
+
   return (
-    <footer className="bg-black text-white">
-      {/* Full footer box
-         - Mobile: h-auto, px-4 (16px)
-         - ≥sm (600+): exact Figma: h=301px, px-20 (80px)
-      */}
-      <div className="mx-auto w-full max-w-[1440px] h-auto sm:h-[301px] px-4 sm:px-20 py-4 flex flex-col">
-        {/* Content box
-           - Mobile: h-auto
-           - ≥sm: exact Figma: h=230px
-        */}
-        <div className="w-full max-w-[1280px] h-auto sm:h-[230px] pt-6 pb-4 flex flex-col gap-6 sm:gap-8">
-          {/* Row 1: Brand (top-left) */}
-          <div className="flex items-center gap-2">
+    <footer className="bg-black text-white dark:bg-black dark:text-white">
+      {/* Full footer bar — 1440×301, p: 16/80, gap: 24 */}
+      <div className="mx-auto w-full max-w-[1440px] h-auto min-[600px]:h-[301px] px-4 min-[600px]:px-20 py-4 flex flex-col gap-6">
+        {/* Content box — 1280×230, pt:24, pb:16, gap:32 */}
+        <div className="w-full max-w-[1280px] h-auto min-[600px]:h-[230px] pt-6 pb-4 flex flex-col gap-8">
+          {/* Row 1: Brand image — 120×24 */}
+          <div className="flex items-center">
             <Image
-              src="/logo.png"
-              alt="Willeder logo"
-              width={24}
+              src="/willeder-w.png" // <-- replace with your asset
+              alt="Willeder"
+              width={120}
               height={24}
               priority
             />
-            <span className="font-semibold tracking-tight">Willeder</span>
           </div>
 
-          {/* Row 2: Links (horizontal, left) */}
-          <nav className="flex gap-6 text-sm" aria-label="Footer navigation">
-            <Link href="/" className="hover:underline">Home</Link>
-            <Link href="/blogs" className="hover:underline">Blogs</Link>
-            <Link href="/contact" className="hover:underline">Contact</Link>
+          {/* Row 2: Links — gap 64 */}
+          <nav className="flex items-center gap-[64px] h-8" aria-label="Footer navigation">
+            <Link href="/" className={`${navText} inline-block w-[26px] h-[18px]`}>Home</Link>
+            <Link href="/blog" className={`${navText} inline-block w-[38px] h-[18px]`}>Blogs</Link>
+            <Link href="/contact" className={`${navText} inline-block w-[75px] h-[18px]`}>Contact</Link>
           </nav>
 
-          {/* Row 3: Two sections
-             - Mobile: stack vertically (no divider)
-             - ≥sm: two columns with thin vertical divider
-          */}
-          <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6">
-            <div className="min-w-0">
-              <h3 className="text-sm font-medium">Section One</h3>
-              <p className="mt-2 text-sm text-white/80 break-words">
-                Brief copy goes here. Add any description or links you want to show in this column.
+          {/* Row 3: Left/Right texts */}
+          {/* <600px: stacked with horizontal divider */}
+          <div className="min-[600px]:hidden w-full max-w-[1280px]">
+            <p className={`${smallText} break-words`}>
+              Willeder Inc.（アメリカ法人）<br />
+              501 Congress Avenue, Suite 150, Austin, Texas, 78701, USA
+            </p>
+            <span className="block h-[2px] w-full bg-white/60 my-2" aria-hidden="true" />
+            <p className={`${smallText} break-words`}>
+              ウィルダー株式会社（日本法人）<br />
+              〒141-0022　東京都品川区東五反田1-4-9-606
+            </p>
+          </div>
+
+          {/* ≥600px: two columns with 2px vertical divider; equal padding to balance gaps */}
+          <div
+            className="
+              hidden min-[600px]:grid w-full max-w-[1280px]
+              grid-cols-[minmax(0,1fr)_2px_minmax(0,1fr)]
+              items-start gap-x-0
+            "
+          >
+            <div className="pr-6">
+              <p className={`${smallText} break-words`}>
+                Willeder Inc.（アメリカ法人）<br />
+                501 Congress Avenue, Suite 150, Austin, Texas, 78701, USA
               </p>
             </div>
 
-            {/* Divider only on ≥sm */}
-            <span className="hidden sm:block w-px bg-white/30" aria-hidden="true" />
+            <span className="bg-white/70 self-stretch" aria-hidden="true" />
 
-            <div className="min-w-0 sm:pl-6">
-              <h3 className="text-sm font-medium">Section Two</h3>
-              <p className="mt-2 text-sm text-white/80 break-words">
-                More info here. This column is separated with a thin vertical line.
+            <div className="pl-6">
+              <p className={`${smallText} break-words`}>
+                ウィルダー株式会社（日本法人）<br />
+                〒141-0022　東京都品川区東五反田1-4-9-606
               </p>
             </div>
           </div>
 
-          {/* Row 4: Email (left) */}
-          <div>
+          {/* Row 4: Email — always below left/right and above reserved */}
+          <div className="w-full max-w-[1280px]">
             <a
               href="mailto:hello@willeder.com"
-              className="text-sm underline underline-offset-2 hover:no-underline break-words"
+              className={`${smallText} underline underline-offset-2 hover:no-underline break-words`}
             >
               hello@willeder.com
             </a>
           </div>
         </div>
 
-        {/* Bottom: centered fine print */}
-        <div className="mt-auto w-full">
-          <p className="text-center text-xs text-white/70">
+        {/* Bottom row — reserved text centered */}
+        <div className="w-full max-w-[1280px]">
+          <p className={`${reservedText} text-white/70`}>
             © {new Date().getFullYear()} Willeder. All rights reserved.
           </p>
         </div>

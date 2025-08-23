@@ -12,12 +12,19 @@ export default function ContactPage() {
     <section className="bg-white">
       <div className="mx-auto w-full max-w-[1440px] px-4 md:px-20 py-16 md:py-24">
         {/* Heading */}
-        <div className="mx-auto w-full max-w-[1280px] flex flex-col items-center gap-2 mb-12">
-          <div className="text-sm tracking-widest">CONTACT</div>
-          <div className="w-full flex items-center gap-4">
-            <span className="h-px flex-1 bg-black" />
-            <h1 className="text-2xl md:text-3xl font-semibold">Get in touch</h1>
-            <span className="h-px flex-1 bg-black" />
+        <div className="mx-auto w-full max-w-[1280px] flex flex-col items-center gap-4 mb-12">
+          {/* Top text */}
+          <h1 className="font-['Noto_Sans_JP'] font-bold text-[32px] leading-[150%] tracking-[0.05em] text-center">
+            お問い合わせ
+          </h1>
+
+          {/* Divider + subheading + divider */}
+          <div className="w-full flex items-center gap-4 justify-center">
+            <span className="h-px w-[571.5px] bg-black opacity-100" />
+            <div className="font-['Jost'] font-medium text-[20px] leading-[150%] tracking-[0.05em] text-center">
+              CONTACT
+            </div>
+            <span className="h-px w-[571.5px] bg-black opacity-100" />
           </div>
         </div>
 
@@ -32,53 +39,77 @@ export default function ContactPage() {
 
             {/* Name */}
             <div className="w-full max-w-[1080px] space-y-2">
-              <label htmlFor="name" className="block text-sm font-medium text-black">Name</label>
+              <label
+                htmlFor="name"
+                className="block font-['Noto_Sans_JP'] font-medium text-[24px] leading-[100%] text-black"
+              >
+                お名前*
+              </label>
               <input
                 id="name"
                 name="name"
                 type="text"
                 required
-                placeholder="Jane Doe"
-                className="w-full h-[55px] rounded-[8px] border border-black px-4 outline-none focus:ring-2 focus:ring-black"
+                placeholder="お名前をご入力ください"
+                className="w-full h-[55px] rounded-[8px] border border-black px-4 bg-white outline-none focus:ring-2 focus:ring-black
+                           placeholder:font-['Noto_Sans_JP'] placeholder:font-medium placeholder:text-[18px] placeholder:leading-[125%] placeholder:text-[#B5B5B5]"
               />
             </div>
 
             {/* Email */}
             <div className="w-full max-w-[1080px] space-y-2">
-              <label htmlFor="email" className="block text-sm font-medium text-black">Email</label>
+              <label
+                htmlFor="email"
+                className="block font-['Noto_Sans_JP'] font-medium text-[24px] leading-[100%] text-black"
+              >
+                メールアドレス*
+              </label>
               <input
                 id="email"
                 name="email"
                 type="email"
                 required
                 inputMode="email"
-                placeholder="jane@example.com"
-                className="w-full h-[55px] rounded-[8px] border border-black px-4 outline-none focus:ring-2 focus:ring-black"
+                placeholder="メールアドレスをご入力ください"
+                className="w-full h-[55px] rounded-[8px] border border-black px-4 bg-white outline-none focus:ring-2 focus:ring-black
+                           placeholder:font-['Noto_Sans_JP'] placeholder:font-medium placeholder:text-[18px] placeholder:leading-[125%] placeholder:text-[#B5B5B5]"
               />
             </div>
 
             {/* Subject */}
             <div className="w-full max-w-[1080px] space-y-2">
-              <label htmlFor="subject" className="block text-sm font-medium text-black">Subject</label>
+              <label
+                htmlFor="subject"
+                className="block font-['Noto_Sans_JP'] font-medium text-[24px] leading-[100%] text-black"
+              >
+                電話番号*
+              </label>
               <input
                 id="subject"
                 name="subject"
                 type="text"
                 required
-                placeholder="New website consultation"
-                className="w-full h-[55px] rounded-[8px] border border-black px-4 outline-none focus:ring-2 focus:ring-black"
+                placeholder="電話番号をご入力ください"
+                className="w-full h-[55px] rounded-[8px] border border-black px-4 bg-white outline-none focus:ring-2 focus:ring-black
+                           placeholder:font-['Noto_Sans_JP'] placeholder:font-medium placeholder:text-[18px] placeholder:leading-[125%] placeholder:text-[#B5B5B5]"
               />
             </div>
 
             {/* Message */}
             <div className="w-full max-w-[1080px] space-y-2">
-              <label htmlFor="message" className="block text-sm font-medium text-black">Message</label>
+              <label
+                htmlFor="message"
+                className="block font-['Noto_Sans_JP'] font-medium text-[24px] leading-[100%] text-black"
+              >
+                お問い合わせ内容*
+              </label>
               <textarea
                 id="message"
                 name="message"
                 required
-                placeholder="Write your message here…"
-                className="w-full h-[160px] rounded-[8px] border border-black px-4 py-4 outline-none focus:ring-2 focus:ring-black resize-y"
+                placeholder="お問い合わせ内容をご入力ください"
+                className="w-full h-[160px] rounded-[8px] border border-black px-4 py-4 bg-white outline-none focus:ring-2 focus:ring-black resize-y
+                           placeholder:font-['Noto_Sans_JP'] placeholder:font-medium placeholder:text-[18px] placeholder:leading-[125%] placeholder:text-[#B5B5B5]"
               />
             </div>
 
@@ -89,27 +120,33 @@ export default function ContactPage() {
                 name="agree"
                 type="checkbox"
                 required
-                className="h-5 w-5 border border-black rounded-[4px] accent-black"
+                className="w-[30px] h-[30px] border border-black rounded-[4px] accent-black"
               />
-              <label htmlFor="agree" className="text-sm leading-6">
-                I agree to the processing of my information according to the privacy policy.
+              <label
+                htmlFor="agree"
+                className="font-['Noto_Sans_JP'] font-medium text-[24px] leading-[125%] underline underline-offset-0 decoration-solid"
+              >
+                プライバシーポリシーに同意する
               </label>
             </div>
 
-            {/* Submit */}
+            {/* Submit (red button only) */}
             <div className="w-full flex items-center justify-center">
               <button
                 type="submit"
-                className="inline-flex items-center justify-center gap-6 px-12 py-4 text-white font-medium bg-[#AD002D] rounded-[16px] focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+                className="inline-flex items-center justify-center gap-6 px-12 py-4 text-white bg-[#AD002D] rounded-[16px]
+                           focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
               >
-                <span>Submit</span>
-                <span className="relative block w-[34px] h-[24px]">
+                <span className="font-['Noto_Sans_JP'] font-bold text-[24px] leading-[150%] tracking-[0.05em] align-middle">
+                  Submit
+                </span>
+                <span className="relative block w-[21px] h-[24.2483px] -top-[0.12px]">
                   <Image
                     src="/images/services/arrow 2.png"
                     alt=""
                     fill
                     className="object-contain"
-                    sizes="34px"
+                    sizes="21px"
                   />
                 </span>
               </button>

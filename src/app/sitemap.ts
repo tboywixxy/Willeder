@@ -1,10 +1,12 @@
 import type { MetadataRoute } from "next";
+import { absoluteUrl } from "@/lib/absolute-url";
 
 type Blog = { slug: string; createdAt: string };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const r = await fetch(`${base}/api/blog?limit=9999&page=1`, { cache: "no-store" });
+
+  const r = await fetch(absoluteUrl("/api/blogs?limit=9999&page=1"), { cache: "no-store" });
   const data = await r.json().catch(() => ({ items: [] as Blog[] }));
   const items: Blog[] = data.items || [];
 

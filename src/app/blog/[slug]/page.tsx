@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -7,6 +6,7 @@ import DetailFrame from "../../../../components/blogDetail/DetailFrame";
 import DetailBlocks from "../../../../components/blogDetail/DetailBlocks";
 import BlogCard from "../../../../components/BlogCard";
 import { jost, notoSansJp } from "@/app/fonts";
+import { absoluteUrl } from "@/lib/absolute-url";
 
 type DetailImage = { src: string; alt?: string; caption?: string };
 type DetailPayload = {
@@ -31,29 +31,17 @@ type Blog = {
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 const CENTER_ICON_SRC = "/blog-list.png";
 
-/* ---------------- utils & data ---------------- */
-
-async function baseURL() {
-  const h = await headers();
-  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? "http";
-  return `${proto}://${host}`;
-}
+/* ---------------- data helpers ---------------- */
 
 async function getAll(limit = 9999): Promise<Blog[]> {
-  const base = await baseURL();
-  const url = new URL(`${base}/api/blogs`);
-  url.searchParams.set("limit", String(limit));
-  url.searchParams.set("page", "1");
-  const r = await fetch(url.toString(), { cache: "no-store" });
+  const r = await fetch(absoluteUrl(`/api/blogs?limit=${limit}&page=1`), { cache: "no-store" });
   if (!r.ok) return [];
   const data = await r.json();
   return (data.items as Blog[]) ?? [];
 }
 
 async function safeGetPost(slug: string): Promise<Blog | null> {
-  const base = await baseURL();
-  const r = await fetch(`${base}/api/blogs/${encodeURIComponent(slug)}`, { cache: "no-store" });
+  const r = await fetch(absoluteUrl(`/api/blogs/${encodeURIComponent(slug)}`), { cache: "no-store" });
   if (r.ok) return (await r.json()) as Blog;
 
   const all = await getAll(9999);
@@ -69,13 +57,15 @@ export async function generateMetadata(
     const { slug } = await props.params;
     const post = await safeGetPost(slug);
     if (!post) return { title: "Blog post" };
-    const base = await baseURL();
+
+    const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
     const url = `${base}/blog/${encodeURIComponent(post.slug)}`;
     const title = post.title || "Blog post";
     const description =
       (post.content?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() || "").slice(0, 160) ||
       "Blog post";
     const ogImage = post.thumbnail;
+
     return {
       title,
       description,

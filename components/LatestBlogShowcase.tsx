@@ -1,12 +1,7 @@
-// src/components/LatestBlogShowcase.tsx
 import BlogSection from "../components/BlogSection";
+import { absoluteUrl } from "@/lib/absolute-url";
 
-type Teaser = {
-  slug: string;
-  title: string;
-  thumbnail: string;
-  createdAt: string;
-};
+type Teaser = { slug: string; title: string; thumbnail: string; createdAt: string };
 
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 
@@ -19,8 +14,9 @@ function formatDateDotYYYYMMDD(d: string) {
 }
 
 export default async function LatestBlogShowcase() {
-  const res = await fetch(`/api/blogs?limit=3&page=1`, {
-    next: { revalidate: 60 }, // prefer ISR for perf
+  // ABSOLUTE URL (works during prerender/ISR)
+  const res = await fetch(absoluteUrl("/api/blogs?limit=3&page=1"), {
+    next: { revalidate: 60 },
   });
   if (!res.ok) return null;
 

@@ -12,8 +12,9 @@ type Props = {
   variant?: "default" | "showcase";
   displayDate?: string;
   grayTags?: string[];
-  /** When provided, the card link appends ?from=<fromSlug> so Prev knows where to go */
   fromSlug?: string;
+  /** Optional classes for the outer <li> to control responsive visibility/layout */
+  className?: string;
 };
 
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
@@ -27,6 +28,7 @@ export default function BlogCard({
   displayDate,
   grayTags = [],
   fromSlug,
+  className = "",
 }: Props) {
   const isShowcase = variant === "showcase";
 
@@ -34,14 +36,15 @@ export default function BlogCard({
     ? `/blog/${encodeURIComponent(slug)}?from=${encodeURIComponent(fromSlug)}`
     : `/blog/${encodeURIComponent(slug)}`;
 
+  const outerBase =
+    isShowcase
+      ? "rounded-[16px] overflow-hidden bg-white border-l-4 border-r-4 border-gray-200 shadow-[0_12px_28px_-10px_rgba(0,0,0,0.28)]"
+      : "border rounded-lg overflow-hidden bg-white shadow-[0_12px_28px_-10px_rgba(0,0,0,0.28)]";
+
   return (
     <motion.li
       layout
-      className={
-        isShowcase
-          ? "rounded-[16px] overflow-hidden bg-white border-l-4 border-r-4 border-gray-200 shadow-[0_12px_28px_-10px_rgba(0,0,0,0.28)]"
-          : "border rounded-lg overflow-hidden bg-white shadow-[0_12px_28px_-10px_rgba(0,0,0,0.28)]"
-      }
+      className={`${outerBase} ${className}`}
     >
       <Link
         href={href}

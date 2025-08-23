@@ -6,6 +6,7 @@ import Image from "next/image";
 import DetailFrame from "../../../../components/blogDetail/DetailFrame";
 import DetailBlocks from "../../../../components/blogDetail/DetailBlocks";
 import BlogCard from "../../../../components/BlogCard";
+import { jost, notoSansJp } from "@/app/fonts";
 
 type DetailImage = { src: string; alt?: string; caption?: string };
 type DetailPayload = {
@@ -28,8 +29,9 @@ type Blog = {
 };
 
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
+const CENTER_ICON_SRC = "/blog-list.png";
 
-/* ---------------- Base URL helper ---------------- */
+/* ---------------- utils & data ---------------- */
 
 async function baseURL() {
   const h = await headers();
@@ -38,38 +40,35 @@ async function baseURL() {
   return `${proto}://${host}`;
 }
 
-/* ---------------- Data fetchers ---------------- */
-
-async function getPost(slug: string): Promise<Blog | null> {
+async function getAll(limit = 9999): Promise<Blog[]> {
   const base = await baseURL();
-  const r = await fetch(`${base}/api/blog/${encodeURIComponent(slug)}`, { cache: "no-store" });
-  if (!r.ok) return null;
-  return r.json();
-}
-
-async function getAll(limit = 9999, q = "", tagCSV = ""): Promise<Blog[]> {
-  const base = await baseURL();
-  const url = new URL(`${base}/api/blog`);
+  const url = new URL(`${base}/api/blogs`);
   url.searchParams.set("limit", String(limit));
   url.searchParams.set("page", "1");
-  if (q) url.searchParams.set("q", q);
-  if (tagCSV) url.searchParams.set("tag", tagCSV);
-  const r = await fetch(url.toString(), { next: { revalidate: 60 } });
+  const r = await fetch(url.toString(), { cache: "no-store" });
   if (!r.ok) return [];
   const data = await r.json();
   return (data.items as Blog[]) ?? [];
 }
 
-/* ---------------- SEO: generateMetadata ---------------- */
+async function safeGetPost(slug: string): Promise<Blog | null> {
+  const base = await baseURL();
+  const r = await fetch(`${base}/api/blogs/${encodeURIComponent(slug)}`, { cache: "no-store" });
+  if (r.ok) return (await r.json()) as Blog;
 
+  const all = await getAll(9999);
+  const want = slug.trim().toLowerCase();
+  return all.find((b) => b.slug.trim().toLowerCase() === want) ?? null;
+}
+
+/* ---------------- SEO ---------------- */
 export async function generateMetadata(
   props: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   try {
     const { slug } = await props.params;
-    const post = await getPost(slug);
+    const post = await safeGetPost(slug);
     if (!post) return { title: "Blog post" };
-
     const base = await baseURL();
     const url = `${base}/blog/${encodeURIComponent(post.slug)}`;
     const title = post.title || "Blog post";
@@ -77,33 +76,19 @@ export async function generateMetadata(
       (post.content?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() || "").slice(0, 160) ||
       "Blog post";
     const ogImage = post.thumbnail;
-
     return {
       title,
       description,
       alternates: { canonical: url },
-      openGraph: {
-        type: "article",
-        url,
-        title,
-        description,
-        images: [{ url: ogImage }],
-        locale: "en_US",
-      },
-      twitter: {
-        card: "summary_large_image",
-        title,
-        description,
-        images: [ogImage],
-      },
+      openGraph: { type: "article", url, title, description, images: [{ url: ogImage }], locale: "en_US" },
+      twitter: { card: "summary_large_image", title, description, images: [ogImage] },
     };
   } catch {
     return { title: "Blog post" };
   }
 }
 
-/* ---------------- Structured Data (JSON-LD) ---------------- */
-
+/* ---------------- JSON-LD ---------------- */
 function ArticleJsonLd({ post }: { post: Blog }) {
   const data = {
     "@context": "https://schema.org",
@@ -112,21 +97,41 @@ function ArticleJsonLd({ post }: { post: Blog }) {
     datePublished: post.createdAt,
     dateModified: post.createdAt,
     image: [post.thumbnail],
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `/blog/${post.slug}`,
-    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `/blog/${post.slug}` },
   };
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
+}
+
+/* ---------------- Arrow Icon ---------------- */
+function ArrowIcon({
+  direction = "right" as "left" | "right",
+  className = "",
+}: {
+  direction?: "left" | "right";
+  className?: string;
+}) {
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
+    <svg
+      width="7.3638"
+      height="12.728"
+      viewBox="0 0 7.3638 12.728"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={`shrink-0 ${direction === "left" ? "rotate-180" : ""} ${className}`}
+      aria-hidden="true"
+    >
+      <polyline
+        points="1,1 6.3638,6.364 1,11.728"
+        stroke="#AD002D"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
 
-/* ---------------- Prev/Next (Prev = just-viewed via ?from) ---------------- */
-
+/* ---------------- Prev/Next ---------------- */
 function PrevNext({
   prev,
   next,
@@ -137,51 +142,62 @@ function PrevNext({
   currentSlug: string;
 }) {
   if (!prev && !next) return null;
-  return (
-    <nav
-      className="w-full max-w-[1280px] flex items-center justify-between gap-4 px-4 md:px-20"
-      aria-label="Blog navigation"
-    >
-      {prev ? (
-        <Link
-          href={`/blog/${encodeURIComponent(prev.slug)}?from=${encodeURIComponent(currentSlug)}`}
-          className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-black hover:bg-black hover:text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
-        >
-          <span aria-hidden>←</span>
-          <span>Prev</span>
-        </Link>
-      ) : <span className="opacity-0 select-none">placeholder</span>}
 
-      {next ? (
-        <Link
-          href={`/blog/${encodeURIComponent(next.slug)}?from=${encodeURIComponent(currentSlug)}`}
-          className="inline-flex items-center gap-2 px-3 py-2 rounded-md border border-black hover:bg-black hover:text-white transition focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
-        >
-          <span>Next</span>
-          <span aria-hidden>→</span>
-        </Link>
-      ) : <span className="opacity-0 select-none">placeholder</span>}
+  const textCls = `${jost.className} font-medium text-[14px] sm:text-[16px] leading-[150%] tracking-[0.05em] text-center`;
+
+  return (
+    <nav className="w-full flex justify-center" aria-label="Blog navigation">
+      <div className="flex items-center justify-center gap-[10px] min-h-8">
+        {prev ? (
+          <Link
+            href={`/blog/${encodeURIComponent(prev.slug)}?from=${encodeURIComponent(currentSlug)}`}
+            className="inline-flex h-8 items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+          >
+            <ArrowIcon direction="left" />
+            <span className={textCls}>Prev</span>
+          </Link>
+        ) : (
+          <span className="inline-flex h-8 items-center gap-2 opacity-40">
+            <ArrowIcon direction="left" />
+            <span className={textCls}>Prev</span>
+          </span>
+        )}
+
+        <span className="inline-flex items-center justify-center w-8 h-8 p-1">
+          <Image src={CENTER_ICON_SRC} alt="" width={32} height={32} className="w-8 h-8" />
+        </span>
+
+        {next ? (
+          <Link
+            href={`/blog/${encodeURIComponent(next.slug)}?from=${encodeURIComponent(currentSlug)}`}
+            className="inline-flex h-8 items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+          >
+            <span className={textCls}>Next</span>
+            <ArrowIcon direction="right" />
+          </Link>
+        ) : (
+          <span className="inline-flex h-8 items-center gap-2 opacity-40">
+            <span className={textCls}>Next</span>
+            <ArrowIcon direction="right" />
+          </span>
+        )}
+      </div>
     </nav>
   );
 }
 
-/* ---------------- Suggested (center title, see-more bottom-right, pass fromSlug) ---------------- */
-
-function Suggested({
-  posts,
-  currentSlug,
-}: {
-  posts: Blog[];
-  currentSlug: string;
-}) {
+/* ---------------- Suggested ---------------- */
+function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string }) {
   if (!posts.length) return null;
+
+  const headingCls = `${notoSansJp.className} font-bold text-[20px] sm:text-[24px] leading-[150%] tracking-[0.05em] text-center break-words hyphens-auto`;
+  const seeMoreTextCls = `${notoSansJp.className} font-bold text-[18px] sm:text-[20px] leading-[150%] tracking-[0.05em] align-middle`;
 
   return (
     <section className="w-full">
-      <div className="mx-auto w-full max-w-[1440px] px-4 md:px-20 pt-16 pb-24 space-y-8">
-        {/* Centered heading */}
+      <div className="mx-auto w-full max-w-[1440px] px-4 md:px-20 pt-12 md:pt-16 pb-16 md:pb-24 space-y-8">
         <div className="mx-auto w-full max-w-[1280px]">
-          <h2 className="text-center text-xl md:text-2xl font-semibold">Suggested posts</h2>
+          <h2 className={headingCls}>Suggested posts</h2>
         </div>
 
         <div className="mx-auto w-full max-w-[1280px]">
@@ -190,7 +206,7 @@ function Suggested({
               grid grid-cols-1
               min-[600px]:grid-cols-2
               min-[1024px]:grid-cols-3
-              gap-x-6 gap-y-10
+              gap-x-4 sm:gap-x-6 gap-y-8 sm:gap-y-10
               items-stretch
             "
           >
@@ -207,20 +223,35 @@ function Suggested({
                   createdAt={b.createdAt}
                   variant="showcase"
                   grayTags={grayTags}
-                  fromSlug={currentSlug}   // ensure the next page knows the referrer for Prev
+                  fromSlug={currentSlug}
                 />
               );
             })}
+
+            {posts[3] && (
+              <BlogCard
+                key={`extra-${posts[3].slug}`}
+                slug={posts[3].slug}
+                title={posts[3].title}
+                thumbnail={posts[3].thumbnail}
+                createdAt={posts[3].createdAt}
+                variant="showcase"
+                grayTags={FIXED_TAGS.filter(
+                  (t) => !posts[3].tags.some((x) => x.toLowerCase() === t.toLowerCase())
+                )}
+                fromSlug={currentSlug}
+                className="hidden min-[600px]:block min-[1024px]:hidden"
+              />
+            )}
           </ul>
 
-          {/* See more bottom-right */}
-          <div className="mt-8 w-full flex justify-end">
+          <div className="mt-6 sm:mt-8 w-full flex justify-end">
             <Link
               href="/blog"
               className="inline-flex items-center gap-2 text-black hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
             >
-              <span>See more</span>
-              <Image src="/images/services/arrow.png" alt="" width={34} height={24} />
+              <span className={seeMoreTextCls}>See more</span>
+              <Image src="/images/services/arrow.png" alt="" width={34} height={24} className="w-[34px] h-[24px]" />
             </Link>
           </div>
         </div>
@@ -230,46 +261,37 @@ function Suggested({
 }
 
 /* ---------------- Page ---------------- */
-
-// Next 15: params/searchParams can be Promises.
 export default async function BlogDetailPage(
-  props: { params: Promise<{ slug: string }>, searchParams?: Promise<{ from?: string }> }
+  props: { params: Promise<{ slug: string }>; searchParams?: Promise<{ from?: string }> }
 ) {
   const { slug } = await props.params;
   const { from: fromSlug } = (props.searchParams ? await props.searchParams : {}) ?? {};
 
-  const post = await getPost(slug);
+  const post = await safeGetPost(slug);
   if (!post) return notFound();
 
-  // Load full list (newest → oldest by your API)
   const all = await getAll(9999);
 
-  // Suggestions:
-  // - exclude current always
-  // - exclude just-viewed (?from=) unless needed to fill
-  // - prefer tag overlap, then backfill by recency
+  // build up to 4 suggestions to support 2×2 at 600–1024px
   const tagSet = new Set(post.tags);
-  const isEligible = (b: Blog) => b.slug !== slug;
+  const isEligible = (b: Blog) => b.slug !== post.slug;
   const overlapsTag = (b: Blog) => b.tags.some((t) => tagSet.has(t));
-
   let related = all.filter((b) => isEligible(b) && b.slug !== fromSlug && overlapsTag(b));
-  if (related.length < 3) {
+  if (related.length < 4) {
     const fillers = all.filter((b) => isEligible(b) && b.slug !== fromSlug && !overlapsTag(b));
     related = [...related, ...fillers];
   }
-  if (related.length < 3 && fromSlug) {
+  if (related.length < 4 && fromSlug) {
     const fromPost = all.find((b) => b.slug === fromSlug);
     if (fromPost && !related.find((b) => b.slug === fromSlug) && isEligible(fromPost)) {
       related.push(fromPost);
     }
   }
-  const suggestions = related.slice(0, 3);
+  const suggestions = related.slice(0, 4);
 
-  // NEXT target = first suggested; PREV target = just-viewed (?from)
   const nextTarget = suggestions[0];
   const prevTarget = fromSlug ? all.find((b) => b.slug === fromSlug) : undefined;
 
-  // detail images
   const d = post.detail || {};
   const img1 = d.img1?.src || post.thumbnail;
   const img2 = d.img2?.src || post.thumbnail;
@@ -277,30 +299,31 @@ export default async function BlogDetailPage(
 
   return (
     <div className="bg-[#F1F2F4]">
-      {/* JSON-LD */}
       <ArticleJsonLd post={post} />
 
-      <section className="pt-10 md:pt-16">
-        <div className="mx-auto w-full max-w-[1440px] px-4 md:px-20">
-          <DetailFrame
-            title={post.title}
-            heroSrc={post.thumbnail}
-            heroAlt={post.title}
-            date={post.createdAt}
-            tags={post.tags}
-          >
-            <DetailBlocks img1={img1} img2={img2} img3={img3} detail={d} />
-          </DetailFrame>
+      {/* Outer wrapper */}
+      <section className="pt-8 sm:pt-10 md:pt-16">
+        <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 md:px-20">
+          <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-[48px] sm:gap-[56px] md:gap-[64px]">
+            <DetailFrame
+              title={post.title}
+              heroSrc={post.thumbnail}
+              heroAlt={post.title}
+              date={post.createdAt}
+              tags={post.tags}
+            >
+              <DetailBlocks img1={img1} img2={img2} img3={img3} detail={d} />
+            </DetailFrame>
 
-          {/* Prev / Next directly below details */}
-          <div className="mt-8 mb-4">
-            <PrevNext prev={prevTarget} next={nextTarget} currentSlug={slug} />
+            {/* Prev/Next centered and OUTSIDE white card */}
+            <div className="flex justify-center">
+              <PrevNext prev={prevTarget} next={nextTarget} currentSlug={post.slug} />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Suggested strip (3 cards + See more) */}
-      <Suggested posts={suggestions} currentSlug={slug} />
+      <Suggested posts={suggestions} currentSlug={post.slug} />
     </div>
   );
 }

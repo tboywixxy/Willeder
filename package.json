@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "db:backfill": "node scripts/backfill-content.mjs",
+    "check:db": "node scripts/validate-db.mjs",
     "json:dev": "json-server --watch db.json --port 3001",
     "lint": "eslint"
   },

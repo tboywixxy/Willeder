@@ -1,6 +1,6 @@
 // src/components/LatestBlogShowcase.tsx
 import { headers } from "next/headers";
-import BlogSection from "../components/BlogSection"; // <-- your existing component
+import BlogSection from "../components/BlogSection";
 
 type Teaser = {
   slug: string;
@@ -19,39 +19,27 @@ function formatDateDotYYYYMMDD(d: string) {
   return `${y}.${m}.${dd}`;
 }
 
-function baseUrlFromHeaders() {
-  const h = headers();
+async function baseUrlFromHeaders() {
+  const h = await headers(); // ← await needed in Next 15
   const host = h.get("x-forwarded-host") ?? h.get("host");
   const proto = h.get("x-forwarded-proto") ?? "http";
   return `${proto}://${host}`;
 }
 
 export default async function LatestBlogShowcase() {
-  // Always hit your API so ordering/filter logic is identical to /blogs
-  const res = await fetch(`${baseUrlFromHeaders()}/api/blogs?limit=3&page=1`, {
-    cache: "no-store",
-    // If you prefer light ISR instead, use:
-    // next: { revalidate: 60 },
+  const base = await baseUrlFromHeaders();
+  const res = await fetch(`${base}/api/blogs?limit=3&page=1`, {
+    // cache: "no-store", // ok while developing; use ISR in prod:
+    next: { revalidate: 60 },
   });
 
-  if (!res.ok) {
-    // Fallback: render nothing (or you could render an empty state)
-    return null;
-  }
+  if (!res.ok) return null;
 
-  const data = await res.json() as {
-    items: Array<{
-      slug: string;
-      title: string;
-      thumbnail: string;
-      createdAt: string;
-      tags?: string[];
-    }>;
+  const data = (await res.json()) as {
+    items: Array<{ slug: string; title: string; thumbnail: string; createdAt: string; tags?: string[] }>;
   };
 
   const items = data.items ?? [];
-
-  // Adapt to BlogSection props
   const posts: Teaser[] = items.map((p) => ({
     slug: p.slug,
     title: p.title,
@@ -60,8 +48,6 @@ export default async function LatestBlogShowcase() {
   }));
 
   const displayDates = items.map((p) => formatDateDotYYYYMMDD(p.createdAt));
-
-  // BlogSection expects "graySets": which tags should be gray
   const graySets = items.map((p) => {
     const active = (p.tags ?? []).map((t) => t.toLowerCase());
     return FIXED_TAGS.filter((t) => !active.includes(t.toLowerCase()));

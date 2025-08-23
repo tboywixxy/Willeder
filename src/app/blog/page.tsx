@@ -64,10 +64,11 @@ export default function BlogIndexPage() {
     try {
       const params = new URLSearchParams();
       params.set("page", String(page));
-      params.set("limit", String(PAGE_SIZE)); // <= hard cap 9 per page
+      params.set("limit", String(PAGE_SIZE));
       if (query) params.set("q", query);
       if (selected.length) params.set("tag", selected.join(","));
 
+      // Prefer ISR on the API route (server side) for perf; client fetch can be no-store
       const r = await fetch(`/api/blogs?${params.toString()}`, { cache: "no-store" });
       const data = await r.json();
       setItems(data.items || []);
@@ -83,8 +84,7 @@ export default function BlogIndexPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, query, selected.join(",")]);
 
-  // If the user is on page N and then applies filters that reduce total pages,
-  // clamp the page into the new valid range (and refetch).
+  // Clamp page if filters reduce total
   useEffect(() => {
     const newTotalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
     if (page > newTotalPages) {
@@ -124,12 +124,12 @@ export default function BlogIndexPage() {
   const fromIdx = total === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
   const toIdx = Math.min(page * PAGE_SIZE, total);
 
-  // Optional: moving window for page numbers
+  // Moving window for page numbers
   const pageWindow = (() => {
     const span = 7;
     const half = Math.floor(span / 2);
     let start = Math.max(1, page - half);
-    let end = Math.min(totalPages, start + span - 1);
+    const end = Math.min(totalPages, start + span - 1); // <- const (fix for prefer-const)
     start = Math.max(1, end - span + 1);
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   })();
@@ -148,11 +148,12 @@ export default function BlogIndexPage() {
             onClearTags={onClearTags}
           />
 
-          {/* Results summary stays visible for any filter/search */}
+          {/* Results summary */}
           <div className="mx-auto w-full max-w-[1280px] -mt-2 text-sm text-gray-600">
             {total > 0 ? (
               <span>
-                Showing <strong>{fromIdx}</strong>–<strong>{toIdx}</strong> of <strong>{total}</strong> result{total === 1 ? "" : "s"}
+                Showing <strong>{fromIdx}</strong>–<strong>{toIdx}</strong> of <strong>{total}</strong>{" "}
+                result{total === 1 ? "" : "s"}
               </span>
             ) : (
               <span>No results</span>
@@ -161,7 +162,7 @@ export default function BlogIndexPage() {
 
           <BlogList posts={items} loading={loading} />
 
-          {/* Pagination is ALWAYS shown when totalPages > 1, even with filters/search */}
+          {/* Pagination */}
           {totalPages > 1 && (
             <nav
               className="mx-auto w-full max-w-[1280px] flex items-center justify-center gap-2 pb-16"

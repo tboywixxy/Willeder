@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import nodemailer, { getTestMessageUrl, type SentMessageInfo } from "nodemailer";
 
-export const runtime = "nodejs"; // important for Nodemailer
+export const runtime = "nodejs"; // important for Nodemailer on Vercel
 
 function isEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -10,7 +10,9 @@ function isEmail(v: string) {
 export async function POST(req: Request) {
   try {
     const form = await req.formData();
-    const company = (form.get("company") as string) || ""; // honeypot
+
+    // Honeypot field to catch bots
+    const company = (form.get("company") as string) || "";
     if (company) return NextResponse.json({ ok: true });
 
     const name = (form.get("name") as string) || "";
@@ -28,11 +30,11 @@ export async function POST(req: Request) {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST!,
       port: Number(process.env.SMTP_PORT || 587),
-      secure: Number(process.env.SMTP_PORT) === 465, // STARTTLS for 587
+      secure: Number(process.env.SMTP_PORT) === 465, // true for 465, false for 587 (STARTTLS)
       auth: { user: process.env.SMTP_USER!, pass: process.env.SMTP_PASS! },
     });
 
-    const info = await transporter.sendMail({
+    const info: SentMessageInfo = await transporter.sendMail({
       from: process.env.MAIL_FROM!,
       to: process.env.MAIL_TO!,
       replyTo: email,
@@ -45,10 +47,8 @@ export async function POST(req: Request) {
              <p style="white-space:pre-wrap">${message}</p>`,
     });
 
-    try {
-      const url = (nodemailer as any).getTestMessageUrl?.(info);
-      if (url) console.log("Preview URL:", url);
-    } catch {}
+    const previewUrl = getTestMessageUrl(info);
+    if (previewUrl) console.log("Preview URL:", previewUrl);
 
     return NextResponse.json({ ok: true });
   } catch (e) {

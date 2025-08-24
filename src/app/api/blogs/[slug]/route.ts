@@ -55,7 +55,7 @@ async function fetchBySlugDev(rawSlug: string): Promise<Blog | null> {
 }
 
 async function fetchBySlugProd(rawSlug: string): Promise<Blog | null> {
-  const { blogPosts } = await import("../../../../../src/app/lib/server/blogData");
+  const { blogPosts } = await import("@/app/lib/server/blogData");
   const all = blogPosts as Blog[];
   const exact = all.find((b) => b.slug === rawSlug);
   if (exact) return exact;

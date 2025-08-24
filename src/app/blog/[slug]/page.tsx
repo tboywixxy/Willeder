@@ -6,6 +6,7 @@ import DetailFrame from "../../../../components/blogDetail/DetailFrame";
 import DetailBlocks from "../../../../components/blogDetail/DetailBlocks";
 import BlogCard from "../../../../components/BlogCard";
 import { jost, notoSansJp } from "@/app/fonts";
+import { absoluteUrl } from "@/lib/absolute-url";
 
 /* ---------------- types ---------------- */
 type DetailImage = { src: string; alt?: string; caption?: string };
@@ -31,10 +32,9 @@ type Blog = {
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 const CENTER_ICON_SRC = "/blog-list.png";
 
-/* ---------------- data helpers (RELATIVE fetches) ---------------- */
-
+/* ---------------- data helpers (server-safe absolute URLs) ---------------- */
 async function getAll(limit = 9999): Promise<Blog[]> {
-  const r = await fetch(`/api/blogs?limit=${limit}&page=1`, {
+  const r = await fetch(absoluteUrl(`/api/blogs?limit=${limit}&page=1`), {
     next: { revalidate: 60, tags: ["blogs"] },
   });
   if (!r.ok) return [];
@@ -43,22 +43,23 @@ async function getAll(limit = 9999): Promise<Blog[]> {
 }
 
 async function safeGetPost(slug: string): Promise<Blog | null> {
-  const r = await fetch(`/api/blogs/${encodeURIComponent(slug)}`, {
+  const r = await fetch(absoluteUrl(`/api/blogs/${encodeURIComponent(slug)}`), {
     next: { revalidate: 60, tags: ["blogs"] },
   });
   if (r.ok) return (await r.json()) as Blog;
 
+  // fallback: search in memory list
   const all = await getAll(9999);
   const want = slug.trim().toLowerCase();
   return all.find((b) => b.slug.trim().toLowerCase() === want) ?? null;
 }
 
-/* ---------------- SEO ---------------- */
-
+/* ---------------- SEO (promise-style props) ---------------- */
 export async function generateMetadata(
-  { params }: { params: { slug: string } }
+  props: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
-  const post = await safeGetPost(params.slug);
+  const { slug } = await props.params;
+  const post = await safeGetPost(slug);
   if (!post) return { title: "Blog post" };
 
   const vercel = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "";
@@ -91,7 +92,6 @@ export async function generateMetadata(
 }
 
 /* ---------------- small UI bits ---------------- */
-
 function ArrowIcon({ direction = "right", className = "" }: { direction?: "left" | "right"; className?: string }) {
   return (
     <svg
@@ -165,7 +165,6 @@ function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string 
           <h2 className={headingCls}>Suggested posts</h2>
         </div>
 
-        {/* keep the inner width aligned with the white card widths at each breakpoint */}
         <div className="mx-auto w-full max-w-[1280px]">
           <ul
             className="
@@ -184,7 +183,9 @@ function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string 
                 thumbnail={b.thumbnail}
                 createdAt={b.createdAt}
                 variant="showcase"
-                grayTags={FIXED_TAGS.filter((t) => !b.tags.some((x) => x.toLowerCase() === t.toLowerCase()))}
+                grayTags={["IT Consulting","Engineering","Branding","Design","Other"].filter(
+                  (t) => !b.tags.some((x) => x.toLowerCase() === t.toLowerCase())
+                )}
                 fromSlug={currentSlug}
               />
             ))}
@@ -196,7 +197,9 @@ function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string 
                 thumbnail={posts[3].thumbnail}
                 createdAt={posts[3].createdAt}
                 variant="showcase"
-                grayTags={FIXED_TAGS.filter((t) => !posts[3].tags.some((x) => x.toLowerCase() === t.toLowerCase()))}
+                grayTags={["IT Consulting","Engineering","Branding","Design","Other"].filter(
+                  (t) => !posts[3].tags.some((x) => x.toLowerCase() === t.toLowerCase())
+                )}
                 fromSlug={currentSlug}
                 className="hidden min-[600px]:block min-[1024px]:hidden"
               />
@@ -218,20 +221,19 @@ function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string 
   );
 }
 
-/* ---------------- Page ---------------- */
-
+/* ---------------- Page (promise-style props) ---------------- */
 export default async function BlogDetailPage(
-  props: { params: { slug: string }; searchParams?: { from?: string } }
+  props: { params: Promise<{ slug: string }>; searchParams?: Promise<{ from?: string }> }
 ) {
-  const { slug } = props.params;
-  const fromSlug = props.searchParams?.from;
+  const { slug } = await props.params;
+  const { from: fromSlug } = (props.searchParams ? await props.searchParams : {}) ?? {};
 
   const post = await safeGetPost(slug);
   if (!post) return notFound();
 
   const all = await getAll(9999);
 
-  // build up to 4 suggestions (supports 2×2 at 600–1024)
+  // Suggestions
   const tagSet = new Set(post.tags);
   const isEligible = (b: Blog) => b.slug !== post.slug;
   const overlapsTag = (b: Blog) => b.tags.some((t) => tagSet.has(t));

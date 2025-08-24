@@ -1,4 +1,3 @@
-// /app/api/contact/route.ts
 import { NextResponse } from "next/server";
 import nodemailer, { getTestMessageUrl, type SentMessageInfo } from "nodemailer";
 
@@ -18,9 +17,8 @@ export async function POST(req: Request) {
 
     const name = (form.get("name") as string)?.trim() || "";
     const email = (form.get("email") as string)?.trim() || "";
-    // Accept either "phone" (new) or "subject" (legacy) to avoid breaking older pages
-    const phone =
-      ((form.get("phone") as string) || (form.get("subject") as string) || "").trim();
+    // Accept "phone" (new) or "subject" (legacy)
+    const phone = ((form.get("phone") as string) || (form.get("subject") as string) || "").trim();
     const message = (form.get("message") as string)?.trim() || "";
 
     if (!name || !email || !message || !isEmail(email)) {

@@ -9,6 +9,7 @@ export const notoSansJp = Noto_Sans_JP({
 
 export const jost = Jost({
   subsets: ["latin"],
-  weight: ["500"],
+  weight: ["500", "400", "700"],
   display: "swap",
 });
+

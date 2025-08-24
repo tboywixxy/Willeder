@@ -1,11 +1,8 @@
 import { NextResponse } from "next/server";
-import { blogPosts } from "@/app/lib/server/blogData"; // ✅ static prod data
+import { blogPosts } from "@/app/lib/server/blogData"; // ✅ alias, static import
 
 export const runtime = "nodejs";
 export const revalidate = 60;
-export const dynamic = "force-dynamic";
-
-const JSON_SERVER_URL = process.env.JSON_SERVER_URL || "";
 
 type DetailImage = { src: string; alt?: string; caption?: string };
 type DetailPayload = {
@@ -27,18 +24,6 @@ export type Blog = {
   detail?: DetailPayload;
 };
 
-// ---------- helpers ----------
-async function fetchAllBlogsDev(): Promise<Blog[]> {
-  const r = await fetch(`${JSON_SERVER_URL}/blogs`, { cache: "no-store" });
-  if (!r.ok) throw new Error(`JSON Server fetch failed: ${r.status}`);
-  return (await r.json()) as Blog[];
-}
-
-async function fetchAllBlogsProd(): Promise<Blog[]> {
-  return blogPosts as Blog[];
-}
-
-/** Ensure 600+ chars and includes <h2>, <p>, <img> */
 function ensureContent(post: Blog): Blog {
   if (
     post.content &&
@@ -46,9 +31,7 @@ function ensureContent(post: Blog): Blog {
     /<h2[\s>]/i.test(post.content) &&
     /<p[\s>]/i.test(post.content) &&
     /<img[\s>]/i.test(post.content)
-  ) {
-    return post;
-  }
+  ) return post;
 
   const d = post.detail || {};
   const text = (...xs: (string | undefined)[]) => xs.filter(Boolean).join(" ");
@@ -68,8 +51,8 @@ function ensureContent(post: Blog): Blog {
 
 function matchTags(post: Blog, wanted: string[]): boolean {
   if (wanted.length === 0) return true;
-  const lower = post.tags.map(t => t.toLowerCase());
-  return wanted.some(w => lower.includes(w.toLowerCase()));
+  const lower = post.tags.map((t) => t.toLowerCase());
+  return wanted.some((w) => lower.includes(w.toLowerCase()));
 }
 
 function matchQuery(post: Blog, q: string): boolean {
@@ -83,7 +66,6 @@ function matchQuery(post: Blog, q: string): boolean {
   return hay.includes(needle);
 }
 
-// ---------- GET ----------
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
@@ -91,18 +73,15 @@ export async function GET(req: Request) {
     const limit = Math.max(1, parseInt(url.searchParams.get("limit") || "9", 10));
     const q = url.searchParams.get("q")?.trim() || "";
 
-    // tag can be "Design" or "Design,Branding" — OR filter
     const tagsWanted = (url.searchParams.get("tag")?.trim() || "")
       .split(",")
-      .map(s => s.trim())
+      .map((s) => s.trim())
       .filter(Boolean);
 
-    const allRaw = JSON_SERVER_URL ? await fetchAllBlogsDev() : await fetchAllBlogsProd();
-    const all = allRaw.map(ensureContent);
+    const all = (blogPosts as Blog[]).map(ensureContent);
 
-    const filtered = all
-      .filter(b => matchTags(b, tagsWanted) && matchQuery(b, q))
-      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+    const filtered = all.filter(b => matchTags(b, tagsWanted) && matchQuery(b, q))
+                        .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 
     const start = (page - 1) * limit;
     const items = filtered.slice(start, start + limit);

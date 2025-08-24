@@ -8,7 +8,7 @@ import { absoluteUrl } from "@/lib/absolute-url";
 import { blogPosts } from "@/app/lib/server/blogData"; // fallback only
 
 export const revalidate = 60;
-// Force runtime rendering so Vercel doesn’t try to pre-generate unknown slugs
+// Make sure this page never gets fully pre-generated for an incomplete set of slugs
 export const dynamic = "force-dynamic";
 
 type DetailImage = { src: string; alt?: string; caption?: string };
@@ -31,13 +31,9 @@ type Blog = {
   detail?: DetailPayload;
 };
 
-// --- helpers ---
 const normalize = (s: string) => s.trim().toLowerCase();
 
-async function resolve<T>(v: T | Promise<T>): Promise<T> {
-  return Promise.resolve(v);
-}
-
+// ---------- Data access via your API (dev = JSON Server; prod = blogData) ----------
 async function getPostFromApi(slug: string): Promise<Blog | null> {
   const api = absoluteUrl(`/api/blogs/${encodeURIComponent(slug)}`);
   try {
@@ -62,26 +58,24 @@ async function getAllFromApi(): Promise<Blog[] | null> {
 }
 
 async function getPost(slug: string): Promise<Blog | null> {
-  // 1) Try API (dev: JSON Server; prod: blogData via route)
+  // Try API first (resolves to JSON Server in dev or blogData in prod)
   const viaApi = await getPostFromApi(slug);
   if (viaApi) return viaApi;
 
-  // 2) Fallback to local blogData (safety)
-  const found =
-    (blogPosts as Blog[]).find((b) => b.slug === slug) ??
-    (blogPosts as Blog[]).find((b) => normalize(b.slug) === normalize(slug));
-  return found ?? null;
+  // Fallback: static blogData (safety net)
+  const list = blogPosts as Blog[];
+  return (
+    list.find((b) => b.slug === slug) ??
+    list.find((b) => normalize(b.slug) === normalize(slug)) ??
+    null
+  );
 }
 
 async function getSuggestions(current: Blog, fromSlug?: string): Promise<Blog[]> {
-  // 1) Try API for all, then derive suggestions locally
   const all = (await getAllFromApi()) ?? (blogPosts as Blog[]);
   const tagSet = new Set(current.tags.map((t) => t.toLowerCase()));
-  const isEligible = (b: Blog) =>
-    b.slug !== current.slug && (!fromSlug || b.slug !== fromSlug);
-
-  const overlapsTag = (b: Blog) =>
-    (b.tags || []).some((t) => tagSet.has(t.toLowerCase()));
+  const isEligible = (b: Blog) => b.slug !== current.slug && (!fromSlug || b.slug !== fromSlug);
+  const overlapsTag = (b: Blog) => (b.tags || []).some((t) => tagSet.has(t.toLowerCase()));
 
   let related = all.filter((b) => isEligible(b) && overlapsTag(b));
   if (related.length < 4) {
@@ -91,12 +85,12 @@ async function getSuggestions(current: Blog, fromSlug?: string): Promise<Blog[]>
   return related.slice(0, 4);
 }
 
-// --- SEO ---
+// ---------- SEO ----------
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await params;
-  const post = (await getPost(slug));
+  const post = await getPost(slug);
   if (!post) return { title: "Blog post" };
 
   const url = absoluteUrl(`/blog/${encodeURIComponent(post.slug)}`);
@@ -126,16 +120,16 @@ export async function generateMetadata(
   };
 }
 
-// --- Page ---
+// ---------- Page ----------
 export default async function BlogDetailPage({
   params,
   searchParams,
 }: {
-  params: Promise<{ slug: string }> | { slug: string };
-  searchParams?: Promise<{ from?: string }> | { from?: string };
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ from?: string }>;
 }) {
-  const { slug } = await resolve(params as any);
-  const fromSlug = (await resolve(searchParams ?? ({} as any)))?.from;
+  const { slug } = await params;
+  const fromSlug = (await searchParams)?.from;
 
   const post = await getPost(slug);
   if (!post) return notFound();
@@ -182,10 +176,12 @@ export default async function BlogDetailPage({
                         thumbnail={b.thumbnail}
                         createdAt={b.createdAt}
                         variant="showcase"
-                        // gray out tags that are NOT in current post
-                        grayTags={["IT Consulting","Engineering","Branding","Design","Other"].filter(
-                          (t) => !post.tags.map((x) => x.toLowerCase()).includes(t.toLowerCase())
-                        )}
+                        // gray out tags not present on the current post
+                        grayTags={
+                          ["IT Consulting","Engineering","Branding","Design","Other"].filter(
+                            (t) => !post.tags.map((x) => x.toLowerCase()).includes(t.toLowerCase())
+                          )
+                        }
                         fromSlug={post.slug}
                       />
                     </li>

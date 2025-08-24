@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import DetailFrame from "@/components/blogDetail/DetailFrame";
 import DetailBlocks from "@/components/blogDetail/DetailBlocks";
 import { absoluteUrl } from "@/lib/absolute-url";
-// ❗ Match the actual filename exactly: blogdata.ts vs blogData.ts
+// ✳️ Make sure this casing matches the actual filename (blogdata.ts vs blogData.ts)
 import { blogPosts } from "@/app/lib/server/blogData";
 
 type DetailImage = { src: string; alt?: string; caption?: string };
@@ -38,8 +38,7 @@ async function safeGetPost(slug: string): Promise<Blog | null> {
   return all.find((b) => b.slug.trim().toLowerCase() === want) ?? null;
 }
 
-// ---- SEO ----
-// In your Next version, params is a Promise here.
+// ---- SEO (params is a Promise in your setup) ----
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
@@ -57,31 +56,24 @@ export async function generateMetadata(
     title,
     description,
     alternates: { canonical: url },
-    openGraph: {
-      type: "article",
-      url,
-      title,
-      description,
-      images: [{ url: post.thumbnail }],
-      locale: "en_US",
-    },
+    openGraph: { type: "article", url, title, description, images: [{ url: post.thumbnail }], locale: "en_US" },
+    twitter: { card: "summary_large_image", title, description, images: [post.thumbnail] },
   };
 }
 
-// ---- Page ----
-// No PageProps import; type inline and await params.
+// ---- Page (BOTH params and searchParams are Promises) ----
 export default async function BlogDetailPage(
-  { params, searchParams }: { params: Promise<{ slug: string }>; searchParams?: { from?: string } }
+  { params, searchParams }: { params: Promise<{ slug: string }>; searchParams?: Promise<{ from?: string }> }
 ) {
   const { slug } = await params;
-  const fromSlug = searchParams?.from;
+  const fromSlug = (await searchParams)?.from;
 
   const post = await safeGetPost(slug);
   if (!post) return notFound();
 
   const all = await getAll();
 
-  // Related suggestions (optional)
+  // (optional) related suggestions
   const tagSet = new Set(post.tags);
   const isEligible = (b: Blog) => b.slug !== post.slug;
   const overlapsTag = (b: Blog) => b.tags.some((t) => tagSet.has(t));
@@ -90,7 +82,7 @@ export default async function BlogDetailPage(
     const fillers = all.filter((b) => isEligible(b) && b.slug !== fromSlug && !overlapsTag(b));
     related = [...related, ...fillers];
   }
-  const suggestions = related.slice(0, 4);
+  const suggestions = related.slice(0, 4); // eslint may warn if unused — safe to remove if you’re not rendering
 
   const d = post.detail || {};
   const img1 = d.img1?.src || post.thumbnail;

@@ -1,53 +1,107 @@
-// src/components/Hero.tsx  (SERVER component)
-import Image from "next/image";
+// src/app/page.tsx
 import Link from "next/link";
-// local file in /public/images/hero-right.jpg (add your own image)
-import heroRight from "../public/1.png";
+import Image from "next/image";
 
-export default function Hero() {
+export default function HomePage() {
   return (
-    <section className="bg-gray-50">
-      <div className="mx-auto w-full max-w-[1440px] px-4 md:px-20 py-10 md:py-16 grid gap-8 min-[1024px]:grid-cols-2 min-[1024px]:gap-16 place-items-center">
-        {/* LEFT: real text becomes LCP */}
-        <div className="w-full max-w-[640px]">
-          <h1 className="font-sans font-extrabold text-black text-[clamp(28px,calc(100vw/1440*56),56px)] leading-[1.1]">
-            Build, ship, and iterate — fast.
-          </h1>
-          <p className="mt-3 max-w-[60ch] text-black/70 font-sans text-[clamp(14px,calc(100vw/1440*18),18px)] leading-[1.6]">
-            Design, engineering, and brand systems that scale from idea to launch.
-          </p>
+    <div>
+      <section className="bg-gray-50">
+        <div className="mx-auto w-full max-w-[1440px] px-4 md:px-20 py-10 md:py-16">
+          {/* 1 col by default & 600–1023; 2 cols at ≥1024 */}
+          <div className="grid gap-8 min-[1024px]:grid-cols-2 min-[1024px]:gap-16 place-items-center">
+            {/* LEFT: image + (desktop CTA under this at ≥1024) */}
+            <div className="order-1 w-full max-w-[640px]">
+              {/* Image replacing the heading/paragraph */}
+              <div className="relative w-full aspect-[640/327.2979125977] mx-auto bg-transparent">
+                <Image
+                  src="/chii.png"
+                  alt="Intro visual"
+                  fill
+                  className="object-contain"
+                  sizes="(max-width: 1023px) 100vw, 50vw"
+                  priority
+                />
+              </div>
 
-          {/* CTA */}
-          <div className="mt-6 flex gap-4">
-            <Link
-              href="/blog"
-              prefetch={false}
-              className="inline-flex items-center gap-3 px-6 py-3 rounded-[14px] bg-[#AD002D] text-white font-sans font-semibold hover:bg-[#bf1d43] focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
-            >
-              See more
-              <svg width="28" height="20" viewBox="0 0 34 24" aria-hidden="true" className="shrink-0">
-                <path d="M0 12h30" stroke="currentColor" strokeWidth="2" />
-                <path d="M22 4l8 8-8 8" fill="none" stroke="currentColor" strokeWidth="2" />
-              </svg>
-            </Link>
+              {/* Desktop CTA ONLY (≥1024) */}
+              <div className="mt-6 hidden min-[1024px]:flex items-center justify-start">
+                <Link
+                  href="/blog"
+                  className="
+                    group
+                    inline-flex items-center justify-center
+                    w-[405px] h-[68px]
+                    px-12 py-4 gap-6
+                    rounded-[16px]
+                    bg-[#AD002D] text-white
+                    shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-black
+                    transition-colors duration-200 ease-out
+                    hover:bg-[#921A31]
+                  "
+                  aria-label="See more"
+                >
+                  <span className="font-bold text-[24px] leading-[150%] tracking-[0.05em]">
+                    See more
+                  </span>
+                  <span className="relative inline-block w-[34px] h-[24px] transition-transform duration-200 ease-out group-hover:translate-x-2">
+                    <Image
+                      src="/images/services/arrow 2.png"
+                      alt=""
+                      fill
+                      className="object-contain"
+                      sizes="34px"
+                    />
+                  </span>
+                </Link>
+              </div>
+            </div>
+
+            {/* RIGHT: main image */}
+            <div className="order-2 relative w-full max-w-[640px] aspect-[640/695.04] rounded-lg overflow-hidden shadow mx-auto">
+              <Image
+                src="/1.png"
+                alt="Hero"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1023px) 100vw, 50vw"
+                priority
+              />
+            </div>
+
+            {/* Mobile/Tablet CTA (<1024) */}
+            <div className="order-3 min-[1024px]:hidden w-full max-w-[640px] flex justify-center">
+              <Link
+                href="/blog"
+                className="
+                  group
+                  inline-flex items-center justify-center
+                  rounded-[16px] bg-[#AD002D] text-white shadow-sm
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-black
+                  gap-4 px-6 py-4 w-[298px] h-[62px]
+                  min-[600px]:gap-6 min-[600px]:px-12 min-[600px]:py-4
+                  min-[600px]:w-[405px] min-[600px]:h-[68px]
+                  transition-colors duration-200 ease-out
+                  hover:bg-[#921A31]
+                "
+                aria-label="See more"
+              >
+                <span className="font-bold leading-[150%] tracking-[0.05em] text-[20px] min-[600px]:text-[24px]">
+                  See more
+                </span>
+                <span className="relative inline-block w-[25px] h-[18px] min-[600px]:w-[34px] min-[600px]:h-[24px] transition-transform duration-200 ease-out group-hover:translate-x-2">
+                  <Image
+                    src="/images/services/arrow 2.png"
+                    alt=""
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 599px) 25px, 34px"
+                  />
+                </span>
+              </Link>
+            </div>
           </div>
         </div>
-
-        {/* RIGHT: decorative image (lazy, not priority) */}
-        <div className="relative w-full max-w-[640px] aspect-[640/695.04] rounded-lg overflow-hidden shadow mx-auto">
-          <Image
-            src={heroRight}
-            alt="Product preview"
-            fill
-            className="object-cover"
-            sizes="(max-width: 1023px) 100vw, 50vw"
-            loading="lazy"
-            decoding="async"
-            placeholder="blur"
-            style={{ display: "block", contain: "size layout paint" }}
-          />
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
-// components/BlogCard.tsx
 import Link from "next/link";
 import Image from "next/image";
+import { jost, notoSansJp } from "@/app/fonts";
 
 const ALL_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 
@@ -13,10 +13,14 @@ type Props = {
   title: string;
   thumbnail: string;
   createdAt: string;
+  /** Optional preformatted display date (e.g., "2025.08.01") */
   displayDate?: string;
+  /** Pass tags that should be greyed out (the rest will be black) */
   grayTags?: string[];
+  /** Optional visual variant used by your pages */
   variant?: "showcase" | "compact";
   className?: string;
+  /** Some callers passed this previously; keep for compatibility */
   fromSlug?: string;
 };
 
@@ -31,30 +35,30 @@ export default function BlogCard({
   className = "",
 }: Props) {
   const titleCls = `
-    font-sans font-bold
+    ${notoSansJp.className} font-bold
     text-[clamp(16px,calc(100vw/1440*20),20px)]
     leading-[150%] tracking-[0.05em]
   `;
   const dateCls = `
-    font-sans font-medium
+    ${jost.className} font-medium
     text-[clamp(12px,calc(100vw/1440*14),14px)]
     leading-[150%] text-[#737B8C]
   `;
 
   const shownDate = displayDate ?? formatDotDate(createdAt);
-  const graySet = new Set(grayTags.map((t) => t.toLowerCase()));
+  const graySet = new Set((grayTags ?? []).map((t) => t.toLowerCase()));
 
   return (
     <article
       className={[
         "w-full max-w-[410px] rounded-[16px] bg-white overflow-hidden",
         "border border-transparent",
+        "mx-auto min-[600px]:mx-0", // center on small screens only
         className,
       ].join(" ")}
     >
       <Link
         href={`/blog/${encodeURIComponent(slug)}`}
-        prefetch={false}
         className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
       >
         <div
@@ -69,8 +73,6 @@ export default function BlogCard({
             fill
             className="object-cover"
             sizes="(max-width: 639px) 92vw, (max-width: 1023px) 44vw, 410px"
-            loading="lazy"
-            decoding="async"
             priority={false}
           />
         </div>

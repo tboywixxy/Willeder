@@ -4,18 +4,39 @@ import BlogCard from "./BlogCard";
 import { notoSansJp, jost } from "@/app/fonts";
 
 type Teaser = { slug: string; title: string; thumbnail: string; createdAt: string };
-type BlogSectionProps = {
+
+export type BlogSectionProps = {
   posts: Teaser[];
-  displayDates: string[];
-  graySets: string[][];
+  /** Optional; if omitted, we derive from createdAt as YYYY.MM.DD */
+  displayDates?: string[];
+  /** Optional; if omitted, all tags render black */
+  graySets?: string[][];
 };
 
-export default function BlogSection({ posts, displayDates, graySets }: BlogSectionProps) {
-  const count = Math.min(posts.length, displayDates.length, graySets.length);
-  const items = posts.slice(0, count);
+function formatDotDate(input: string) {
+  return input.includes("-") ? input.replaceAll("-", ".") : input;
+}
 
-  const topTextCls  = `${notoSansJp.className} font-bold text-[32px] leading-[150%] tracking-[0.05em] text-center`;
-  const mainTextCls = `${jost.className}      font-medium text-[20px] leading-[150%] tracking-[0.05em] text-center`;
+export default function BlogSection({
+  posts,
+  displayDates,
+  graySets,
+}: BlogSectionProps) {
+  // Normalize optional arrays to safe, per-post values
+  const _displayDates =
+    displayDates?.length === posts.length
+      ? displayDates
+      : posts.map((p) => formatDotDate(p.createdAt));
+
+  const _graySets =
+    graySets?.length === posts.length
+      ? graySets
+      : posts.map(() => [] as string[]);
+
+  const topTextCls =
+    `${notoSansJp.className} font-bold text-[32px] leading-[150%] tracking-[0.05em] text-center`;
+  const mainTextCls =
+    `${jost.className} font-medium text-[20px] leading-[150%] tracking-[0.05em] text-center`;
 
   return (
     <section>
@@ -37,15 +58,16 @@ export default function BlogSection({ posts, displayDates, graySets }: BlogSecti
           <ul
             className="
               grid
-              grid-cols-1
-              min-[600px]:grid-cols-2
-              /* min-[1025px]:grid-cols-3 */  /* enable if you want 3-up on desktop */
+              grid-cols-1                         /* 375–599: 1×1 */
+              min-[600px]:grid-cols-2             /* 600–1024: 2×2 */
+              min-[1025px]:grid-cols-3            /* >1024: 3×3 */
               gap-x-6 gap-y-10
-              items-stretch
+              place-items-center                  /* center single-column cards */
+              min-[600px]:place-items-stretch     /* reset when 2+ columns */
               mb-8
             "
           >
-            {items.map((b, i) => (
+            {posts.map((b, i) => (
               <BlogCard
                 key={b.slug}
                 slug={b.slug}
@@ -53,14 +75,14 @@ export default function BlogSection({ posts, displayDates, graySets }: BlogSecti
                 thumbnail={b.thumbnail}
                 createdAt={b.createdAt}
                 variant="showcase"
-                displayDate={displayDates[i]}
-                grayTags={graySets[i]}
+                displayDate={_displayDates[i]}
+                grayTags={_graySets[i]}
               />
             ))}
           </ul>
 
           {/* See more */}
-          <div className="mt-8 w-full flex justify-end">
+          <div className="mt-8 w-full flex justify-center min-[600px]:justify-end">
             <Link href="/blog" className="inline-flex items-center gap-2 text-black hover:underline">
               <span>See more</span>
               <Image src="/images/services/arrow.png" alt="" width={34} height={24} />

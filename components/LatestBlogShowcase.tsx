@@ -4,22 +4,13 @@ import BlogSection from "./BlogSection";
 type Teaser = { slug: string; title: string; thumbnail: string; createdAt: string };
 
 type Props = {
-  posts?: Teaser[];          // ← optional
-  displayDates?: string[];   // ← optional
-  graySets?: string[][];     // ← optional
+  posts: Teaser[];
+  displayDates: string[];
+  graySets: string[][];
 };
 
-export default function LatestBlogShowcase({
-  posts = [],
-  displayDates = [],
-  graySets = [],
-}: Props) {
-  // If any array is shorter, we only render up to the common length
+export default function LatestBlogShowcase({ posts, displayDates, graySets }: Props) {
   const count = Math.min(posts.length, displayDates.length, graySets.length);
-
-  // Nothing to show? Render nothing safely.
-  if (count === 0) return null;
-
   return (
     <BlogSection
       posts={posts.slice(0, count)}

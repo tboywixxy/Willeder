@@ -1,7 +1,6 @@
 // components/BlogCard.tsx
 import Link from "next/link";
 import Image from "next/image";
-import { jost, notoSansJp } from "@/app/fonts";
 
 const ALL_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 
@@ -14,14 +13,10 @@ type Props = {
   title: string;
   thumbnail: string;
   createdAt: string;
-  /** Optional preformatted display date (e.g., "2025.08.01") */
-  displayDate?: string;        // <-- add this
-  /** Pass tags that should be greyed out (the rest will be black) */
+  displayDate?: string;
   grayTags?: string[];
-  /** Optional visual variant used by your pages */
   variant?: "showcase" | "compact";
   className?: string;
-  /** Some callers passed this previously; keep for compatibility */
   fromSlug?: string;
 };
 
@@ -30,25 +25,23 @@ export default function BlogCard({
   title,
   thumbnail,
   createdAt,
-  displayDate,                 // <-- pick it up
+  displayDate,
   grayTags = [],
   variant = "showcase",
   className = "",
 }: Props) {
   const titleCls = `
-    ${notoSansJp.className} font-bold
+    font-sans font-bold
     text-[clamp(16px,calc(100vw/1440*20),20px)]
     leading-[150%] tracking-[0.05em]
   `;
   const dateCls = `
-    ${jost.className} font-medium
+    font-sans font-medium
     text-[clamp(12px,calc(100vw/1440*14),14px)]
     leading-[150%] text-[#737B8C]
   `;
 
-  // prefer displayDate if provided; else format createdAt
-  const shownDate = displayDate ?? formatDotDate(createdAt);  // <-- use it
-
+  const shownDate = displayDate ?? formatDotDate(createdAt);
   const graySet = new Set(grayTags.map((t) => t.toLowerCase()));
 
   return (
@@ -61,6 +54,7 @@ export default function BlogCard({
     >
       <Link
         href={`/blog/${encodeURIComponent(slug)}`}
+        prefetch={false}
         className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
       >
         <div
@@ -75,12 +69,13 @@ export default function BlogCard({
             fill
             className="object-cover"
             sizes="(max-width: 639px) 92vw, (max-width: 1023px) 44vw, 410px"
+            loading="lazy"
+            decoding="async"
             priority={false}
           />
         </div>
 
         <div className="px-3 pt-3 pb-4">
-          {/* dateTime keeps the machine-readable ISO date; text shows your displayDate if provided */}
           <time className={dateCls} dateTime={createdAt}>
             {shownDate}
           </time>

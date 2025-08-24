@@ -4,15 +4,48 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useEffect, useRef, useCallback } from "react";
 
 export default function Header() {
   const pathname = usePathname() || "/";
+  const detailsRef = useRef<HTMLDetailsElement | null>(null);
+
+  // Close helper
+  const closeMobileMenu = useCallback(() => {
+    if (detailsRef.current?.open) detailsRef.current.open = false;
+  }, []);
+
+  // Close on outside click and on scroll
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      const el = detailsRef.current;
+      if (!el || !el.open) return;
+      const target = e.target as Node | null;
+      if (target && el.contains(target)) return; // click inside -> ignore
+      el.open = false;
+    };
+
+    const onScroll = () => {
+      const el = detailsRef.current;
+      if (el?.open) el.open = false;
+    };
+
+    document.addEventListener("click", onDocClick, true);
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      document.removeEventListener("click", onDocClick, true);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+
+  // Close when route changes
+  useEffect(() => {
+    closeMobileMenu();
+  }, [pathname, closeMobileMenu]);
 
   // Active states
-  const isBlogActive =
-    pathname === "/blog" ||
-    pathname === "/blog" ||
-    pathname.startsWith("/blog/");
+  const isBlogActive = pathname === "/blog" || pathname.startsWith("/blog/");
   const isHomeActive = pathname === "/" && !isBlogActive;
 
   const BASE = 1440;
@@ -83,14 +116,14 @@ export default function Header() {
                   <Link href="/" prefetch={false} className={linkCls(isHomeActive)}>
                     Home
                   </Link>
-                  {/* Point Blogs to /blogs (list) but keep active for /blog/[slug] too */}
+                  {/* Blogs list; stays active for /blog and /blog/[slug] */}
                   <Link href="/blog" prefetch={false} className={linkCls(isBlogActive)}>
                     Blogs
                   </Link>
                 </div>
               </nav>
 
-              {/* Contact (desktop) — CTA stays the same regardless of route */}
+              {/* Contact (desktop) — CTA style only */}
               <div
                 className="
                   hidden min-[600px]:flex shrink-0
@@ -119,8 +152,8 @@ export default function Header() {
               </div>
             </div>
 
-            {/* <600: Hamburger (CSS-only) */}
-            <details className="ml-auto min-[600px]:hidden group relative">
+            {/* <600: Hamburger */}
+            <details ref={detailsRef} className="ml-auto min-[600px]:hidden group relative">
               <summary
                 className="
                   w-12 h-12 flex items-center justify-center
@@ -167,6 +200,7 @@ export default function Header() {
                     <Link
                       href="/"
                       prefetch={false}
+                      onClick={closeMobileMenu}
                       className={`${linkCls(isHomeActive)} block px-4 py-3`}
                     >
                       Home
@@ -176,16 +210,17 @@ export default function Header() {
                     <Link
                       href="/blog"
                       prefetch={false}
+                      onClick={closeMobileMenu}
                       className={`${linkCls(isBlogActive)} block px-4 py-3`}
                     >
                       Blogs
                     </Link>
                   </li>
                   <li className="w-full">
-                    {/* Contact CTA (mobile) — not "active" colored */}
                     <Link
                       href="/contact"
                       prefetch={false}
+                      onClick={closeMobileMenu}
                       className="
                         group my-3 mx-4 flex items-center justify-center gap-4
                         px-12 py-4 bg-[#AD002D] text-white rounded-[16px]

@@ -1,5 +1,5 @@
-// src/app/blog/[slug]/page.tsx
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import DetailFrame from "@/components/blogDetail/DetailFrame";
 import DetailBlocks from "@/components/blogDetail/DetailBlocks";
@@ -8,7 +8,6 @@ import { absoluteUrl } from "@/lib/absolute-url";
 import { blogPosts } from "@/app/lib/server/blogData"; // fallback only
 
 export const revalidate = 60;
-// Make sure this page never gets fully pre-generated for an incomplete set of slugs
 export const dynamic = "force-dynamic";
 
 type DetailImage = { src: string; alt?: string; caption?: string };
@@ -26,14 +25,17 @@ type Blog = {
   title: string;
   thumbnail: string;
   tags: string[];
-  createdAt: string;
+  createdAt: string; // YYYY-MM-DD
   content?: string;
   detail?: DetailPayload;
 };
 
+const ALL_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 const normalize = (s: string) => s.trim().toLowerCase();
+const stamp = (s: string) => new Date(s).getTime() || 0;
 
-// ---------- Data access via your API (dev = JSON Server; prod = blogData) ----------
+/* ---------------- Data (API-first; blogData fallback) ---------------- */
+
 async function getPostFromApi(slug: string): Promise<Blog | null> {
   const api = absoluteUrl(`/api/blogs/${encodeURIComponent(slug)}`);
   try {
@@ -58,11 +60,9 @@ async function getAllFromApi(): Promise<Blog[] | null> {
 }
 
 async function getPost(slug: string): Promise<Blog | null> {
-  // Try API first (resolves to JSON Server in dev or blogData in prod)
   const viaApi = await getPostFromApi(slug);
   if (viaApi) return viaApi;
 
-  // Fallback: static blogData (safety net)
   const list = blogPosts as Blog[];
   return (
     list.find((b) => b.slug === slug) ??
@@ -71,21 +71,40 @@ async function getPost(slug: string): Promise<Blog | null> {
   );
 }
 
-async function getSuggestions(current: Blog, fromSlug?: string): Promise<Blog[]> {
+async function getAllSorted(): Promise<Blog[]> {
   const all = (await getAllFromApi()) ?? (blogPosts as Blog[]);
+  return [...all].sort((a, b) => stamp(b.createdAt) - stamp(a.createdAt));
+}
+
+async function getPrevNext(currentSlug: string): Promise<{ prev?: Blog; next?: Blog }> {
+  const all = await getAllSorted();
+  const idx = all.findIndex((b) => normalize(b.slug) === normalize(currentSlug));
+  if (idx === -1) return {};
+  // Sorted newest→oldest. “Prev” = newer (index-1), “Next” = older (index+1)
+  const prev = idx > 0 ? all[idx - 1] : undefined;
+  const next = idx < all.length - 1 ? all[idx + 1] : undefined;
+  return { prev, next };
+}
+
+async function getSuggestions(current: Blog, fromSlug?: string): Promise<Blog[]> {
+  const all = await getAllSorted();
   const tagSet = new Set(current.tags.map((t) => t.toLowerCase()));
-  const isEligible = (b: Blog) => b.slug !== current.slug && (!fromSlug || b.slug !== fromSlug);
-  const overlapsTag = (b: Blog) => (b.tags || []).some((t) => tagSet.has(t.toLowerCase()));
+  const isEligible = (b: Blog) =>
+    b.slug !== current.slug && (!fromSlug || b.slug !== fromSlug);
+
+  const overlapsTag = (b: Blog) =>
+    (b.tags || []).some((t) => tagSet.has(t.toLowerCase()));
 
   let related = all.filter((b) => isEligible(b) && overlapsTag(b));
-  if (related.length < 4) {
+  if (related.length < 3) {
     const fillers = all.filter((b) => isEligible(b) && !overlapsTag(b));
     related = [...related, ...fillers];
   }
-  return related.slice(0, 4);
+  return related.slice(0, 3); // ← exactly 3
 }
 
-// ---------- SEO ----------
+/* ---------------- SEO ---------------- */
+
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
@@ -120,7 +139,8 @@ export async function generateMetadata(
   };
 }
 
-// ---------- Page ----------
+/* ---------------- Page ---------------- */
+
 export default async function BlogDetailPage({
   params,
   searchParams,
@@ -139,7 +159,10 @@ export default async function BlogDetailPage({
   const img2 = d.img2?.src || post.thumbnail;
   const img3 = d.img3?.src || post.thumbnail;
 
-  const suggestions = await getSuggestions(post, fromSlug);
+  const [{ prev, next }, suggestions] = await Promise.all([
+    getPrevNext(post.slug),
+    getSuggestions(post, fromSlug),
+  ]);
 
   return (
     <div className="bg-[#F1F2F4]">
@@ -156,7 +179,44 @@ export default async function BlogDetailPage({
               <DetailBlocks img1={img1} img2={img2} img3={img3} detail={d} />
             </DetailFrame>
 
-            {/* Suggested posts */}
+            {/* Prev / Next */}
+            {(prev || next) && (
+              <nav
+                aria-label="Post pagination"
+                className="
+                  grid gap-4
+                  grid-cols-1 min-[600px]:grid-cols-2
+                "
+              >
+                {/* Prev (newer) on the left */}
+                <div className="min-h-[44px]">
+                  {prev && (
+                    <Link
+                      href={`/blog/${encodeURIComponent(prev.slug)}?from=${encodeURIComponent(post.slug)}`}
+                      className="group inline-flex items-center gap-3 text-black hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+                    >
+                      <span aria-hidden>←</span>
+                      <span className="truncate">Previous: {prev.title}</span>
+                    </Link>
+                  )}
+                </div>
+
+                {/* Next (older) on the right */}
+                <div className="min-h-[44px] text-left min-[600px]:text-right">
+                  {next && (
+                    <Link
+                      href={`/blog/${encodeURIComponent(next.slug)}?from=${encodeURIComponent(post.slug)}`}
+                      className="group inline-flex items-center gap-3 text-black hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+                    >
+                      <span className="truncate">Next: {next.title}</span>
+                      <span aria-hidden>→</span>
+                    </Link>
+                  )}
+                </div>
+              </nav>
+            )}
+
+            {/* Suggested (exactly 3) */}
             {suggestions.length > 0 && (
               <section aria-labelledby="suggested-heading" className="pb-16">
                 <h2 id="suggested-heading" className="sr-only">
@@ -176,12 +236,11 @@ export default async function BlogDetailPage({
                         thumbnail={b.thumbnail}
                         createdAt={b.createdAt}
                         variant="showcase"
-                        // gray out tags not present on the current post
-                        grayTags={
-                          ["IT Consulting","Engineering","Branding","Design","Other"].filter(
-                            (t) => !post.tags.map((x) => x.toLowerCase()).includes(t.toLowerCase())
-                          )
-                        }
+                        // grey-out tags not on the current post
+                        grayTags={ALL_TAGS.filter(
+                          (t) =>
+                            !post.tags.map((x) => x.toLowerCase()).includes(t.toLowerCase())
+                        )}
                         fromSlug={post.slug}
                       />
                     </li>

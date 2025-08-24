@@ -14,30 +14,32 @@ function formatDateDotYYYYMMDD(d: string) {
 }
 
 export default async function LatestBlogShowcase() {
-  // ABSOLUTE URL (works during prerender/ISR)
-  const res = await fetch(absoluteUrl("/api/blogs?limit=3&page=1"), {
-    next: { revalidate: 60 },
-  });
-  if (!res.ok) return null;
+  try {
+    const api = absoluteUrl("/api/blogs?limit=3&page=1");
+    const res = await fetch(api, { next: { revalidate: 60 } });
+    if (!res.ok) return null;
 
-  const data = (await res.json()) as {
-    items: Array<{ slug: string; title: string; thumbnail: string; createdAt: string; tags?: string[] }>;
-  };
+    const data = (await res.json()) as {
+      items: Array<{ slug: string; title: string; thumbnail: string; createdAt: string; tags?: string[] }>;
+    };
 
-  const items = data.items ?? [];
+    const items = data.items ?? [];
 
-  const posts: Teaser[] = items.map((p) => ({
-    slug: p.slug,
-    title: p.title,
-    thumbnail: p.thumbnail,
-    createdAt: p.createdAt,
-  }));
+    const posts: Teaser[] = items.map((p) => ({
+      slug: p.slug,
+      title: p.title,
+      thumbnail: p.thumbnail,
+      createdAt: p.createdAt,
+    }));
 
-  const displayDates = items.map((p) => formatDateDotYYYYMMDD(p.createdAt));
-  const graySets = items.map((p) => {
-    const active = (p.tags ?? []).map((t) => t.toLowerCase());
-    return FIXED_TAGS.filter((t) => !active.includes(t.toLowerCase()));
-  });
+    const displayDates = items.map((p) => formatDateDotYYYYMMDD(p.createdAt));
+    const graySets = items.map((p) => {
+      const active = (p.tags ?? []).map((t) => t.toLowerCase());
+      return FIXED_TAGS.filter((t) => !active.includes(t.toLowerCase()));
+    });
 
-  return <BlogSection posts={posts} displayDates={displayDates} graySets={graySets} />;
+    return <BlogSection posts={posts} displayDates={displayDates} graySets={graySets} />;
+  } catch {
+    return null; // fail-quietly on build/ISR
+  }
 }

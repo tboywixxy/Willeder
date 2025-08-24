@@ -1,15 +1,17 @@
+// src/app/api/blogs/[slug]/route.ts
 import { NextResponse } from "next/server";
 import type { Blog } from "../route";
 
 export const runtime = "nodejs";
-export const revalidate = 60;
+export const revalidate = 60; // ISR
 
-const JSON_SERVER_URL = process.env.JSON_SERVER_URL;
+const JSON_SERVER_URL = process.env.JSON_SERVER_URL; // dev ONLY
 
 function normalize(s: string) {
   return s.trim().toLowerCase();
 }
 
+/** Ensure 600+ chars and includes <h2>, <p>, <img> */
 function ensureContent(post: Blog): Blog {
   if (
     post.content &&
@@ -39,12 +41,14 @@ async function fetchAllFromDev(): Promise<Blog[]> {
 }
 
 async function fetchBySlugDev(rawSlug: string): Promise<Blog | null> {
+  // 1) exact via query param (fast path)
   const q = encodeURIComponent(rawSlug);
   const r = await fetch(`${JSON_SERVER_URL}/blogs?slug=${q}`, { cache: "no-store" });
   if (r.ok) {
     const arr = (await r.json()) as Blog[];
     if (arr[0]) return arr[0];
   }
+  // 2) case-insensitive fallback over all
   const all = await fetchAllFromDev();
   const want = normalize(rawSlug);
   return all.find((b) => normalize(b.slug) === want) ?? null;
@@ -64,6 +68,7 @@ export async function GET(req: Request) {
     const { pathname } = new URL(req.url);
     const parts = pathname.split("/");
     const rawSlug = decodeURIComponent(parts[parts.length - 1] || "").trim();
+
     if (!rawSlug) {
       return NextResponse.json({ error: "Bad request" }, { status: 400 });
     }

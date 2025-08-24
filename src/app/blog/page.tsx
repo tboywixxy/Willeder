@@ -1,7 +1,21 @@
 // app/blogs/page.tsx
+import type { Metadata } from "next";
 import { Suspense } from "react";
-import BlogIndexClient from "../blog/BlogIndexClient"; // reuse your client component
-export const metadata = { title: "Blogs" };
+import BlogIndexClient from "@/app/blog/BlogIndexClient"; // absolute alias
+
+export const metadata: Metadata = {
+  title: "Blogs",
+  description: "Browse all posts, filter by tags, and search titles.",
+  // relative canonical resolves against metadataBase in layout.tsx
+  alternates: { canonical: "/blogs" },
+  openGraph: { url: "/blogs", title: "Blogs" },
+  twitter: { card: "summary_large_image", title: "Blogs" },
+};
+
 export default function Page() {
-  return <Suspense fallback={<div className="py-24 text-center">Loading…</div>}><BlogIndexClient /></Suspense>;
+  return (
+    <Suspense fallback={<div className="py-24 text-center">Loading…</div>}>
+      <BlogIndexClient />
+    </Suspense>
+  );
 }

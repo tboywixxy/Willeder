@@ -1,14 +1,17 @@
+// src/app/blog/[slug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+
 import DetailFrame from "../../../../components/blogDetail/DetailFrame";
 import DetailBlocks from "../../../../components/blogDetail/DetailBlocks";
 import BlogCard from "../../../../components/BlogCard";
 import { jost, notoSansJp } from "@/app/fonts";
 import { absoluteUrl } from "@/lib/absolute-url";
 
-/* ---------------- types ---------------- */
+export const revalidate = 60; // page-level ISR
+
 type DetailImage = { src: string; alt?: string; caption?: string };
 type DetailPayload = {
   t1?: string; t2?: string; t5?: string; t6?: string; t7?: string; t8?: string;
@@ -32,85 +35,116 @@ type Blog = {
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 const CENTER_ICON_SRC = "/blog-list.png";
 
-/* ---------------- data helpers (server-safe absolute URLs) ---------------- */
+/* ---------------- data helpers ---------------- */
+
 async function getAll(limit = 9999): Promise<Blog[]> {
-  const r = await fetch(absoluteUrl(`/api/blogs?limit=${limit}&page=1`), {
-    next: { revalidate: 60, tags: ["blogs"] },
-  });
+  const api = absoluteUrl(`/api/blogs?limit=${limit}&page=1`);
+  const r = await fetch(api, { next: { revalidate } });
   if (!r.ok) return [];
   const data = await r.json();
   return (data.items as Blog[]) ?? [];
 }
 
 async function safeGetPost(slug: string): Promise<Blog | null> {
-  const r = await fetch(absoluteUrl(`/api/blogs/${encodeURIComponent(slug)}`), {
-    next: { revalidate: 60, tags: ["blogs"] },
-  });
+  const api = absoluteUrl(`/api/blogs/${encodeURIComponent(slug)}`);
+  const r = await fetch(api, { next: { revalidate } });
   if (r.ok) return (await r.json()) as Blog;
 
-  // fallback: search in memory list
   const all = await getAll(9999);
   const want = slug.trim().toLowerCase();
   return all.find((b) => b.slug.trim().toLowerCase() === want) ?? null;
 }
 
-/* ---------------- SEO (promise-style props) ---------------- */
+/* ---------------- SEO ---------------- */
 export async function generateMetadata(
-  props: { params: Promise<{ slug: string }> }
+  { params }: { params: { slug: string } }
 ): Promise<Metadata> {
-  const { slug } = await props.params;
-  const post = await safeGetPost(slug);
-  if (!post) return { title: "Blog post" };
+  try {
+    const post = await safeGetPost(params.slug);
+    if (!post) return { title: "Blog post" };
 
-  const vercel = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "";
-  const base = process.env.NEXT_PUBLIC_SITE_URL || vercel || "";
-  const url = base ? `${base}/blog/${encodeURIComponent(post.slug)}` : `/blog/${post.slug}`;
-  const title = post.title || "Blog post";
-  const description =
-    (post.content?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() || "").slice(0, 160) ||
-    "Blog post";
+    const url = absoluteUrl(`/blog/${encodeURIComponent(post.slug)}`);
+    const title = post.title || "Blog post";
+    const description =
+      (post.content?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() || "").slice(0, 160) ||
+      "Blog post";
+    const ogImage = post.thumbnail;
 
-  return {
-    title,
-    description,
-    alternates: base ? { canonical: url } : undefined,
-    openGraph: {
-      type: "article",
-      url: base ? url : undefined,
+    return {
       title,
       description,
-      images: [{ url: post.thumbnail }],
-      locale: "en_US",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [post.thumbnail],
-    },
-  };
+      alternates: { canonical: url },
+      openGraph: {
+        type: "article",
+        url,
+        title,
+        description,
+        images: [{ url: ogImage }],
+        locale: "en_US",
+      },
+      twitter: { card: "summary_large_image", title, description, images: [ogImage] },
+    };
+  } catch {
+    return { title: "Blog post" };
+  }
 }
 
-/* ---------------- small UI bits ---------------- */
-function ArrowIcon({ direction = "right", className = "" }: { direction?: "left" | "right"; className?: string }) {
+/* ---------------- JSON-LD ---------------- */
+function ArticleJsonLd({ post }: { post: Blog }) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    datePublished: post.createdAt,
+    dateModified: post.createdAt,
+    image: [post.thumbnail],
+    mainEntityOfPage: { "@type": "WebPage", "@id": `/blog/${post.slug}` },
+  };
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
+}
+
+/* ---------------- Arrow Icon ---------------- */
+function ArrowIcon({
+  direction = "right" as "left" | "right",
+  className = "",
+}: {
+  direction?: "left" | "right";
+  className?: string;
+}) {
   return (
     <svg
-      width="7.364" height="12.728" viewBox="0 0 7.364 12.728" fill="none"
+      width="7.3638"
+      height="12.728"
+      viewBox="0 0 7.3638 12.728"
+      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`shrink-0 ${direction === "left" ? "rotate-180" : ""} ${className}`}
       aria-hidden="true"
     >
       <polyline
-        points="1,1 6.364,6.364 1,11.728"
-        stroke="#AD002D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+        points="1,1 6.3638,6.364 1,11.728"
+        stroke="#AD002D"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
 }
 
-function PrevNext({ prev, next, currentSlug }: { prev?: Blog; next?: Blog; currentSlug: string }) {
+/* ---------------- Prev/Next ---------------- */
+function PrevNext({
+  prev,
+  next,
+  currentSlug,
+}: {
+  prev?: Blog;
+  next?: Blog;
+  currentSlug: string;
+}) {
   if (!prev && !next) return null;
   const textCls = `${jost.className} font-medium text-[14px] sm:text-[16px] leading-[150%] tracking-[0.05em] text-center`;
+
   return (
     <nav className="w-full flex justify-center" aria-label="Blog navigation">
       <div className="flex items-center justify-center gap-[10px] min-h-8">
@@ -152,6 +186,7 @@ function PrevNext({ prev, next, currentSlug }: { prev?: Blog; next?: Blog; curre
   );
 }
 
+/* ---------------- Suggested ---------------- */
 function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string }) {
   if (!posts.length) return null;
 
@@ -160,12 +195,14 @@ function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string 
 
   return (
     <section className="w-full">
+      {/* Outer max shell */}
       <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 md:px-20 pt-12 md:pt-16 pb-16 md:pb-24 space-y-8">
-        <div className="mx-auto w-full max-w-[1280px]">
+        {/* Inner container that matches white card width at each breakpoint */}
+        <div className="mx-auto w-full max-w-[343px] min-[600px]:max-w-[720px] min-[1024px]:max-w-[1280px]">
           <h2 className={headingCls}>Suggested posts</h2>
         </div>
 
-        <div className="mx-auto w-full max-w-[1280px]">
+        <div className="mx-auto w-full max-w-[343px] min-[600px]:max-w-[720px] min-[1024px]:max-w-[1280px]">
           <ul
             className="
               grid grid-cols-1
@@ -175,20 +212,24 @@ function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string 
               items-stretch
             "
           >
-            {posts.slice(0, 3).map((b) => (
-              <BlogCard
-                key={b.slug}
-                slug={b.slug}
-                title={b.title}
-                thumbnail={b.thumbnail}
-                createdAt={b.createdAt}
-                variant="showcase"
-                grayTags={["IT Consulting","Engineering","Branding","Design","Other"].filter(
-                  (t) => !b.tags.some((x) => x.toLowerCase() === t.toLowerCase())
-                )}
-                fromSlug={currentSlug}
-              />
-            ))}
+            {posts.slice(0, 3).map((b) => {
+              const grayTags = FIXED_TAGS.filter(
+                (t) => !b.tags.some((x) => x.toLowerCase() === t.toLowerCase())
+              );
+              return (
+                <BlogCard
+                  key={b.slug}
+                  slug={b.slug}
+                  title={b.title}
+                  thumbnail={b.thumbnail}
+                  createdAt={b.createdAt}
+                  variant="showcase"
+                  grayTags={grayTags}
+                  fromSlug={currentSlug}
+                />
+              );
+            })}
+
             {posts[3] && (
               <BlogCard
                 key={`extra-${posts[3].slug}`}
@@ -197,7 +238,7 @@ function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string 
                 thumbnail={posts[3].thumbnail}
                 createdAt={posts[3].createdAt}
                 variant="showcase"
-                grayTags={["IT Consulting","Engineering","Branding","Design","Other"].filter(
+                grayTags={FIXED_TAGS.filter(
                   (t) => !posts[3].tags.some((x) => x.toLowerCase() === t.toLowerCase())
                 )}
                 fromSlug={currentSlug}
@@ -221,19 +262,19 @@ function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string 
   );
 }
 
-/* ---------------- Page (promise-style props) ---------------- */
+/* ---------------- Page ---------------- */
 export default async function BlogDetailPage(
-  props: { params: Promise<{ slug: string }>; searchParams?: Promise<{ from?: string }> }
+  { params, searchParams }: { params: { slug: string }; searchParams?: { from?: string } }
 ) {
-  const { slug } = await props.params;
-  const { from: fromSlug } = (props.searchParams ? await props.searchParams : {}) ?? {};
+  const { slug } = params;
+  const fromSlug = searchParams?.from;
 
   const post = await safeGetPost(slug);
   if (!post) return notFound();
 
   const all = await getAll(9999);
 
-  // Suggestions
+  // Build up to 4 suggestions to support 2×2 at 600–1024px
   const tagSet = new Set(post.tags);
   const isEligible = (b: Blog) => b.slug !== post.slug;
   const overlapsTag = (b: Blog) => b.tags.some((t) => tagSet.has(t));
@@ -250,6 +291,9 @@ export default async function BlogDetailPage(
   }
   const suggestions = related.slice(0, 4);
 
+  const nextTarget = suggestions[0];
+  const prevTarget = fromSlug ? all.find((b) => b.slug === fromSlug) : undefined;
+
   const d = post.detail || {};
   const img1 = d.img1?.src || post.thumbnail;
   const img2 = d.img2?.src || post.thumbnail;
@@ -257,6 +301,9 @@ export default async function BlogDetailPage(
 
   return (
     <div className="bg-[#F1F2F4]">
+      <ArticleJsonLd post={post} />
+
+      {/* Outer wrapper */}
       <section className="pt-8 sm:pt-10 md:pt-16">
         <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 md:px-20">
           <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-[48px] sm:gap-[56px] md:gap-[64px]">
@@ -270,12 +317,9 @@ export default async function BlogDetailPage(
               <DetailBlocks img1={img1} img2={img2} img3={img3} detail={d} />
             </DetailFrame>
 
+            {/* Prev/Next centered and OUTSIDE white card */}
             <div className="flex justify-center">
-              <PrevNext
-                prev={fromSlug ? all.find((b) => b.slug === fromSlug) : undefined}
-                next={suggestions[0]}
-                currentSlug={post.slug}
-              />
+              <PrevNext prev={prevTarget} next={nextTarget} currentSlug={post.slug} />
             </div>
           </div>
         </div>

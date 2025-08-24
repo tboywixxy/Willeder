@@ -1,7 +1,8 @@
+// src/app/api/blogs/route.ts
 import { NextResponse } from "next/server";
 
-export const runtime = "nodejs";
-export const revalidate = 60; // ISR for this route
+export const runtime = "nodejs";     // needed for Node on Vercel
+export const revalidate = 60;        // ISR for 60s
 
 type DetailImage = { src: string; alt?: string; caption?: string };
 type DetailPayload = {
@@ -19,26 +20,26 @@ export type Blog = {
   thumbnail: string;
   tags: string[];
   createdAt: string;
-  content?: string;
-  detail?: DetailPayload;
+  content?: string;       // ensured below
+  detail?: DetailPayload; // optional, for your 15-block layout
 };
 
-const JSON_SERVER_URL = process.env.JSON_SERVER_URL;
+const JSON_SERVER_URL = process.env.JSON_SERVER_URL; // e.g. http://localhost:3001 (dev ONLY)
 
 async function fetchAllBlogs(): Promise<Blog[]> {
   if (JSON_SERVER_URL) {
-    // dev-only source (local JSON Server)
+    // dev: pull from json-server
     const r = await fetch(`${JSON_SERVER_URL}/blogs`, { cache: "no-store" });
     if (!r.ok) throw new Error(`JSON Server fetch failed: ${r.status}`);
     return r.json();
   } else {
-    // prod fallback: in-repo dataset
+    // prod: local data file
     const { blogPosts } = await import("../../lib/server/blogData");
     return blogPosts as Blog[];
   }
 }
 
-/** Ensure content has 600+ chars & includes <h2>, <p>, <img> */
+/** Ensure 600+ chars and includes <h2>, <p>, <img> */
 function ensureContent(post: Blog): Blog {
   if (
     post.content &&
@@ -90,9 +91,11 @@ function matchQuery(post: Blog, q: string): boolean {
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
-    const page = Math.max(1, parseInt(url.searchParams.get("page") || "1", 10));
+    const page  = Math.max(1, parseInt(url.searchParams.get("page")  || "1", 10));
     const limit = Math.max(1, parseInt(url.searchParams.get("limit") || "9", 10));
     const q = url.searchParams.get("q")?.trim() || "";
+
+    // tag can be "Design" or "Design,Branding" — OR filter
     const tagParam = url.searchParams.get("tag")?.trim() || "";
     const tagsWanted = tagParam
       ? tagParam.split(",").map((s) => s.trim()).filter(Boolean)

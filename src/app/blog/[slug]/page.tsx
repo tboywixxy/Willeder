@@ -3,13 +3,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-
 import DetailFrame from "@/components/blogDetail/DetailFrame";
 import DetailBlocks from "@/components/blogDetail/DetailBlocks";
 import BlogCard from "@/components/BlogCard";
 import { jost, notoSansJp } from "@/app/fonts";
 import { absoluteUrl } from "@/lib/absolute-url";
 
+/* ---------------- Types ---------------- */
 type DetailImage = { src: string; alt?: string; caption?: string };
 type DetailPayload = {
   t1?: string; t2?: string; t5?: string; t6?: string; t7?: string; t8?: string;
@@ -18,7 +18,6 @@ type DetailPayload = {
   callout?: string;
   img1?: DetailImage; img2?: DetailImage; img3?: DetailImage;
 };
-
 type Blog = {
   id: string | number;
   slug: string;
@@ -30,12 +29,9 @@ type Blog = {
   detail?: DetailPayload;
 };
 
-const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
-const CENTER_ICON_SRC = "/blog-list.png";
+export const revalidate = 60; // ISR like the list
 
-export const revalidate = 60; // ISR
-
-/* ---------------- data helpers (use API so dev/prod switches automatically) ---------------- */
+/* ---------------- Data helpers (always go through API so dev=JSON, prod=file) ---------------- */
 async function getAll(limit = 9999): Promise<Blog[]> {
   const api = absoluteUrl(`/api/blogs?limit=${limit}&page=1`);
   const r = await fetch(api, { next: { revalidate: 60 } });
@@ -45,11 +41,12 @@ async function getAll(limit = 9999): Promise<Blog[]> {
 }
 
 async function safeGetPost(slug: string): Promise<Blog | null> {
+  // fast path via direct /api/blogs/[slug]
   const api = absoluteUrl(`/api/blogs/${encodeURIComponent(slug)}`);
   const r = await fetch(api, { next: { revalidate: 60 } });
   if (r.ok) return (await r.json()) as Blog;
 
-  // fallback (case-insensitive) if the slug route returns 404
+  // fallback: scan list
   const all = await getAll(9999);
   const want = slug.trim().toLowerCase();
   return all.find((b) => b.slug.trim().toLowerCase() === want) ?? null;
@@ -57,26 +54,29 @@ async function safeGetPost(slug: string): Promise<Blog | null> {
 
 /* ---------------- SEO ---------------- */
 export async function generateMetadata(
-  { params }: { params: Promise<{ slug: string }> } // <- Promise in your Next types
+  { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await params;
-  const post = await safeGetPost(slug);
-  if (!post) return { title: "Blog post" };
+  try {
+    const post = await safeGetPost(slug);
+    if (!post) return { title: "Blog post" };
 
-  const url = absoluteUrl(`/blog/${encodeURIComponent(post.slug)}`);
-  const title = post.title || "Blog post";
-  const description =
-    (post.content?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() || "").slice(0, 160) ||
-    "Blog post";
-  const ogImage = post.thumbnail;
+    const url = absoluteUrl(`/blog/${encodeURIComponent(post.slug)}`);
+    const title = post.title || "Blog post";
+    const description =
+      (post.content?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() || "").slice(0, 160) ||
+      "Blog post";
 
-  return {
-    title,
-    description,
-    alternates: { canonical: url },
-    openGraph: { type: "article", url, title, description, images: [{ url: ogImage }], locale: "en_US" },
-    twitter: { card: "summary_large_image", title, description, images: [ogImage] },
-  };
+    return {
+      title,
+      description,
+      alternates: { canonical: url },
+      openGraph: { type: "article", url, title, description, images: [{ url: post.thumbnail }], locale: "en_US" },
+      twitter: { card: "summary_large_image", title, description, images: [post.thumbnail] },
+    };
+  } catch {
+    return { title: "Blog post" };
+  }
 }
 
 /* ---------------- Arrow Icon ---------------- */
@@ -141,7 +141,7 @@ function PrevNext({
         )}
 
         <span className="inline-flex items-center justify-center w-8 h-8 p-1">
-          <Image src={CENTER_ICON_SRC} alt="" width={32} height={32} className="w-8 h-8" />
+          <Image src="/blog-list.png" alt="" width={32} height={32} className="w-8 h-8" />
         </span>
 
         {next ? (
@@ -164,6 +164,8 @@ function PrevNext({
 }
 
 /* ---------------- Suggested ---------------- */
+const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
+
 function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string }) {
   if (!posts.length) return null;
 
@@ -204,27 +206,11 @@ function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string 
                 />
               );
             })}
-
-            {posts[3] && (
-              <BlogCard
-                key={`extra-${posts[3].slug}`}
-                slug={posts[3].slug}
-                title={posts[3].title}
-                thumbnail={posts[3].thumbnail}
-                createdAt={posts[3].createdAt}
-                variant="showcase"
-                grayTags={FIXED_TAGS.filter(
-                  (t) => !posts[3].tags.some((x) => x.toLowerCase() === t.toLowerCase())
-                )}
-                fromSlug={currentSlug}
-                className="hidden min-[600px]:block min-[1024px]:hidden"
-              />
-            )}
           </ul>
 
           <div className="mt-6 sm:mt-8 w-full flex justify-end">
             <Link
-              href="/blog"
+              href="/blogs"
               className="inline-flex items-center gap-2 text-black hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
             >
               <span className={seeMoreTextCls}>See more</span>
@@ -239,18 +225,23 @@ function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string 
 
 /* ---------------- Page ---------------- */
 export default async function BlogDetailPage(
-  // In your project types, BOTH are Promises:
-  { params, searchParams }: { params: Promise<{ slug: string }>; searchParams?: Promise<{ from?: string }> }
+  {
+    params,
+    searchParams,
+  }: {
+    params: Promise<{ slug: string }>;
+    searchParams?: { from?: string };
+  }
 ) {
   const { slug } = await params;
-  const fromSlug = (await searchParams)?.from;
+  const fromSlug = searchParams?.from;
 
   const post = await safeGetPost(slug);
   if (!post) return notFound();
 
   const all = await getAll(9999);
 
-  // build up to 4 suggestions to support 2×2 at 600–1024px
+  // build up to 4 suggestions (match your previous logic)
   const tagSet = new Set(post.tags);
   const isEligible = (b: Blog) => b.slug !== post.slug;
   const overlapsTag = (b: Blog) => b.tags.some((t) => tagSet.has(t));

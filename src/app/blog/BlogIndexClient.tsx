@@ -3,8 +3,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import BlogTopBar from "../../../components/blogs/BlogTopBar";
-import BlogList from "../../../components/blogs/BlogList";
+import BlogTopBar from "../../components/blogs/BlogTopBar";
+import BlogList from "../../components/blogs/BlogList";
 
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 const PAGE_SIZE = 9;

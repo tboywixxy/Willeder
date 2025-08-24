@@ -13,14 +13,12 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "baseUrl": ".",                        // ✅ REQUIRED for "paths" to work
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*", "./*"],         // ✅ works if files are in /src or project root
+      "@/app/*": ["./src/app/*"]              // optional, makes "@/app/..." legal
+    },
+    "plugins": [{ "name": "next" }]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

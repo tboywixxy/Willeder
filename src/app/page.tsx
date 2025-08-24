@@ -1,8 +1,8 @@
 // src/app/page.tsx
-import Hero from "../../components/Hero";
-import ServiceSection from "../../components/ServiceSection";
-import StanSection from "../../components/StanSection";
-import LatestBlogShowcase from "../../components/LatestBlogShowcase";
+import Hero from "../components/Hero";
+import ServiceSection from "../components/ServiceSection";
+import StanSection from "../components/StanSection";
+import LatestBlogShowcase from "../components/LatestBlogShowcase";
 import { MOCK_BLOGS } from "../../lib/mockBlogs";
 
 // Make the homepage fully static for faster TTFB and stable LCP

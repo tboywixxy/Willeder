@@ -1,11 +1,10 @@
 // src/app/blog/[slug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+
 import DetailFrame from "@/components/blogDetail/DetailFrame";
 import DetailBlocks from "@/components/blogDetail/DetailBlocks";
 import { absoluteUrl } from "@/lib/absolute-url";
-// ✳️ Make sure this casing matches the actual filename (blogdata.ts vs blogData.ts)
-import { blogPosts } from "@/app/lib/server/blogData";
 
 type DetailImage = { src: string; alt?: string; caption?: string };
 type DetailPayload = {
@@ -15,6 +14,7 @@ type DetailPayload = {
   callout?: string;
   img1?: DetailImage; img2?: DetailImage; img3?: DetailImage;
 };
+
 type Blog = {
   id: string | number;
   slug: string;
@@ -26,19 +26,29 @@ type Blog = {
   detail?: DetailPayload;
 };
 
-export const revalidate = 60;
+export const revalidate = 60; // ISR
 
-// ---- local data helpers ----
-async function getAll(): Promise<Blog[]> {
-  return blogPosts as unknown as Blog[];
+/* ---------------- data helpers (use API so dev/prod switches automatically) ---------------- */
+async function getAll(limit = 9999): Promise<Blog[]> {
+  const api = absoluteUrl(`/api/blogs?limit=${limit}&page=1`);
+  const r = await fetch(api, { next: { revalidate: 60 } });
+  if (!r.ok) return [];
+  const data = await r.json();
+  return (data.items as Blog[]) ?? [];
 }
+
 async function safeGetPost(slug: string): Promise<Blog | null> {
-  const all = await getAll();
+  const api = absoluteUrl(`/api/blogs/${encodeURIComponent(slug)}`);
+  const r = await fetch(api, { next: { revalidate: 60 } });
+  if (r.ok) return (await r.json()) as Blog;
+
+  // fallback (case-insensitive) if the slug route returns 404
+  const all = await getAll(9999);
   const want = slug.trim().toLowerCase();
   return all.find((b) => b.slug.trim().toLowerCase() === want) ?? null;
 }
 
-// ---- SEO (params is a Promise in your setup) ----
+/* ---------------- SEO ---------------- */
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
@@ -51,38 +61,24 @@ export async function generateMetadata(
   const description =
     (post.content?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() || "").slice(0, 160) ||
     "Blog post";
+  const ogImage = post.thumbnail;
 
   return {
     title,
     description,
     alternates: { canonical: url },
-    openGraph: { type: "article", url, title, description, images: [{ url: post.thumbnail }], locale: "en_US" },
-    twitter: { card: "summary_large_image", title, description, images: [post.thumbnail] },
+    openGraph: { type: "article", url, title, description, images: [{ url: ogImage }], locale: "en_US" },
+    twitter: { card: "summary_large_image", title, description, images: [ogImage] },
   };
 }
 
-// ---- Page (BOTH params and searchParams are Promises) ----
+/* ---------------- Page ---------------- */
 export default async function BlogDetailPage(
-  { params, searchParams }: { params: Promise<{ slug: string }>; searchParams?: Promise<{ from?: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  const fromSlug = (await searchParams)?.from;
-
   const post = await safeGetPost(slug);
   if (!post) return notFound();
-
-  const all = await getAll();
-
-  // (optional) related suggestions
-  const tagSet = new Set(post.tags);
-  const isEligible = (b: Blog) => b.slug !== post.slug;
-  const overlapsTag = (b: Blog) => b.tags.some((t) => tagSet.has(t));
-  let related = all.filter((b) => isEligible(b) && b.slug !== fromSlug && overlapsTag(b));
-  if (related.length < 4) {
-    const fillers = all.filter((b) => isEligible(b) && b.slug !== fromSlug && !overlapsTag(b));
-    related = [...related, ...fillers];
-  }
-  const suggestions = related.slice(0, 4); // eslint may warn if unused — safe to remove if you’re not rendering
 
   const d = post.detail || {};
   const img1 = d.img1?.src || post.thumbnail;

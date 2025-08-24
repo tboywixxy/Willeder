@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
+import { blogPosts } from "@/app/lib/server/blogData"; // ✅ static prod data
 
-export const runtime = "nodejs";     // Node runtime (needed for Vercel Node functions)
-export const revalidate = 60;        // ISR for 60s
+export const runtime = "nodejs";
+export const revalidate = 60;
+export const dynamic = "force-dynamic";
+
+const JSON_SERVER_URL = process.env.JSON_SERVER_URL || "";
 
 type DetailImage = { src: string; alt?: string; caption?: string };
 type DetailPayload = {
@@ -13,30 +17,25 @@ type DetailPayload = {
 };
 
 export type Blog = {
-  id: string | number;          // union to allow either
+  id: string;
   slug: string;
   title: string;
   thumbnail: string;
   tags: string[];
   createdAt: string;
-  content?: string;             // ensured below
-  detail?: DetailPayload;       // optional, for the 15-block layout
+  content?: string;
+  detail?: DetailPayload;
 };
 
-const JSON_SERVER_URL = process.env.JSON_SERVER_URL; // e.g. http://localhost:3001 (dev ONLY)
+// ---------- helpers ----------
+async function fetchAllBlogsDev(): Promise<Blog[]> {
+  const r = await fetch(`${JSON_SERVER_URL}/blogs`, { cache: "no-store" });
+  if (!r.ok) throw new Error(`JSON Server fetch failed: ${r.status}`);
+  return (await r.json()) as Blog[];
+}
 
-/* ---------------- data source switch (dev → JSON Server, prod → local file) ---------------- */
-async function fetchAllBlogs(): Promise<Blog[]> {
-  if (JSON_SERVER_URL) {
-    // dev: pull from json-server (no-store so client changes are seen immediately)
-    const r = await fetch(`${JSON_SERVER_URL}/blogs`, { cache: "no-store" });
-    if (!r.ok) throw new Error(`JSON Server fetch failed: ${r.status}`);
-    return (await r.json()) as Blog[];
-  } else {
-    // prod: local data file; keep path/case exact
-    const { blogPosts } = await import("@/app/lib/server/blogData");
-    return blogPosts as Blog[];
-  }
+async function fetchAllBlogsProd(): Promise<Blog[]> {
+  return blogPosts as Blog[];
 }
 
 /** Ensure 600+ chars and includes <h2>, <p>, <img> */
@@ -63,16 +62,14 @@ function ensureContent(post: Blog): Blog {
     `<p>${text(d.t12d, d.t15a, d.t15b, d.t15c)}</p>` +
     `<img src="${d.img3?.src || post.thumbnail}" alt="${d.img3?.alt || ""}" />`;
 
-  const pad = (s: string) =>
-    s.length >= 600 ? s : s + `<p>${"&nbsp;".repeat(620 - s.length)}</p>`;
-
+  const pad = (s: string) => (s.length >= 600 ? s : s + `<p>${"&nbsp;".repeat(620 - s.length)}</p>`);
   return { ...post, content: pad(html) };
 }
 
 function matchTags(post: Blog, wanted: string[]): boolean {
   if (wanted.length === 0) return true;
-  const lower = post.tags.map((t) => t.toLowerCase());
-  return wanted.some((w) => lower.includes(w.toLowerCase()));
+  const lower = post.tags.map(t => t.toLowerCase());
+  return wanted.some(w => lower.includes(w.toLowerCase()));
 }
 
 function matchQuery(post: Blog, q: string): boolean {
@@ -82,12 +79,11 @@ function matchQuery(post: Blog, q: string): boolean {
     post.title,
     ...(post.tags || []),
     post.content ? post.content.replace(/<[^>]+>/g, " ") : "",
-  ]
-    .join(" ")
-    .toLowerCase();
+  ].join(" ").toLowerCase();
   return hay.includes(needle);
 }
 
+// ---------- GET ----------
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
@@ -96,25 +92,22 @@ export async function GET(req: Request) {
     const q = url.searchParams.get("q")?.trim() || "";
 
     // tag can be "Design" or "Design,Branding" — OR filter
-    const tagParam = url.searchParams.get("tag")?.trim() || "";
-    const tagsWanted = tagParam ? tagParam.split(",").map((s) => s.trim()).filter(Boolean) : [];
+    const tagsWanted = (url.searchParams.get("tag")?.trim() || "")
+      .split(",")
+      .map(s => s.trim())
+      .filter(Boolean);
 
-    const allRaw = await fetchAllBlogs();
+    const allRaw = JSON_SERVER_URL ? await fetchAllBlogsDev() : await fetchAllBlogsProd();
     const all = allRaw.map(ensureContent);
 
     const filtered = all
-      .filter((b) => matchTags(b, tagsWanted) && matchQuery(b, q))
-      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)); // newest first
+      .filter(b => matchTags(b, tagsWanted) && matchQuery(b, q))
+      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 
     const start = (page - 1) * limit;
     const items = filtered.slice(start, start + limit);
 
-    return NextResponse.json({
-      items,
-      page,
-      limit,
-      total: filtered.length,
-    });
+    return NextResponse.json({ items, page, limit, total: filtered.length });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

@@ -136,7 +136,6 @@ export default function DetailFrame({
           </div>
         </div>
 
-        {/* BODY CONTENT — padded again; mobile vertical padding per your spec */}
         <div
           className={`
             ${sidePad}

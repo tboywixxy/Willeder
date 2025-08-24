@@ -3,42 +3,37 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { notoSansJp } from "@/app/fonts";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const headerRef = useRef<HTMLElement | null>(null);
 
-  // Close menu when viewport crosses >= 600px (CSS also hides it, this just resets state)
+  // Auto-close the menu when viewport crosses ≥ 600px
   useEffect(() => {
     const mql = window.matchMedia("(min-width: 600px)");
-    const handler = (e: MediaQueryListEvent) => {
-      if (e.matches) setOpen(false);
-    };
+    const handler = (e: MediaQueryListEvent) => e.matches && setOpen(false);
     mql.addEventListener("change", handler);
     return () => mql.removeEventListener("change", handler);
   }, []);
 
-  // Close on scroll, outside click, or Esc; lock body scroll while open
+  // Close on outside click / Escape; lock body scroll while open
   useEffect(() => {
     if (!open) return;
-    const onScroll = () => setOpen(false);
     const onPointerDown = (e: PointerEvent) => {
       const t = e.target as Node | null;
       const el = headerRef.current;
       if (el && t && el.contains(t)) return;
       setOpen(false);
     };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    document.addEventListener("pointerdown", onPointerDown);
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+
+    document.addEventListener("pointerdown", onPointerDown, { passive: true });
     document.addEventListener("keydown", onKey);
 
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
-      window.removeEventListener("scroll", onScroll);
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
@@ -46,18 +41,15 @@ export default function Header() {
   }, [open]);
 
   const BASE = 1440;
-  const headerHClamp = "clamp(48px,calc(100vw/1440*64),64px)";
   const navText =
-    `font-sans font-bold ` +
-    `text-[clamp(14px,calc(100vw/${BASE}*16),16px)] ` +
-    `leading-[1.5] tracking-[0.05em] align-middle`;
-  const mobileCtaText =
-    `font-sans font-bold text-[clamp(18px,calc(100vw/${BASE}*24),24px)] leading-[1.5] tracking-[0.05em]`;
+    `${notoSansJp.className} font-bold ` +
+    `text-[clamp(14px,calc(100vw/${BASE}*16),16px)] leading-[1.5] tracking-[0.05em] align-middle`;
+
+  const headerHClamp = "clamp(48px,calc(100vw/1440*64),64px)";
 
   return (
-    <header ref={headerRef} className="sticky top-0 z-50 overflow-x-clip">
-      <div className="relative mx-auto w-full max-w-[1440px] bg-white border-b">
-        {/* Frame */}
+    <header ref={headerRef} className="sticky top-0 z-50 bg-white border-b">
+      <div className="mx-auto w-full max-w-[1440px]">
         <div
           className="
             flex items-stretch justify-between
@@ -79,10 +71,8 @@ export default function Header() {
                 alt="Willeder logo"
                 width={176}
                 height={40}
-                sizes="(max-width:600px) 128px, 176px"
-                decoding="async"
-                priority={false}
-                style={{ display: "block", contain: "size layout" }}
+                priority
+                sizes="(min-width:600px) 176px, 128px"
               />
             </Link>
           </div>
@@ -94,43 +84,28 @@ export default function Header() {
               <nav
                 className="
                   flex items-center h-[clamp(48px,calc(100vw/1440*64),64px)]
-                  whitespace-nowrap shrink-0
-                  min-[600px]:mr-8 min-[768px]:mr-[96px]
+                  whitespace-nowrap shrink-0 min-[600px]:mr-8 min-[768px]:mr-[96px]
                 "
                 aria-label="Primary"
               >
                 <div className="flex items-center gap-[96px]">
-                  <Link
-                    href="/"
-                    prefetch={false}
-                    className={`${navText} text-[#AD002D] hover:underline`}
-                  >
-                    Home
-                  </Link>
-                  <Link
-                    href="/blog"
-                    prefetch={false}
-                    className={`${navText} text-black hover:underline`}
-                  >
-                    Blogs
-                  </Link>
+                  <Link href="/" prefetch={false} className={`${navText} text-[#AD002D] hover:underline`}>Home</Link>
+                  <Link href="/blog" prefetch={false} className={`${navText} text-black hover:underline`}>Blogs</Link>
                 </div>
               </nav>
 
               {/* Contact (desktop) */}
               <div
                 className="
-                  hidden min-[600px]:flex shrink-0
-                  w-[198px]
+                  hidden min-[600px]:flex shrink-0 w-[198px]
                   h-[clamp(48px,calc(100vw/1440*64),64px)]
-                  pt-2 pr-4 pb-2 pl-8 gap-4
-                  bg-black
+                  pt-2 pr-4 pb-2 pl-8 gap-4 bg-black
                 "
               >
                 <Link
                   href="/contact"
                   prefetch={false}
-                  className={`group flex h-full w-full items-center justify-center gap-3 text-white ${navText} transition-colors duration-200 hover:bg-[#1a1a1a]`}
+                  className={`group flex h-full w-full items-center justify-center gap-3 text-white ${navText}`}
                 >
                   <span>Contact</span>
                   <span className="relative block w-[34px] h-[24px]">
@@ -138,10 +113,9 @@ export default function Header() {
                       src="/images/services/arrow 2.png"
                       alt=""
                       fill
-                      className="object-contain transition-transform duration-200 group-hover:translate-x-1"
+                      className="object-contain group-hover:translate-x-1 transition-transform duration-200"
                       sizes="34px"
-                      decoding="async"
-                      loading="lazy"
+                      priority={false}
                     />
                   </span>
                 </Link>
@@ -152,7 +126,7 @@ export default function Header() {
             <div className="ml-auto h-full min-[600px]:hidden flex items-center">
               <button
                 type="button"
-                onClick={() => setOpen((v) => !v)}
+                onClick={() => setOpen(v => !v)}
                 className="w-12 h-12 flex items-center justify-center"
                 aria-label={open ? "Close menu" : "Open menu"}
                 aria-expanded={open}
@@ -160,7 +134,7 @@ export default function Header() {
               >
                 <span className="sr-only">Menu</span>
                 <div className="relative h-5 w-6">
-                  {/* Top bar */}
+                  {/* top */}
                   <span
                     className={[
                       "absolute left-0 right-0 top-1/2 block h-0.5 bg-black transition-transform duration-200",
@@ -168,7 +142,7 @@ export default function Header() {
                     ].join(" ")}
                     style={{ transformOrigin: "50% 50%" }}
                   />
-                  {/* Bottom bar */}
+                  {/* bottom */}
                   <span
                     className={[
                       "absolute left-0 right-0 top-1/2 block h-0.5 bg-black transition-transform duration-200",
@@ -180,70 +154,51 @@ export default function Header() {
               </button>
             </div>
 
-            {/* Mobile menu (edge-to-edge, fixed) */}
-            {open && (
-              <div
-                id="mobile-menu"
-                className="
-                  fixed inset-x-0 min-[600px]:hidden
-                  bg-white text-black shadow-lg border-b
-                  z-[100] will-change-transform transition-transform duration-200
-                "
-                role="dialog"
-                aria-modal="true"
-                style={{ top: headerHClamp }}
-              >
-                <ul className="flex flex-col items-center justify-center text-center divide-y divide-black/10">
-                  <li className="w-full">
-                    <Link
-                      href="/"
-                      prefetch={false}
-                      className={`${navText} block px-4 py-3 text-black`}
-                      onClick={() => setOpen(false)}
-                    >
-                      Home
-                    </Link>
-                  </li>
-                  <li className="w-full">
-                    <Link
-                      href="/blog"
-                      prefetch={false}
-                      className={`${navText} block px-4 py-3 text-black`}
-                      onClick={() => setOpen(false)}
-                    >
-                      Blogs
-                    </Link>
-                  </li>
-                  <li className="w-full">
-                    {/* Contact CTA (mobile) */}
-                    <Link
-                      href="/contact"
-                      prefetch={false}
-                      onClick={() => setOpen(false)}
-                      className="
-                        group my-3 mx-4
-                        flex items-center justify-center gap-4 px-12 py-4
-                        bg-[#AD002D] text-white rounded-[16px]
-                        transition-colors duration-200 hover:bg-[#c51644]
-                      "
-                    >
-                      <span className={mobileCtaText}>Contact</span>
-                      <span className="relative block w-[21px] h-[24.25px] -top-[0.12px]">
-                        <Image
-                          src="/images/services/arrow 2.png"
-                          alt=""
-                          fill
-                          className="object-contain transition-transform duration-200 group-hover:translate-x-1"
-                          sizes="21px"
-                          decoding="async"
-                          loading="lazy"
-                        />
-                      </span>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            )}
+            {/* Mobile menu (fixed) */}
+            <div
+              id="mobile-menu"
+              className={[
+                "fixed inset-x-0 min-[600px]:hidden bg-white text-black shadow-lg border-b z-[100] will-change-transform",
+                open ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-2",
+                "transition-all duration-200",
+              ].join(" ")}
+              role="dialog"
+              aria-modal="true"
+              style={{ top: headerHClamp }}
+            >
+              <ul className="flex flex-col items-center justify-center text-center divide-y divide-black/10">
+                <li className="w-full">
+                  <Link href="/" prefetch={false} className={`${navText} block px-4 py-3 text-black`} onClick={() => setOpen(false)}>
+                    Home
+                  </Link>
+                </li>
+                <li className="w-full">
+                  <Link href="/blog" prefetch={false} className={`${navText} block px-4 py-3 text-black`} onClick={() => setOpen(false)}>
+                    Blogs
+                  </Link>
+                </li>
+                <li className="w-full">
+                  <Link
+                    href="/contact"
+                    prefetch={false}
+                    onClick={() => setOpen(false)}
+                    className="group my-3 mx-4 flex items-center justify-center gap-4 px-12 py-4 bg-[#AD002D] text-white rounded-[16px] hover:bg-[#c51644] transition-colors duration-200"
+                  >
+                    <span className={`${notoSansJp.className} font-bold text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1.5] tracking-[0.05em]`}>Contact</span>
+                    <span className="relative block w-[21px] h-[24.25px] -top-[0.12px]">
+                      <Image
+                        src="/images/services/arrow 2.png"
+                        alt=""
+                        fill
+                        className="object-contain group-hover:translate-x-1 transition-transform duration-200"
+                        sizes="21px"
+                        priority={false}
+                      />
+                    </span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

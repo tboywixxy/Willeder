@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import BlogIndexClient from "@/app/blog/BlogIndexClient"; // absolute alias
+import StanSection from "../../components/StanSection";
 
 export const metadata: Metadata = {
   title: "Blogs",
@@ -16,6 +17,7 @@ export default function Page() {
   return (
     <Suspense fallback={<div className="py-24 text-center">Loading…</div>}>
       <BlogIndexClient />
+      <StanSection />
     </Suspense>
   );
 }

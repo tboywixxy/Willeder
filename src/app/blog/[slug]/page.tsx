@@ -1,9 +1,11 @@
+// src/app/blog/[slug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import DetailFrame from "@/components/blogDetail/DetailFrame";
 import DetailBlocks from "@/components/blogDetail/DetailBlocks";
 import { absoluteUrl } from "@/lib/absolute-url";
-import { blogPosts } from "@/app/lib/server/blogData"; // match filename case exactly
+// ❗ Match the actual filename exactly: blogdata.ts vs blogData.ts
+import { blogPosts } from "@/app/lib/server/blogData";
 
 type DetailImage = { src: string; alt?: string; caption?: string };
 type DetailPayload = {
@@ -26,21 +28,22 @@ type Blog = {
 
 export const revalidate = 60;
 
-// ---- local data helpers (no fetch) ----
+// ---- local data helpers ----
 async function getAll(): Promise<Blog[]> {
   return blogPosts as unknown as Blog[];
 }
 async function safeGetPost(slug: string): Promise<Blog | null> {
   const all = await getAll();
   const want = slug.trim().toLowerCase();
-  return all.find(b => b.slug.trim().toLowerCase() === want) ?? null;
+  return all.find((b) => b.slug.trim().toLowerCase() === want) ?? null;
 }
 
 // ---- SEO ----
+// In your Next version, params is a Promise here.
 export async function generateMetadata(
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
-  const { slug } = params;                   // ✅ no await
+  const { slug } = await params;
   const post = await safeGetPost(slug);
   if (!post) return { title: "Blog post" };
 
@@ -54,23 +57,31 @@ export async function generateMetadata(
     title,
     description,
     alternates: { canonical: url },
-    openGraph: { type: "article", url, title, description, images: [{ url: post.thumbnail }], locale: "en_US" },
-    twitter: { card: "summary_large_image", title, description, images: [post.thumbnail] },
+    openGraph: {
+      type: "article",
+      url,
+      title,
+      description,
+      images: [{ url: post.thumbnail }],
+      locale: "en_US",
+    },
   };
 }
 
 // ---- Page ----
+// No PageProps import; type inline and await params.
 export default async function BlogDetailPage(
-  { params, searchParams }: { params: { slug: string }, searchParams?: { from?: string } }
+  { params, searchParams }: { params: Promise<{ slug: string }>; searchParams?: { from?: string } }
 ) {
-  const { slug } = params;                   // ✅ no await
-  const fromSlug = searchParams?.from;       // ✅ no await
+  const { slug } = await params;
+  const fromSlug = searchParams?.from;
 
   const post = await safeGetPost(slug);
   if (!post) return notFound();
 
   const all = await getAll();
 
+  // Related suggestions (optional)
   const tagSet = new Set(post.tags);
   const isEligible = (b: Blog) => b.slug !== post.slug;
   const overlapsTag = (b: Blog) => b.tags.some((t) => tagSet.has(t));
@@ -78,12 +89,6 @@ export default async function BlogDetailPage(
   if (related.length < 4) {
     const fillers = all.filter((b) => isEligible(b) && b.slug !== fromSlug && !overlapsTag(b));
     related = [...related, ...fillers];
-  }
-  if (related.length < 4 && fromSlug) {
-    const fromPost = all.find((b) => b.slug === fromSlug);
-    if (fromPost && !related.find((b) => b.slug === fromSlug) && isEligible(fromPost)) {
-      related.push(fromPost);
-    }
   }
   const suggestions = related.slice(0, 4);
 
@@ -94,7 +99,6 @@ export default async function BlogDetailPage(
 
   return (
     <div className="bg-[#F1F2F4]">
-      {/* JSON-LD omitted for brevity; keep your ArticleJsonLd */}
       <section className="pt-8 sm:pt-10 md:pt-16">
         <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 md:px-20">
           <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-[48px] sm:gap-[56px] md:gap-[64px]">
@@ -107,7 +111,6 @@ export default async function BlogDetailPage(
             >
               <DetailBlocks img1={img1} img2={img2} img3={img3} detail={d} />
             </DetailFrame>
-            {/* Prev/Next + Suggested (keep your components if you want) */}
           </div>
         </div>
       </section>

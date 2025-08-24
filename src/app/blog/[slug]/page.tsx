@@ -1,16 +1,16 @@
 // src/app/blog/[slug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
-
 import DetailFrame from "@/components/blogDetail/DetailFrame";
 import DetailBlocks from "@/components/blogDetail/DetailBlocks";
 import BlogCard from "@/components/BlogCard";
-import { jost, notoSansJp } from "@/app/fonts";
 import { absoluteUrl } from "@/lib/absolute-url";
+import { blogPosts } from "@/app/lib/server/blogData"; // fallback only
 
-/* ------------ Types (match your API shape) ------------ */
+export const revalidate = 60;
+// Force runtime rendering so Vercel doesn’t try to pre-generate unknown slugs
+export const dynamic = "force-dynamic";
+
 type DetailImage = { src: string; alt?: string; caption?: string };
 type DetailPayload = {
   t1?: string; t2?: string; t5?: string; t6?: string; t7?: string; t8?: string;
@@ -31,58 +31,72 @@ type Blog = {
   detail?: DetailPayload;
 };
 
-/* ------------ constants ------------ */
-export const revalidate = 60;
-const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
-const CENTER_ICON_SRC = "/blog-list.png";
+// --- helpers ---
+const normalize = (s: string) => s.trim().toLowerCase();
 
-/* ------------ data helpers (call your API so dev/prod both work) ------------ */
-async function getAll(limit = 9999): Promise<Blog[]> {
-  const api = absoluteUrl(`/api/blogs?limit=${limit}&page=1`);
-  const r = await fetch(api, { next: { revalidate: 60 } });
-  if (!r.ok) return [];
-  const data = await r.json();
-  return (data.items as Blog[]) ?? [];
+async function resolve<T>(v: T | Promise<T>): Promise<T> {
+  return Promise.resolve(v);
 }
 
-async function safeGetPost(slug: string): Promise<Blog | null> {
+async function getPostFromApi(slug: string): Promise<Blog | null> {
   const api = absoluteUrl(`/api/blogs/${encodeURIComponent(slug)}`);
-  const r = await fetch(api, { next: { revalidate: 60 } });
-  if (r.ok) return (await r.json()) as Blog;
-
-  // Final fallback: scan all
-  const all = await getAll(9999);
-  const want = slug.trim().toLowerCase();
-  return all.find((b) => b.slug.trim().toLowerCase() === want) ?? null;
+  try {
+    const r = await fetch(api, { cache: "no-store" });
+    if (!r.ok) return null;
+    return (await r.json()) as Blog;
+  } catch {
+    return null;
+  }
 }
 
-/* ------------ JSON-LD helper (SEO) ------------ */
-function ArticleJsonLd({ post }: { post: Blog }) {
-  const base =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
-
-  const data = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: post.title,
-    datePublished: post.createdAt,
-    dateModified: post.createdAt,
-    image: [post.thumbnail],
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `${base.replace(/\/$/, "")}/blog/${encodeURIComponent(post.slug)}`,
-    },
-  };
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
+async function getAllFromApi(): Promise<Blog[] | null> {
+  const api = absoluteUrl(`/api/blogs?limit=9999&page=1`);
+  try {
+    const r = await fetch(api, { cache: "no-store" });
+    if (!r.ok) return null;
+    const data = (await r.json()) as { items?: Blog[] };
+    return data.items ?? null;
+  } catch {
+    return null;
+  }
 }
 
-/* ------------ SEO metadata (in your Next version, params is a Promise) ------------ */
+async function getPost(slug: string): Promise<Blog | null> {
+  // 1) Try API (dev: JSON Server; prod: blogData via route)
+  const viaApi = await getPostFromApi(slug);
+  if (viaApi) return viaApi;
+
+  // 2) Fallback to local blogData (safety)
+  const found =
+    (blogPosts as Blog[]).find((b) => b.slug === slug) ??
+    (blogPosts as Blog[]).find((b) => normalize(b.slug) === normalize(slug));
+  return found ?? null;
+}
+
+async function getSuggestions(current: Blog, fromSlug?: string): Promise<Blog[]> {
+  // 1) Try API for all, then derive suggestions locally
+  const all = (await getAllFromApi()) ?? (blogPosts as Blog[]);
+  const tagSet = new Set(current.tags.map((t) => t.toLowerCase()));
+  const isEligible = (b: Blog) =>
+    b.slug !== current.slug && (!fromSlug || b.slug !== fromSlug);
+
+  const overlapsTag = (b: Blog) =>
+    (b.tags || []).some((t) => tagSet.has(t.toLowerCase()));
+
+  let related = all.filter((b) => isEligible(b) && overlapsTag(b));
+  if (related.length < 4) {
+    const fillers = all.filter((b) => isEligible(b) && !overlapsTag(b));
+    related = [...related, ...fillers];
+  }
+  return related.slice(0, 4);
+}
+
+// --- SEO ---
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await params;
-  const post = await safeGetPost(slug);
+  const post = (await getPost(slug));
   if (!post) return { title: "Blog post" };
 
   const url = absoluteUrl(`/blog/${encodeURIComponent(post.slug)}`);
@@ -95,215 +109,46 @@ export async function generateMetadata(
     title,
     description,
     alternates: { canonical: url },
-    openGraph: { type: "article", url, title, description, images: [{ url: post.thumbnail }], locale: "en_US" },
-    twitter: { card: "summary_large_image", title, description, images: [post.thumbnail] },
+    openGraph: {
+      type: "article",
+      url,
+      title,
+      description,
+      images: [{ url: post.thumbnail }],
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [post.thumbnail],
+    },
   };
 }
 
-/* ------------ Arrow icon ------------ */
-function ArrowIcon({
-  direction = "right" as "left" | "right",
-  className = "",
+// --- Page ---
+export default async function BlogDetailPage({
+  params,
+  searchParams,
 }: {
-  direction?: "left" | "right";
-  className?: string;
+  params: Promise<{ slug: string }> | { slug: string };
+  searchParams?: Promise<{ from?: string }> | { from?: string };
 }) {
-  return (
-    <svg
-      width="7.3638"
-      height="12.728"
-      viewBox="0 0 7.3638 12.728"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={`shrink-0 ${direction === "left" ? "rotate-180" : ""} ${className}`}
-      aria-hidden="true"
-    >
-      <polyline
-        points="1,1 6.3638,6.364 1,11.728"
-        stroke="#AD002D"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+  const { slug } = await resolve(params as any);
+  const fromSlug = (await resolve(searchParams ?? ({} as any)))?.from;
 
-/* ------------ Prev / Next ------------ */
-function PrevNext({
-  prev,
-  next,
-  currentSlug,
-}: {
-  prev?: Blog;
-  next?: Blog;
-  currentSlug: string;
-}) {
-  if (!prev && !next) return null;
-  const textCls = `${jost.className} font-medium text-[14px] sm:text-[16px] leading-[150%] tracking-[0.05em] text-center`;
-  return (
-    <nav className="w-full flex justify-center" aria-label="Blog navigation">
-      <div className="flex items-center justify-center gap-[10px] min-h-8">
-        {prev ? (
-          <Link
-            href={`/blog/${encodeURIComponent(prev.slug)}?from=${encodeURIComponent(currentSlug)}`}
-            className="inline-flex h-8 items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
-          >
-            <ArrowIcon direction="left" />
-            <span className={textCls}>Prev</span>
-          </Link>
-        ) : (
-          <span className="inline-flex h-8 items-center gap-2 opacity-40">
-            <ArrowIcon direction="left" />
-            <span className={textCls}>Prev</span>
-          </span>
-        )}
-
-        <span className="inline-flex items-center justify-center w-8 h-8 p-1">
-          <Image src={CENTER_ICON_SRC} alt="" width={32} height={32} className="w-8 h-8" />
-        </span>
-
-        {next ? (
-          <Link
-            href={`/blog/${encodeURIComponent(next.slug)}?from=${encodeURIComponent(currentSlug)}`}
-            className="inline-flex h-8 items-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
-          >
-            <span className={textCls}>Next</span>
-            <ArrowIcon direction="right" />
-          </Link>
-        ) : (
-          <span className="inline-flex h-8 items-center gap-2 opacity-40">
-            <span className={textCls}>Next</span>
-            <ArrowIcon direction="right" />
-          </span>
-        )}
-      </div>
-    </nav>
-  );
-}
-
-/* ------------ Suggested section ------------ */
-function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string }) {
-  if (!posts.length) return null;
-
-  const headingCls = `${notoSansJp.className} font-bold text-[20px] sm:text-[24px] leading-[150%] tracking-[0.05em] text-center break-words hyphens-auto`;
-  const seeMoreTextCls = `${notoSansJp.className} font-bold text-[18px] sm:text-[20px] leading-[150%] tracking-[0.05em] align-middle`;
-
-  return (
-    <section className="w-full">
-      <div className="mx-auto w-full max-w-[1440px] px-4 md:px-20 pt-12 md:pt-16 pb-16 md:pb-24 space-y-8">
-        <div className="mx-auto w-full max-w-[1280px]">
-          <h2 className={headingCls}>Suggested posts</h2>
-        </div>
-
-        <div className="mx-auto w-full max-w-[1280px]">
-          <ul
-            className="
-              grid grid-cols-1
-              min-[600px]:grid-cols-2
-              min-[1024px]:grid-cols-3
-              gap-x-4 sm:gap-x-6 gap-y-8 sm:gap-y-10
-              items-stretch
-            "
-          >
-            {posts.slice(0, 3).map((b) => {
-              const grayTags = FIXED_TAGS.filter(
-                (t) => !b.tags.some((x) => x.toLowerCase() === t.toLowerCase())
-              );
-              return (
-                <BlogCard
-                  key={b.slug}
-                  slug={b.slug}
-                  title={b.title}
-                  thumbnail={b.thumbnail}
-                  createdAt={b.createdAt}
-                  variant="showcase"
-                  grayTags={grayTags}
-                />
-              );
-            })}
-
-            {posts[3] && (
-              <BlogCard
-                key={`extra-${posts[3].slug}`}
-                slug={posts[3].slug}
-                title={posts[3].title}
-                thumbnail={posts[3].thumbnail}
-                createdAt={posts[3].createdAt}
-                variant="showcase"
-                grayTags={FIXED_TAGS.filter(
-                  (t) => !posts[3].tags.some((x) => x.toLowerCase() === t.toLowerCase())
-                )}
-                className="hidden min-[600px]:block min-[1024px]:hidden"
-              />
-            )}
-          </ul>
-
-          <div className="mt-6 sm:mt-8 w-full flex justify-end">
-            <Link
-              href="/blog"
-              className="inline-flex items-center gap-2 text-black hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
-            >
-              <span className={seeMoreTextCls}>See more</span>
-              <Image src="/images/services/arrow.png" alt="" width={34} height={24} className="w-[34px] h-[24px]" />
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------ Page (in your project both params & searchParams are Promises) ------------ */
-export default async function BlogDetailPage(
-  {
-    params,
-    searchParams,
-  }: {
-    params: Promise<{ slug: string }>;
-    searchParams?: Promise<{ from?: string }>;
-  }
-) {
-  const { slug } = await params;
-  const fromSlug = (await searchParams)?.from;
-
-  const post = await safeGetPost(slug);
+  const post = await getPost(slug);
   if (!post) return notFound();
-
-  const all = await getAll(9999);
-
-  // Build suggestions (up to 4), prefer matching tags
-  const tagSet = new Set(post.tags);
-  const isEligible = (b: Blog) => b.slug !== post.slug;
-  const overlapsTag = (b: Blog) => b.tags.some((t) => tagSet.has(t));
-  let related = all.filter((b) => isEligible(b) && b.slug !== fromSlug && overlapsTag(b));
-  if (related.length < 4) {
-    const fillers = all.filter((b) => isEligible(b) && b.slug !== fromSlug && !overlapsTag(b));
-    related = [...related, ...fillers];
-  }
-  if (related.length < 4 && fromSlug) {
-    const fromPost = all.find((b) => b.slug === fromSlug);
-    if (fromPost && !related.find((b) => b.slug === fromSlug) && isEligible(fromPost)) {
-      related.push(fromPost);
-    }
-  }
-  const suggestions = related.slice(0, 4);
-
-  // Calculate prev/next from suggestions (simple heuristic)
-  const nextTarget = suggestions[0];
-  const prevTarget = fromSlug ? all.find((b) => b.slug === fromSlug) : undefined;
 
   const d = post.detail || {};
   const img1 = d.img1?.src || post.thumbnail;
   const img2 = d.img2?.src || post.thumbnail;
   const img3 = d.img3?.src || post.thumbnail;
 
+  const suggestions = await getSuggestions(post, fromSlug);
+
   return (
     <div className="bg-[#F1F2F4]">
-      {/* JSON-LD for SEO */}
-      <ArticleJsonLd post={post} />
-
-      {/* Outer wrapper */}
       <section className="pt-8 sm:pt-10 md:pt-16">
         <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 md:px-20">
           <div className="mx-auto w-full max-w-[1280px] flex flex-col gap-[48px] sm:gap-[56px] md:gap-[64px]">
@@ -317,15 +162,40 @@ export default async function BlogDetailPage(
               <DetailBlocks img1={img1} img2={img2} img3={img3} detail={d} />
             </DetailFrame>
 
-            {/* Prev/Next centered and outside the white card */}
-            <div className="flex justify-center">
-              <PrevNext prev={prevTarget} next={nextTarget} currentSlug={post.slug} />
-            </div>
+            {/* Suggested posts */}
+            {suggestions.length > 0 && (
+              <section aria-labelledby="suggested-heading" className="pb-16">
+                <h2 id="suggested-heading" className="sr-only">
+                  Suggested posts
+                </h2>
+                <ul
+                  className="
+                    grid gap-6
+                    grid-cols-1 min-[600px]:grid-cols-2 min-[1025px]:grid-cols-3
+                  "
+                >
+                  {suggestions.map((b) => (
+                    <li key={b.slug}>
+                      <BlogCard
+                        slug={b.slug}
+                        title={b.title}
+                        thumbnail={b.thumbnail}
+                        createdAt={b.createdAt}
+                        variant="showcase"
+                        // gray out tags that are NOT in current post
+                        grayTags={["IT Consulting","Engineering","Branding","Design","Other"].filter(
+                          (t) => !post.tags.map((x) => x.toLowerCase()).includes(t.toLowerCase())
+                        )}
+                        fromSlug={post.slug}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
           </div>
         </div>
       </section>
-
-      <Suggested posts={suggestions} currentSlug={post.slug} />
     </div>
   );
 }

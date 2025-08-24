@@ -1,16 +1,30 @@
-// src/components/Header.tsx  (SERVER component — no "use client")
+// src/components/Header.tsx
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
+  const pathname = usePathname() || "/";
+
+  // Active states
+  const isBlogActive =
+    pathname === "/blog" ||
+    pathname === "/blog" ||
+    pathname.startsWith("/blog/");
+  const isHomeActive = pathname === "/" && !isBlogActive;
+
   const BASE = 1440;
   const headerHClamp = "clamp(48px,calc(100vw/1440*64),64px)";
 
-  // Matches your previous sizing/weight; system stack for perf
   const navText =
     `font-sans font-bold ` +
     `text-[clamp(14px,calc(100vw/${BASE}*16),16px)] ` +
     `leading-[1.5] tracking-[0.05em] align-middle`;
+
+  const linkCls = (active: boolean) =>
+    `${navText} ${active ? "text-[#AD002D]" : "text-black"} hover:underline`;
 
   const mobileCtaText =
     `font-sans font-bold text-[clamp(18px,calc(100vw/${BASE}*24),24px)] leading-[1.5] tracking-[0.05em]`;
@@ -55,7 +69,7 @@ export default function Header() {
 
           {/* Right side */}
           <div className="flex items-stretch flex-1 min-w-0">
-            {/* ≥600: Nav + Contact (original spacing/colors) */}
+            {/* ≥600: Nav + Contact */}
             <div className="hidden min-[600px]:flex items-stretch ml-auto">
               <nav
                 className="
@@ -66,24 +80,17 @@ export default function Header() {
                 aria-label="Primary"
               >
                 <div className="flex items-center gap-[96px]">
-                  <Link
-                    href="/"
-                    prefetch={false}
-                    className={`${navText} text-[#AD002D] hover:underline`}
-                  >
+                  <Link href="/" prefetch={false} className={linkCls(isHomeActive)}>
                     Home
                   </Link>
-                  <Link
-                    href="/blog"
-                    prefetch={false}
-                    className={`${navText} text-black hover:underline`}
-                  >
+                  {/* Point Blogs to /blogs (list) but keep active for /blog/[slug] too */}
+                  <Link href="/blog" prefetch={false} className={linkCls(isBlogActive)}>
                     Blogs
                   </Link>
                 </div>
               </nav>
 
-              {/* Contact (desktop) — restored style */}
+              {/* Contact (desktop) — CTA stays the same regardless of route */}
               <div
                 className="
                   hidden min-[600px]:flex shrink-0
@@ -112,7 +119,7 @@ export default function Header() {
               </div>
             </div>
 
-            {/* <600: Hamburger (CSS-only), matches your look */}
+            {/* <600: Hamburger (CSS-only) */}
             <details className="ml-auto min-[600px]:hidden group relative">
               <summary
                 className="
@@ -143,7 +150,7 @@ export default function Header() {
                 </span>
               </summary>
 
-              {/* Mobile sheet — fixed under header, slide/fade in */}
+              {/* Mobile sheet */}
               <div
                 className="
                   fixed inset-x-0 z-[100] border-b bg-white text-black shadow-lg
@@ -160,7 +167,7 @@ export default function Header() {
                     <Link
                       href="/"
                       prefetch={false}
-                      className={`${navText} block px-4 py-3 text-black`}
+                      className={`${linkCls(isHomeActive)} block px-4 py-3`}
                     >
                       Home
                     </Link>
@@ -169,13 +176,13 @@ export default function Header() {
                     <Link
                       href="/blog"
                       prefetch={false}
-                      className={`${navText} block px-4 py-3 text-black`}
+                      className={`${linkCls(isBlogActive)} block px-4 py-3`}
                     >
                       Blogs
                     </Link>
                   </li>
                   <li className="w-full">
-                    {/* Contact CTA (mobile) — restored color/shape */}
+                    {/* Contact CTA (mobile) — not "active" colored */}
                     <Link
                       href="/contact"
                       prefetch={false}

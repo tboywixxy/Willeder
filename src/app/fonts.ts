@@ -1,4 +1,3 @@
-// app/fonts.ts
 import { Noto_Sans_JP, Jost } from "next/font/google";
 
 export const notoSansJp = Noto_Sans_JP({

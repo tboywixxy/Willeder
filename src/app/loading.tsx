@@ -1,4 +1,3 @@
-// app/loading.tsx
 export default function Loading() {
   return (
     <div
@@ -7,7 +6,7 @@ export default function Loading() {
       aria-live="polite"
       aria-label="Loading"
     >
-      <div className="h-10 w-10 animate-spin rounded-full border-4 border-black/20 border-t-black" />
+      <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#AC200D]/30 border-t-[#AC200D]" />
       <span className="sr-only">Loading…</span>
     </div>
   );

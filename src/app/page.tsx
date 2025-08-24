@@ -5,12 +5,10 @@ import StanSection from "../components/StanSection";
 import LatestBlogShowcase from "../components/LatestBlogShowcase";
 import { MOCK_BLOGS } from "../../lib/mockBlogs";
 
-// Make the homepage fully static for faster TTFB and stable LCP
 export const dynamic = "force-static";
 export const revalidate = false;
 
 export default function HomePage() {
-  // Use just what you need (avoid unused vars)
   const posts = MOCK_BLOGS.slice(0, 3);
   const displayDates = posts.map((p) =>
     p.createdAt.includes("-") ? p.createdAt.replaceAll("-", ".") : p.createdAt
@@ -26,7 +24,6 @@ export default function HomePage() {
       {/* Keep Hero minimal + server-only (no "use client" inside Hero) */}
       <Hero />
 
-      {/* Defer layout/paint for off-screen sections without causing CLS */}
       <div style={{ contentVisibility: "auto", containIntrinsicSize: "1100px" }}>
         <ServiceSection />
       </div>

@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
+import { blogPosts } from "@/app/lib/server/blogData";
 
 export const runtime = "nodejs";
-export const revalidate = 60; // ISR
+export const revalidate = 60;
 
+/* ---------------- Types ---------------- */
 type DetailImage = { src: string; alt?: string; caption?: string };
 type DetailPayload = {
   t1?: string; t2?: string; t5?: string; t6?: string; t7?: string; t8?: string;
@@ -19,26 +21,14 @@ export type Blog = {
   thumbnail: string;
   tags: string[];
   createdAt: string;
-  content?: string;       // ensured below
-  detail?: DetailPayload; // optional
+  content?: string;
+  detail?: DetailPayload;
 };
 
-const JSON_SERVER_URL = process.env.JSON_SERVER_URL; // dev ONLY
+/* ---------------- Helpers ---------------- */
+const JSON_SERVER_URL = process.env.JSON_SERVER_URL;
+const useJson = process.env.NODE_ENV !== "production" && !!JSON_SERVER_URL;
 
-async function fetchAllBlogs(): Promise<Blog[]> {
-  if (JSON_SERVER_URL) {
-    // Dev: pull from json-server
-    const r = await fetch(`${JSON_SERVER_URL}/blogs`, { cache: "no-store" });
-    if (!r.ok) throw new Error(`JSON Server fetch failed: ${r.status}`);
-    return (await r.json()) as Blog[];
-  } else {
-    // Prod: local static data
-    const { blogPosts } = await import("@/app/lib/server/blogData");
-    return blogPosts as Blog[];
-  }
-}
-
-/** Ensure 600+ chars and includes <h2>, <p>, <img> */
 function ensureContent(post: Blog): Blog {
   if (
     post.content &&
@@ -46,9 +36,7 @@ function ensureContent(post: Blog): Blog {
     /<h2[\s>]/i.test(post.content) &&
     /<p[\s>]/i.test(post.content) &&
     /<img[\s>]/i.test(post.content)
-  ) {
-    return post;
-  }
+  ) return post;
 
   const d = post.detail || {};
   const text = (...xs: (string | undefined)[]) => xs.filter(Boolean).join(" ");
@@ -62,15 +50,13 @@ function ensureContent(post: Blog): Blog {
     `<p>${text(d.t12d, d.t15a, d.t15b, d.t15c)}</p>` +
     `<img src="${d.img3?.src || post.thumbnail}" alt="${d.img3?.alt || ""}" />`;
 
-  const pad = (s: string) =>
-    s.length >= 600 ? s : s + `<p>${"&nbsp;".repeat(620 - s.length)}</p>`;
-
+  const pad = (s: string) => (s.length >= 600 ? s : s + `<p>${"&nbsp;".repeat(620 - s.length)}</p>`);
   return { ...post, content: pad(html) };
 }
 
 function matchTags(post: Blog, wanted: string[]): boolean {
   if (wanted.length === 0) return true;
-  const lower = (post.tags || []).map((t) => t.toLowerCase());
+  const lower = post.tags.map((t) => t.toLowerCase());
   return wanted.some((w) => lower.includes(w.toLowerCase()));
 }
 
@@ -81,39 +67,76 @@ function matchQuery(post: Blog, q: string): boolean {
     post.title,
     ...(post.tags || []),
     post.content ? post.content.replace(/<[^>]+>/g, " ") : "",
-  ]
-    .join(" ")
-    .toLowerCase();
+  ].join(" ").toLowerCase();
   return hay.includes(needle);
 }
 
+/* ---------------- GET ---------------- */
 export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const page  = Math.max(1, parseInt(url.searchParams.get("page")  || "1", 10));
+  const limit = Math.max(1, parseInt(url.searchParams.get("limit") || "9", 10));
+  const q = url.searchParams.get("q")?.trim() || "";
+  const tagsWanted = (url.searchParams.get("tag")?.trim() || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
   try {
-    const url = new URL(req.url);
-    const page  = Math.max(1, parseInt(url.searchParams.get("page")  || "1", 10));
-    const limit = Math.max(1, parseInt(url.searchParams.get("limit") || "9", 10));
-    const q = url.searchParams.get("q")?.trim() || "";
+    /* ---------- DEV: JSON Server ---------- */
+    if (useJson) {
+      const params = new URLSearchParams();
+      params.set("_page", String(page));
+      params.set("_limit", String(limit));
+      if (q) params.set("q", q);
+      if (tagsWanted.length) params.set("tags_like", tagsWanted.join("|"));
 
-    // tag can be "Design" or "Design,Branding" — OR filter
-    const tagParam = url.searchParams.get("tag")?.trim() || "";
-    const tagsWanted = tagParam
-      ? tagParam.split(",").map((s) => s.trim()).filter(Boolean)
-      : [];
+      const devUrl = `${JSON_SERVER_URL!.replace(/\/$/, "")}/blogs?${params.toString()}`;
+      const r = await fetch(devUrl, { cache: "no-store" });
 
-    const allRaw = await fetchAllBlogs();
-    const all = allRaw.map(ensureContent);
+      if (r.ok) {
+        const items = (await r.json() as Blog[]).map(ensureContent);
+        const total = Number(r.headers.get("X-Total-Count")) || items.length;
 
+        console.log("[/api/blogs] source=json-server", {
+          url: devUrl,
+          page, limit, q, tags: tagsWanted,
+          count: items.length, total,
+        });
+
+        return NextResponse.json(
+          { items, page, limit, total },
+          { headers: { "x-data-source": "json-server" } },
+        );
+      }
+
+      console.warn("[/api/blogs] JSON Server returned non-OK; falling back to blogData", {
+        status: r.status, statusText: r.statusText,
+      });
+      // fall through to static
+    }
+
+    /* ---------- PROD/Preview (and fallback): blogData ---------- */
+    const all = (blogPosts as Blog[]).map(ensureContent);
     const filtered = all
       .filter((b) => matchTags(b, tagsWanted) && matchQuery(b, q))
       .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 
     const start = (page - 1) * limit;
-    const end = start + limit;
-    const items = filtered.slice(start, end);
+    const items = filtered.slice(start, start + limit);
 
-    return NextResponse.json({ items, page, limit, total: filtered.length });
+    console.log("[/api/blogs] source=blogData", {
+      nodeEnv: process.env.NODE_ENV,
+      page, limit, q, tags: tagsWanted,
+      count: items.length, total: filtered.length,
+    });
+
+    return NextResponse.json(
+      { items, page, limit, total: filtered.length },
+      { headers: { "x-data-source": "blogData" } },
+    );
   } catch (e) {
-    console.error(e);
+    console.error("[/api/blogs] error", e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

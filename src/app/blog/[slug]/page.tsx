@@ -1,16 +1,12 @@
-// src/app/blog/[slug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-
 import DetailFrame from "../../../../components/blogDetail/DetailFrame";
 import DetailBlocks from "../../../../components/blogDetail/DetailBlocks";
 import BlogCard from "../../../../components/BlogCard";
 import { jost, notoSansJp } from "@/app/fonts";
 import { absoluteUrl } from "@/lib/absolute-url";
-
-export const revalidate = 60; // page-level ISR
 
 type DetailImage = { src: string; alt?: string; caption?: string };
 type DetailPayload = {
@@ -35,11 +31,12 @@ type Blog = {
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 const CENTER_ICON_SRC = "/blog-list.png";
 
-/* ---------------- data helpers ---------------- */
+export const revalidate = 60; // ISR for this page
 
+/* ---------------- data helpers ---------------- */
 async function getAll(limit = 9999): Promise<Blog[]> {
   const api = absoluteUrl(`/api/blogs?limit=${limit}&page=1`);
-  const r = await fetch(api, { next: { revalidate } });
+  const r = await fetch(api, { next: { revalidate: 60 } });
   if (!r.ok) return [];
   const data = await r.json();
   return (data.items as Blog[]) ?? [];
@@ -47,7 +44,7 @@ async function getAll(limit = 9999): Promise<Blog[]> {
 
 async function safeGetPost(slug: string): Promise<Blog | null> {
   const api = absoluteUrl(`/api/blogs/${encodeURIComponent(slug)}`);
-  const r = await fetch(api, { next: { revalidate } });
+  const r = await fetch(api, { next: { revalidate: 60 } });
   if (r.ok) return (await r.json()) as Blog;
 
   const all = await getAll(9999);
@@ -57,10 +54,11 @@ async function safeGetPost(slug: string): Promise<Blog | null> {
 
 /* ---------------- SEO ---------------- */
 export async function generateMetadata(
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
+  const { slug } = await params;
   try {
-    const post = await safeGetPost(params.slug);
+    const post = await safeGetPost(slug);
     if (!post) return { title: "Blog post" };
 
     const url = absoluteUrl(`/blog/${encodeURIComponent(post.slug)}`);
@@ -74,14 +72,7 @@ export async function generateMetadata(
       title,
       description,
       alternates: { canonical: url },
-      openGraph: {
-        type: "article",
-        url,
-        title,
-        description,
-        images: [{ url: ogImage }],
-        locale: "en_US",
-      },
+      openGraph: { type: "article", url, title, description, images: [{ url: ogImage }], locale: "en_US" },
       twitter: { card: "summary_large_image", title, description, images: [ogImage] },
     };
   } catch {
@@ -98,7 +89,7 @@ function ArticleJsonLd({ post }: { post: Blog }) {
     datePublished: post.createdAt,
     dateModified: post.createdAt,
     image: [post.thumbnail],
-    mainEntityOfPage: { "@type": "WebPage", "@id": `/blog/${post.slug}` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": absoluteUrl(`/blog/${post.slug}`) },
   };
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />;
 }
@@ -143,6 +134,7 @@ function PrevNext({
   currentSlug: string;
 }) {
   if (!prev && !next) return null;
+
   const textCls = `${jost.className} font-medium text-[14px] sm:text-[16px] leading-[150%] tracking-[0.05em] text-center`;
 
   return (
@@ -164,7 +156,7 @@ function PrevNext({
         )}
 
         <span className="inline-flex items-center justify-center w-8 h-8 p-1">
-          <Image src={CENTER_ICON_SRC} alt="" width={32} height={32} className="w-8 h-8" />
+          <Image src="/blog-list.png" alt="" width={32} height={32} className="w-8 h-8" />
         </span>
 
         {next ? (
@@ -195,14 +187,12 @@ function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string 
 
   return (
     <section className="w-full">
-      {/* Outer max shell */}
-      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 md:px-20 pt-12 md:pt-16 pb-16 md:pb-24 space-y-8">
-        {/* Inner container that matches white card width at each breakpoint */}
-        <div className="mx-auto w-full max-w-[343px] min-[600px]:max-w-[720px] min-[1024px]:max-w-[1280px]">
+      <div className="mx-auto w-full max-w-[1440px] px-4 md:px-20 pt-12 md:pt-16 pb-16 md:pb-24 space-y-8">
+        <div className="mx-auto w-full max-w-[1280px]">
           <h2 className={headingCls}>Suggested posts</h2>
         </div>
 
-        <div className="mx-auto w-full max-w-[343px] min-[600px]:max-w-[720px] min-[1024px]:max-w-[1280px]">
+        <div className="mx-auto w-full max-w-[1280px]">
           <ul
             className="
               grid grid-cols-1
@@ -264,17 +254,23 @@ function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string 
 
 /* ---------------- Page ---------------- */
 export default async function BlogDetailPage(
-  { params, searchParams }: { params: { slug: string }; searchParams?: { from?: string } }
+  {
+    params,
+    searchParams,
+  }: {
+    params: Promise<{ slug: string }>;
+    searchParams?: Promise<{ from?: string }>;
+  }
 ) {
-  const { slug } = params;
-  const fromSlug = searchParams?.from;
+  const { slug } = await params;
+  const fromSlug = searchParams ? (await searchParams).from : undefined;
 
   const post = await safeGetPost(slug);
   if (!post) return notFound();
 
   const all = await getAll(9999);
 
-  // Build up to 4 suggestions to support 2×2 at 600–1024px
+  // build up to 4 suggestions to support 2×2 at 600–1024px
   const tagSet = new Set(post.tags);
   const isEligible = (b: Blog) => b.slug !== post.slug;
   const overlapsTag = (b: Blog) => b.tags.some((t) => tagSet.has(t));

@@ -1,7 +1,8 @@
+// /app/api/contact/route.ts
 import { NextResponse } from "next/server";
 import nodemailer, { getTestMessageUrl, type SentMessageInfo } from "nodemailer";
 
-export const runtime = "nodejs"; // important for Nodemailer on Vercel
+export const runtime = "nodejs"; // required for Nodemailer on Vercel
 
 function isEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -11,14 +12,16 @@ export async function POST(req: Request) {
   try {
     const form = await req.formData();
 
-    // Honeypot field to catch bots
+    // Honeypot (bots)
     const company = (form.get("company") as string) || "";
     if (company) return NextResponse.json({ ok: true });
 
-    const name = (form.get("name") as string) || "";
-    const email = (form.get("email") as string) || "";
-    const subject = ((form.get("subject") as string) || "Contact form").slice(0, 140);
-    const message = (form.get("message") as string) || "";
+    const name = (form.get("name") as string)?.trim() || "";
+    const email = (form.get("email") as string)?.trim() || "";
+    // Accept either "phone" (new) or "subject" (legacy) to avoid breaking older pages
+    const phone =
+      ((form.get("phone") as string) || (form.get("subject") as string) || "").trim();
+    const message = (form.get("message") as string)?.trim() || "";
 
     if (!name || !email || !message || !isEmail(email)) {
       return NextResponse.json(
@@ -27,24 +30,46 @@ export async function POST(req: Request) {
       );
     }
 
+    const host = process.env.SMTP_HOST;
+    const port = Number(process.env.SMTP_PORT || 587);
+    const user = process.env.SMTP_USER;
+    const pass = process.env.SMTP_PASS;
+    const from = process.env.MAIL_FROM;
+    const to = process.env.MAIL_TO;
+
+    if (!host || !user || !pass || !from || !to) {
+      console.error("Missing required SMTP env vars.");
+      return NextResponse.json(
+        { ok: false, error: "Server misconfiguration." },
+        { status: 500 }
+      );
+    }
+
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST!,
-      port: Number(process.env.SMTP_PORT || 587),
-      secure: Number(process.env.SMTP_PORT) === 465, // true for 465, false for 587 (STARTTLS)
-      auth: { user: process.env.SMTP_USER!, pass: process.env.SMTP_PASS! },
+      host,
+      port,
+      secure: port === 465,
+      auth: { user, pass },
     });
 
+    const subjectLine = `Contact • ${name}${phone ? ` • ${phone}` : ""}`;
+
     const info: SentMessageInfo = await transporter.sendMail({
-      from: process.env.MAIL_FROM!,
-      to: process.env.MAIL_TO!,
+      from,
+      to,
       replyTo: email,
-      subject: `Contact • ${subject} • ${name}`,
-      text: `Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\n${message}`,
+      subject: subjectLine,
+      text:
+        `Name: ${name}\n` +
+        `Email: ${email}\n` +
+        (phone ? `Phone: ${phone}\n` : "") +
+        `\n${message}`,
       html: `<h2>New Contact Message</h2>
              <p><strong>Name:</strong> ${name}</p>
              <p><strong>Email:</strong> ${email}</p>
-             <p><strong>Subject:</strong> ${subject}</p>
-             <p style="white-space:pre-wrap">${message}</p>`,
+             ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ""}
+             <hr />
+             <pre style="white-space:pre-wrap;font:inherit">${message}</pre>`,
     });
 
     const previewUrl = getTestMessageUrl(info);

@@ -1,3 +1,4 @@
+// app/blog/BlogIndexClient.tsx
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -49,7 +50,7 @@ export default function BlogIndexClient() {
 
   const totalPages = useMemo(() => Math.max(1, Math.ceil(total / PAGE_SIZE)), [total]);
 
-  // Build URL and push (keeps it shareable / crawlable)
+  // Build URL and push (keeps it shareable / crawlable) — always on /blog
   const pushState = (nextPage = page, nextQuery = query, nextTags = selected) => {
     const params = new URLSearchParams();
     if (nextQuery) params.set("q", nextQuery);
@@ -58,17 +59,16 @@ export default function BlogIndexClient() {
     router.push(`/blog?${params.toString()}`);
   };
 
-  // Fetch blogs (API already filters and returns total AFTER filtering)
+  // Fetch blogs (API uses ISR; client fetch can be no-store)
   async function fetchBlogs() {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       params.set("page", String(page));
-      params.set("limit", String(PAGE_SIZE)); // <= hard cap 9 per page
+      params.set("limit", String(PAGE_SIZE));
       if (query) params.set("q", query);
       if (selected.length) params.set("tag", selected.join(","));
 
-      // Client fetch: no-store; server API should use ISR for perf
       const r = await fetch(`/api/blogs?${params.toString()}`, { cache: "no-store" });
       const data = await r.json();
       setItems(data.items || []);
@@ -162,8 +162,8 @@ export default function BlogIndexClient() {
 
           <BlogList posts={items} loading={loading} />
 
-          {/* Pagination */}
-          {totalPages > 1 && (
+          {/* Pagination or spacer for bottom breathing room */}
+          {Math.max(1, Math.ceil(total / PAGE_SIZE)) > 1 ? (
             <nav
               className="mx-auto w-full max-w-[1280px] flex items-center justify-center gap-2 pb-16"
               role="navigation"
@@ -187,8 +187,8 @@ export default function BlogIndexClient() {
                     onClick={() => goTo(n)}
                     aria-current={active ? "page" : undefined}
                     className={`px-3 py-2 rounded-md border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-black ${
-                      active ? "border-black bg-black text-white" : "border-black hover:bg-black hover:text-white"
-                    }`}
+                      active ? "border-black bg-black text-white" : "border-black hover:bg.black hover:text-white"
+                    }`.replace(".black", "black")} // keep classnames exact
                   >
                     {n}
                   </button>
@@ -204,6 +204,8 @@ export default function BlogIndexClient() {
                 Next
               </button>
             </nav>
+          ) : (
+            <div className="mx-auto w-full max-w-[1280px] pb-16" aria-hidden="true" />
           )}
         </div>
       </section>

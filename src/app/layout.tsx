@@ -12,6 +12,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        {/* Force light UI so iOS/macOS don’t auto-darken */}
+        <meta name="color-scheme" content="light" />
+        <meta name="theme-color" content="#ffffff" />
+      </head>
       <body className="min-h-screen flex flex-col">
         {/* Global overlay spinner */}
         <GlobalPageLoader />

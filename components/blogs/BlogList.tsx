@@ -1,8 +1,9 @@
+// components/blogs/BlogList.tsx
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import Spinner from "../../components/ui/Spinner";
-import BlogCard from "../../components/BlogCard";
+import Spinner from "../ui/Spinner";
+import BlogCard from "../BlogCard";
 
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 
@@ -37,29 +38,30 @@ export default function BlogList({ posts, loading }: { posts: Blog[]; loading: b
           grid-cols-1
           min-[600px]:grid-cols-2
           min-[1024px]:grid-cols-3
-          gap-x-6 gap-y-10
-          mb-10
+          gap-x-[clamp(16px,calc(100vw/1440*24),24px)]
+          gap-y-[clamp(24px,calc(100vw/1440*40),40px)]
+          mb-[clamp(24px,calc(100vw/1440*40),40px)]
         "
         transition={reduce ? { duration: 0.2 } : { layout: { duration: 0.35 } }}
         aria-busy={loading}
         aria-live="polite"
       >
         <AnimatePresence mode="popLayout">
-          {posts.map((p) => {
+          {posts.map((p, i) => {
+            // deterministic start (no Math.random to avoid hydration mismatch)
+            const wiggle = ((i % 3) - 1) * 0; // set to 0; change to 1.2 for subtle wiggle if desired
             const grayTags = FIXED_TAGS.filter((t) => !p.tags.includes(t));
             return (
-              <motion.div
+              <motion.li
                 key={p.id}
                 layout
-                initial={{ opacity: 0, y: 10, rotate: reduce ? 0 : (Math.random() * 2 - 1) * 1.2 }}
+                initial={{ opacity: 0, y: 10, rotate: wiggle }}
                 animate={{ opacity: 1, y: 0, rotate: 0 }}
                 exit={{ opacity: 0, y: 10 }}
                 transition={
-                  reduce
-                    ? { duration: 0.2 }
-                    : { type: "spring", stiffness: 500, damping: 34, mass: 0.5 }
+                  reduce ? { duration: 0.2 } : { type: "spring", stiffness: 500, damping: 34, mass: 0.5 }
                 }
-                className="flex justify-center"
+                className="flex justify-center list-none"
               >
                 <BlogCard
                   slug={p.slug}
@@ -69,7 +71,7 @@ export default function BlogList({ posts, loading }: { posts: Blog[]; loading: b
                   variant="showcase"
                   grayTags={grayTags}
                 />
-              </motion.div>
+              </motion.li>
             );
           })}
         </AnimatePresence>

@@ -1,3 +1,4 @@
+// components/blogDetail/PostContent.tsx
 "use client";
 import DOMPurify from "isomorphic-dompurify";
 

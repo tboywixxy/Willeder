@@ -14,34 +14,36 @@ export default function HomePage() {
               {/* Image replacing the heading/paragraph */}
               <div className="relative w-full aspect-[640/327.2979125977] mx-auto bg-transparent">
                 <Image
-                  src="/chii.png" /* <-- your asset */
+                  src="/chii.png"
                   alt="Intro visual"
                   fill
-                  className="object-contain" /* no zoom/crop */
+                  className="object-contain"
                   sizes="(max-width: 1023px) 100vw, 50vw"
                   priority
                 />
               </div>
 
-              {/* Desktop CTA ONLY (kept exactly where it was, but only ≥1024) */}
+              {/* Desktop CTA ONLY (≥1024) */}
               <div className="mt-6 hidden min-[1024px]:flex items-center justify-start">
                 <Link
-                  href="/blogs"
+                  href="/blog"
                   className="
+                    group
                     inline-flex items-center justify-center
                     w-[405px] h-[68px]
-                    px-12 py-4
-                    gap-6
+                    px-12 py-4 gap-6
                     rounded-[16px]
                     bg-[#AD002D] text-white
                     shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-black
+                    transition-colors duration-200 ease-out
+                    hover:bg-[#921A31]
                   "
                   aria-label="See more"
                 >
                   <span className="font-bold text-[24px] leading-[150%] tracking-[0.05em]">
                     See more
                   </span>
-                  <span className="relative inline-block w-[34px] h-[24px]">
+                  <span className="relative inline-block w-[34px] h-[24px] transition-transform duration-200 ease-out group-hover:translate-x-2">
                     <Image
                       src="/images/services/arrow 2.png"
                       alt=""
@@ -54,7 +56,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* RIGHT: main image (unchanged) */}
+            {/* RIGHT: main image */}
             <div className="order-2 relative w-full max-w-[640px] aspect-[640/695.04] rounded-lg overflow-hidden shadow mx-auto">
               <Image
                 src="https://picsum.photos/seed/hero/1200/1400"
@@ -66,24 +68,27 @@ export default function HomePage() {
               />
             </div>
 
-            {/* Mobile/Tablet CTA (visible <1024) — centered and BELOW the second image */}
+            {/* Mobile/Tablet CTA (<1024) */}
             <div className="order-3 min-[1024px]:hidden w-full max-w-[640px] flex justify-center">
               <Link
-                href="/blogs"
+                href="/blog"
                 className="
+                  group
                   inline-flex items-center justify-center
                   rounded-[16px] bg-[#AD002D] text-white shadow-sm
                   focus:outline-none focus-visible:ring-2 focus-visible:ring-black
-                  gap-4 px-6 py-4 w-[298px] h-[62px]                 /* <600 */
+                  gap-4 px-6 py-4 w-[298px] h-[62px]
                   min-[600px]:gap-6 min-[600px]:px-12 min-[600px]:py-4
-                  min-[600px]:w-[405px] min-[600px]:h-[68px]         /* 600–1023 */
+                  min-[600px]:w-[405px] min-[600px]:h-[68px]
+                  transition-colors duration-200 ease-out
+                  hover:bg-[#921A31]
                 "
                 aria-label="See more"
               >
                 <span className="font-bold leading-[150%] tracking-[0.05em] text-[20px] min-[600px]:text-[24px]">
                   See more
                 </span>
-                <span className="relative inline-block w-[25px] h-[18px] min-[600px]:w-[34px] min-[600px]:h-[24px]">
+                <span className="relative inline-block w-[25px] h-[18px] min-[600px]:w-[34px] min-[600px]:h-[24px] transition-transform duration-200 ease-out group-hover:translate-x-2">
                   <Image
                     src="/images/services/arrow 2.png"
                     alt=""

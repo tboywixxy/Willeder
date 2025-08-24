@@ -1,100 +1,113 @@
-"use client";
-
+// components/BlogCard.tsx
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { jost, notoSansJp } from "@/app/fonts";
+
+const ALL_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
+
+function formatDotDate(input: string) {
+  return input.includes("-") ? input.replaceAll("-", ".") : input;
+}
 
 type Props = {
   slug: string;
   title: string;
   thumbnail: string;
   createdAt: string;
-  variant?: "default" | "showcase";
-  displayDate?: string;
+  /** Optional preformatted display date (e.g., "2025.08.01") */
+  displayDate?: string;        // <-- add this
+  /** Pass tags that should be greyed out (the rest will be black) */
   grayTags?: string[];
-  fromSlug?: string;
-  /** Optional classes for the outer <li> to control responsive visibility/layout */
+  /** Optional visual variant used by your pages */
+  variant?: "showcase" | "compact";
   className?: string;
+  /** Some callers passed this previously; keep for compatibility */
+  fromSlug?: string;
 };
-
-const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 
 export default function BlogCard({
   slug,
   title,
   thumbnail,
   createdAt,
-  variant = "showcase",
-  displayDate,
+  displayDate,                 // <-- pick it up
   grayTags = [],
-  fromSlug,
+  variant = "showcase",
   className = "",
 }: Props) {
-  const isShowcase = variant === "showcase";
+  const titleCls = `
+    ${notoSansJp.className} font-bold
+    text-[clamp(16px,calc(100vw/1440*20),20px)]
+    leading-[150%] tracking-[0.05em]
+  `;
+  const dateCls = `
+    ${jost.className} font-medium
+    text-[clamp(12px,calc(100vw/1440*14),14px)]
+    leading-[150%] text-[#737B8C]
+  `;
 
-  const href = fromSlug
-    ? `/blog/${encodeURIComponent(slug)}?from=${encodeURIComponent(fromSlug)}`
-    : `/blog/${encodeURIComponent(slug)}`;
+  // prefer displayDate if provided; else format createdAt
+  const shownDate = displayDate ?? formatDotDate(createdAt);  // <-- use it
 
-  const outerBase =
-    isShowcase
-      ? "rounded-[16px] overflow-hidden bg-white border-l-4 border-r-4 border-gray-200 shadow-[0_12px_28px_-10px_rgba(0,0,0,0.28)]"
-      : "border rounded-lg overflow-hidden bg-white shadow-[0_12px_28px_-10px_rgba(0,0,0,0.28)]";
+  const graySet = new Set(grayTags.map((t) => t.toLowerCase()));
 
   return (
-    <motion.li
-      layout
-      className={`${outerBase} ${className}`}
+    <article
+      className={[
+        "w-full max-w-[410px] rounded-[16px] bg-white overflow-hidden",
+        "border border-transparent",
+        className,
+      ].join(" ")}
     >
       <Link
-        href={href}
+        href={`/blog/${encodeURIComponent(slug)}`}
         className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
       >
-        {/* IMAGE */}
-        <div className={isShowcase ? "relative w-full h-[180px] sm:h-[240px] md:h-[308px]" : "relative aspect-[1200/630]"}>
+        <div
+          className={[
+            "relative w-full overflow-hidden",
+            variant === "compact" ? "aspect-[16/10]" : "aspect-[4/3]",
+          ].join(" ")}
+        >
           <Image
             src={thumbnail}
-            alt={title}
+            alt=""
             fill
             className="object-cover"
-            sizes={isShowcase ? "(max-width: 768px) 100vw, 33vw" : "(max-width: 1024px) 100vw, 33vw"}
+            sizes="(max-width: 639px) 92vw, (max-width: 1023px) 44vw, 410px"
             priority={false}
           />
         </div>
 
-        {/* CONTENT */}
-        <div className="sm:h-[189px] h-auto pt-1 pr-2 pb-4 pl-2 flex flex-col gap-6">
-          <div className="w-full sm:h-[97px] h-auto flex flex-col gap-2">
-            <time
-              dateTime={new Date(createdAt).toISOString()}
-              className="w-[75px] h-[21px] text-[13px] leading-[21px] text-[#737B8C]"
-            >
-              {displayDate ?? new Date(createdAt).toLocaleDateString()}
-            </time>
+        <div className="px-3 pt-3 pb-4">
+          {/* dateTime keeps the machine-readable ISO date; text shows your displayDate if provided */}
+          <time className={dateCls} dateTime={createdAt}>
+            {shownDate}
+          </time>
 
-            <h3 className="sm:h-[72px] h-auto overflow-hidden font-semibold text-lg leading-tight line-clamp-2">
-              {title}
-            </h3>
-          </div>
+          <h3 className={`${titleCls} mt-1 break-words hyphens-auto`}>{title}</h3>
 
-          {/* TAGS */}
-          <div className="w-full sm:h-[48px] h-auto flex flex-wrap content-start gap-1">
-            {FIXED_TAGS.map((t) => {
-              const isGray = grayTags.includes(t);
+          <ul className="mt-3 flex flex-wrap items-center gap-2" aria-label="Categories">
+            {ALL_TAGS.map((tag) => {
+              const isGray = graySet.has(tag.toLowerCase());
               const color = isGray ? "#B9BDC6" : "#000000";
               return (
-                <span
-                  key={t}
-                  className="inline-flex h-[22px] items-center rounded-[4px] border px-4 text-[12px] leading-[22px]"
-                  style={{ borderColor: color, color }}
-                >
-                  {t}
-                </span>
+                <li key={tag}>
+                  <span
+                    className="
+                      inline-flex h-[22px] items-center rounded-[4px] border px-3
+                      text-[12px] leading-[1]
+                    "
+                    style={{ borderColor: color, color }}
+                  >
+                    {tag}
+                  </span>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
       </Link>
-    </motion.li>
+    </article>
   );
 }

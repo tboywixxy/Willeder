@@ -1,3 +1,4 @@
+// /app/contact/FormClient.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -14,15 +15,11 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
   const [bannerKind, setBannerKind] = useState<Kind>("info");
   const timer = useRef<number | null>(null);
 
-  const showBanner = (kind: Kind, text: string, autoHideMs = 2000) => {
+  const showBanner = (kind: Kind, text: string, autoHideMs = 2400) => {
     setBannerKind(kind);
     setMsg(text);
     setBannerOpen(true);
-
-    if (timer.current) {
-      window.clearTimeout(timer.current);
-      timer.current = null;
-    }
+    if (timer.current) window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => {
       setBannerOpen(false);
       timer.current = null;
@@ -34,6 +31,8 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
       if (timer.current) window.clearTimeout(timer.current);
     };
   }, []);
+
+  const isSending = status === "sending";
 
   return (
     <>
@@ -57,8 +56,8 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
         </div>
       </div>
 
-      {status === "sending" && (
-        <div className="fixed inset-0 z-[1001] grid place-items-center bg-white/60">
+      {isSending && (
+        <div className="fixed inset-0 z-[1001] grid place-items-center bg-white/60" aria-hidden="true">
           <Spinner label="Sending message…" />
         </div>
       )}
@@ -71,7 +70,6 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
           e.preventDefault();
           const formEl = e.currentTarget;
 
-          // Let the red button trigger validation; show banner if invalid
           if (!formEl.checkValidity()) {
             setStatus("error");
             showBanner("error", "Please complete all required fields.");
@@ -84,7 +82,12 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
           const body = new FormData(formEl);
 
           try {
-            const res = await fetch("/api/contact", { method: "POST", body });
+            const res = await fetch("/api/contact", {
+              method: "POST",
+              body,
+              cache: "no-store",
+              headers: { Accept: "application/json" },
+            });
             const data = await res.json();
 
             if (res.ok && data?.ok) {
@@ -100,17 +103,18 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
             showBanner("error", "Network error. Please try again.");
           }
         }}
-        /* Key spacing for filling the #F1F2F4 box evenly */
         className="
           mx-auto w-full flex flex-col items-center
-          gap-12 md:gap-14 lg:gap-16           /* even vertical rhythm between groups */
-          py-6 md:py-8                          /* top/bottom breathing space */
+          gap-12 md:gap-14 lg:gap-16
+          py-6 md:py-8
         "
         noValidate
         aria-live="polite"
+        aria-busy={isSending}
       >
-        {children}
-        {/* The red submit button is rendered as part of children in page.tsx */}
+        <fieldset disabled={isSending} className="w-full contents">
+          {children}
+        </fieldset>
       </form>
     </>
   );

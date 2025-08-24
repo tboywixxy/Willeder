@@ -1,8 +1,9 @@
+// src/components/Header.tsx
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { notoSansJp } from "@/app/fonts";
 
@@ -10,13 +11,17 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const headerRef = useRef<HTMLElement | null>(null);
 
-  // Close on ≥600, scroll, outside tap, Esc
+  // Close menu when viewport crosses >= 600
   useEffect(() => {
     const mql = window.matchMedia("(min-width: 600px)");
-    const handler = (e: MediaQueryListEvent) => { if (e.matches) setOpen(false); };
+    const handler = (e: MediaQueryListEvent) => {
+      if (e.matches) setOpen(false);
+    };
     mql.addEventListener("change", handler);
     return () => mql.removeEventListener("change", handler);
   }, []);
+
+  // Close on scroll, outside tap, Esc; lock body scroll while open
   useEffect(() => {
     if (!open) return;
     const onScroll = () => setOpen(false);
@@ -26,74 +31,133 @@ export default function Header() {
       if (el && t && el.contains(t)) return;
       setOpen(false);
     };
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("pointerdown", onPointerDown);
     document.addEventListener("keydown", onKey);
+
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
     };
   }, [open]);
 
-  const figmaText =
-    `${notoSansJp.className} font-bold text-base leading-[150%] ` +
-    `tracking-[0.05em] text-center align-middle`;
+  const BASE = 1440;
+
+  const navText =
+    `${notoSansJp.className} font-bold ` +
+    `text-[clamp(14px,calc(100vw/${BASE}*16),16px)] ` +
+    `leading-[1.5] tracking-[0.05em] align-middle`;
+
+  const mobileCtaText =
+    `font-bold text-[clamp(18px,calc(100vw/${BASE}*24),24px)] leading-[1.5] tracking-[0.05em]`;
+
+  // Same clamp used for header height; use as a string for CSS top
+  const headerHClamp = "clamp(48px,calc(100vw/1440*64),64px)";
 
   return (
     <header ref={headerRef} className="sticky top-0 z-50 overflow-x-clip">
-      <div className="relative mx-auto w-full max-w-[1440px] bg-white dark:bg-white border-b">
-        <div className="h-12 min-[600px]:h-16 pl-4 min-[600px]:pl-6 pr-4 min-[600px]:pr-0 flex items-stretch">
+      <div className="relative mx-auto w-full max-w-[1440px] bg-white border-b">
+        {/* Frame */}
+        <div
+          className="
+            flex items-stretch justify-between
+            h-[clamp(48px,calc(100vw/1440*64),64px)]
+            pl-[clamp(16px,calc(100vw/1440*24),24px)]
+            pr-4 min-[600px]:pr-0
+          "
+        >
           {/* Brand */}
           <div className="flex items-center h-full shrink-0">
             <Link
               href="/"
-              className="flex items-center h-10 w-[176px] px-2 py-1 gap-[10px]"
+              className="
+                flex items-center
+                h-10
+                w-[clamp(128px,calc(100vw/1440*176),176px)]
+                p-1 min-[600px]:py-1 min-[600px]:px-2
+                gap-[10px]
+              "
               aria-label="Willeder Home"
             >
-              <Image src="/willeder-logo.png" alt="Willeder logo" width={176} height={40} priority />
+              <Image
+                src="/willeder-logo.png"
+                alt="Willeder logo"
+                width={176}
+                height={40}
+                priority
+              />
             </Link>
           </div>
 
           {/* Right side */}
           <div className="flex items-stretch flex-1 min-w-0">
-            {/* ≥600: Nav + Contact pinned right */}
+            {/* ≥600: Nav + Contact */}
             <div className="hidden min-[600px]:flex items-stretch ml-auto">
               <nav
                 className="
-                  flex items-center h-16 whitespace-nowrap shrink-0
-                  min-[600px]:mr-8
-                  min-[768px]:mr-[96px]
+                  flex items-center h-[clamp(48px,calc(100vw/1440*64),64px)]
+                  whitespace-nowrap shrink-0
+                  min-[600px]:mr-8 min-[768px]:mr-[96px]
                 "
                 aria-label="Primary"
               >
-                <div
-                  className="
-                    flex items-center py-2
-                    min-[600px]:gap-8
-                    min-[768px]:gap-[64px]
-                  "
-                >
-                  <Link href="/" className={`${figmaText} text-black hover:underline`}>Home</Link>
-                  <Link href="/blog" className={`${figmaText} text-black hover:underline`}>Blogs</Link>
+                <div className="flex items-center gap-[96px]">
+                  <Link
+                    href="/"
+                    className={`${navText} text-[#AD002D] hover:underline`}
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    href="/blog"
+                    className={`${navText} text-black hover:underline`}
+                  >
+                    Blogs
+                  </Link>
                 </div>
               </nav>
 
-              <div className="h-16 w-[198px] pl-8 pr-4 py-2 shrink-0 bg-black">
-                <Link href="/contact" className={`flex h-full items-center justify-center gap-3 text-white ${figmaText}`}>
+              {/* Contact (desktop) with hover animation */}
+              <div
+                className="
+                  hidden min-[600px]:flex shrink-0
+                  w-[198px]
+                  h-[clamp(48px,calc(100vw/1440*64),64px)]
+                  pt-2 pr-4 pb-2 pl-8 gap-4
+                  bg-black
+                "
+              >
+                <Link
+                  href="/contact"
+                  className={`group flex h-full w-full items-center justify-center gap-3 text-white ${navText} transition-colors duration-200 hover:bg-[#1a1a1a]`}
+                >
                   <span>Contact</span>
-                  <Image src="/images/services/arrow 2.png" alt="Contact icon" width={34} height={24} />
+                  <span className="relative block w-[34px] h-[24px]">
+                    <Image
+                      src="/images/services/arrow 2.png"
+                      alt="Contact icon"
+                      fill
+                      className="object-contain transition-transform duration-200 group-hover:translate-x-1"
+                      sizes="34px"
+                    />
+                  </span>
                 </Link>
               </div>
             </div>
 
-            {/* <600: Hamburger — now visible at ALL widths below 600 */}
-            <div className="ml-auto h-full w-12 flex min-[600px]:hidden shrink-0">
+            {/* <600: Hamburger */}
+            <div className="ml-auto h-full min-[600px]:hidden flex items-center">
               <button
                 type="button"
-                onClick={() => setOpen(v => !v)}
-                className="flex h-full w-full items-center justify-center"
+                onClick={() => setOpen((v) => !v)}
+                className="w-12 h-12 flex items-center justify-center"
                 aria-label={open ? "Close menu" : "Open menu"}
                 aria-expanded={open}
                 aria-controls="mobile-menu"
@@ -118,67 +182,74 @@ export default function Header() {
               </button>
             </div>
 
-{/* Mobile menu */}
-<AnimatePresence>
-  {open && (
-    <motion.div
-      id="mobile-menu"
-      key="mobile-menu"
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.18 }}
-      className="absolute left-4 right-4 top-12 min-[600px]:hidden bg-white text-black shadow-lg rounded-md overflow-hidden"
-      role="dialog"
-      aria-modal="true"
-    >
-      <ul className="flex flex-col divide-y divide-black/10">
-        <li>
-          <Link
-            href="/"
-            className={`${figmaText} block px-4 py-3 text-black`}
-            onClick={() => setOpen(false)}
-          >
-            Home
-          </Link>
-        </li>
-        <li>
-          <Link
-            href="/blog"
-            className={`${figmaText} block px-4 py-3 text-black`}
-            onClick={() => setOpen(false)}
-          >
-            Blogs
-          </Link>
-        </li>
-        <li>
-          {/* Contact styled like the red submit button */}
-          <Link
-            href="/contact"
-            onClick={() => setOpen(false)}
-            className="
-              flex items-center justify-center gap-4 px-12 py-4
-              bg-[#AD002D] text-white rounded-[16px] mx-4 my-3
-              font-['Noto_Sans_JP'] font-bold text-[24px] leading-[150%] tracking-[0.05em]
-            "
-          >
-            <span>Contact</span>
-            <span className="relative block w-[21px] h-[24.25px] -top-[0.12px]">
-              <Image
-                src="/images/services/arrow 2.png"
-                alt="Contact icon"
-                fill
-                className="object-contain"
-                sizes="21px"
-              />
-            </span>
-          </Link>
-        </li>
-      </ul>
-    </motion.div>
-  )}
-</AnimatePresence>
-
+            {/* Mobile menu (edge-to-edge, fixed) */}
+            <AnimatePresence>
+              {open && (
+                <motion.div
+                  id="mobile-menu"
+                  key="mobile-menu"
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.18 }}
+                  className="
+                    fixed inset-x-0
+                    min-[600px]:hidden
+                    bg-white text-black shadow-lg border-b
+                    z-[100]
+                  "
+                  role="dialog"
+                  aria-modal="true"
+                  style={{ top: headerHClamp }}
+                >
+                  <ul className="flex flex-col items-center justify-center text-center divide-y divide-black/10">
+                    <li className="w-full">
+                      <Link
+                        href="/"
+                        className={`${navText} block px-4 py-3 text-black`}
+                        onClick={() => setOpen(false)}
+                      >
+                        Home
+                      </Link>
+                    </li>
+                    <li className="w-full">
+                      <Link
+                        href="/blog"
+                        className={`${navText} block px-4 py-3 text-black`}
+                        onClick={() => setOpen(false)}
+                      >
+                        Blogs
+                      </Link>
+                    </li>
+                    <li className="w-full">
+                      {/* Contact CTA (mobile) with hover motion */}
+                      <Link
+                        href="/contact"
+                        onClick={() => setOpen(false)}
+                        className="
+                          group my-3
+                          mx-4
+                          flex items-center justify-center gap-4 px-12 py-4
+                          bg-[#AD002D] text-white rounded-[16px]
+                          transition-colors duration-200 hover:bg-[#c51644]
+                        "
+                      >
+                        <span className={mobileCtaText}>Contact</span>
+                        <span className="relative block w-[21px] h-[24.25px] -top-[0.12px]">
+                          <Image
+                            src="/images/services/arrow 2.png"
+                            alt="Contact icon"
+                            fill
+                            className="object-contain transition-transform duration-200 group-hover:translate-x-1"
+                            sizes="21px"
+                          />
+                        </span>
+                      </Link>
+                    </li>
+                  </ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>

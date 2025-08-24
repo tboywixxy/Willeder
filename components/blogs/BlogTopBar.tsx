@@ -1,3 +1,4 @@
+// components/blogs/BlogTopBar.tsx
 "use client";
 
 import { notoSansJp, jost } from "@/app/fonts";
@@ -27,28 +28,27 @@ export default function BlogTopBar({
 }: Props) {
   const allActive = selected.length === 0;
 
-  const topTextCls  = `${notoSansJp.className} font-bold text-[32px] leading-[150%] tracking-[0.05em] text-center`;
-  const mainTextCls = `${jost.className}      font-medium text-[20px] leading-[150%] tracking-[0.05em] text-center`;
+  const topTextCls  = `${notoSansJp.className} font-bold text-[clamp(24px,calc(100vw/1440*32),32px)] leading-[1.5] tracking-[0.05em] text-center`;
+  const mainTextCls = `${jost.className}      font-medium text-[clamp(16px,calc(100vw/1440*20),20px)] leading-[1.5] tracking-[0.05em] text-center`;
 
-  // Responsive text sizes so the controls shrink on small screens
-  const inputTextCls  = `${notoSansJp.className} font-bold leading-[150%] tracking-[0.05em] text-left text-[14px] min-[600px]:text-[16px]`;
-  const buttonTextCls = `${notoSansJp.className} font-bold leading-[150%] tracking-[0.05em] text-center text-[16px] min-[600px]:text-[18px] min-[1024px]:text-[20px]`;
+  const inputTextCls  = `${notoSansJp.className} font-bold leading-[1.5] tracking-[0.05em] text-left  text-[clamp(14px,calc(100vw/1440*16),16px)]`;
+  const buttonTextCls = `${notoSansJp.className} font-bold leading-[1.5] tracking-[0.05em] text-center text-[clamp(16px,calc(100vw/1440*20),20px)]`;
 
   return (
     <div className="mx-auto w-full max-w-[1280px] flex flex-col items-center gap-6">
-      {/* Heading (top + BLOG between lines) */}
+      {/* Heading */}
       <div className="w-full flex flex-col items-center justify-center gap-2">
         <div className={topTextCls}>{headingTop}</div>
         <div className="w-full flex items-center gap-4">
-          <span className="hidden md:block w-[592px] h-px bg-black" aria-hidden="true" />
+          <span className="hidden md:block h-px bg-black w-[clamp(120px,calc(100vw/1440*592),592px)]" aria-hidden="true" />
           <span className="md:hidden flex-1 h-px bg-black" aria-hidden="true" />
           <h1 className={mainTextCls}>{headingMain}</h1>
-          <span className="hidden md:block w-[592px] h-px bg-black" aria-hidden="true" />
+          <span className="hidden md:block h-px bg-black w-[clamp(120px,calc(100vw/1440*592),592px)]" aria-hidden="true" />
           <span className="md:hidden flex-1 h-px bg-black" aria-hidden="true" />
         </div>
       </div>
 
-      {/* Search group – shrinks on small screens */}
+      {/* Search */}
       <form
         className="mx-auto w-full max-w-full min-[600px]:max-w-[720px] flex items-stretch"
         role="search"
@@ -66,19 +66,21 @@ export default function BlogTopBar({
           value={inputValue}
           onChange={(e) => onInputChange(e.target.value)}
           className={[
-            "min-w-0 flex-1 h-11 rounded-l-md border border-black bg-transparent",
+            "min-w-0 flex-1 rounded-l-md border border-black bg-transparent",
             "px-3 outline-none placeholder-black/50 focus:ring-2 focus:ring-black",
+            "min-h-[clamp(40px,calc(100vw/1440*44),44px)]",
             inputTextCls,
           ].join(" ")}
+          enterKeyHint="search"
         />
 
         <button
           type="submit"
           className={[
-            "shrink-0 h-11 rounded-r-md bg-black text-white border border-black border-l-0",
+            "shrink-0 rounded-r-md bg-black text-white border border-black border-l-0",
             "inline-flex items-center justify-center gap-2",
-            // tighter padding on small screens so it never overflows
-            "px-3 min-[600px]:px-4",
+            "px-[clamp(12px,calc(100vw/1440*16),16px)]",
+            "min-h-[clamp(40px,calc(100vw/1440*44),44px)]",
             buttonTextCls,
           ].join(" ")}
           title="Search"
@@ -88,8 +90,8 @@ export default function BlogTopBar({
             xmlns="http://www.w3.org/2000/svg"
             className="relative"
             style={{ top: 3, left: 2.01 }}
-            width="20.5084"
-            height="20.5198"
+            width="20.5"
+            height="20.5"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -104,20 +106,11 @@ export default function BlogTopBar({
         </button>
       </form>
 
-      {/* Tags – shrink font/height/padding, wrap nicely */}
+      {/* Tags */}
       <div className="w-full max-w-[1280px] flex flex-wrap items-center justify-center gap-2">
-        <TagChip
-          label="All"
-          active={allActive}
-          onClick={onClearTags}
-        />
+        <TagChip label="All" active={allActive} onClick={onClearTags} />
         {tags.map((t) => (
-          <TagChip
-            key={t}
-            label={t}
-            active={selected.includes(t)}
-            onClick={() => onToggleTag(t)}
-          />
+          <TagChip key={t} label={t} active={selected.includes(t)} onClick={() => onToggleTag(t)} />
         ))}
       </div>
     </div>
@@ -135,23 +128,15 @@ function TagChip({
 }) {
   const base =
     "inline-flex items-center rounded-[4px] border " +
-    // shrink height/font/padding on tiny screens
-    "h-[26px] min-[600px]:h-[28px] " +
-    "px-3 min-[600px]:px-4 " +
-    "text-[11px] min-[600px]:text-[12px] " +
+    "h-[clamp(26px,calc(100vw/1440*28),28px)] " +
+    "px-[clamp(12px,calc(100vw/1440*16),16px)] " +
+    "text-[clamp(11px,calc(100vw/1440*12),12px)] " +
     "leading-[1]";
 
-  const style = active
-    ? "border-black text-black"
-    : "border-[#B9BDC6] text-[#B9BDC6]";
+  const style = active ? "border-black text-black" : "border-[#B9BDC6] text-[#B9BDC6]";
 
   return (
-    <button
-      type="button"
-      aria-pressed={active}
-      onClick={onClick}
-      className={`${base} ${style}`}
-    >
+    <button type="button" aria-pressed={active} onClick={onClick} className={`${base} ${style}`}>
       {label}
     </button>
   );

@@ -1,3 +1,4 @@
+// components/blogDetail/DetailFrame.tsx
 import Image from "next/image";
 import { notoSansJp, jost } from "@/app/fonts";
 
@@ -24,69 +25,128 @@ export default function DetailFrame({
   allTags?: string[];
   children: React.ReactNode;
 }) {
+  // Typography (Figma → clamp)
   const titleCls = `
     ${notoSansJp.className} font-bold
-    text-[28px] sm:text-[36px] md:text-[48px]
-    leading-[140%] tracking-[0.05em]
-    text-center md:text-left
+    text-[clamp(32px,calc(100vw/1440*48),48px)]
+    leading-[1.5] tracking-[0.05em]
+    text-left
   `;
-  const dateCls = `${jost.className} font-medium text-[14px] sm:text-[16px] md:text-[20px] leading-[150%] text-[#737B8C]`;
-  const tagTextCls = `${jost.className} font-medium text-[12px] sm:text-[14px] leading-[150%] tracking-[0.10em]`;
+  const dateCls = `
+    ${jost.className} font-medium
+    text-[clamp(14px,calc(100vw/1440*20),20px)]
+    leading-[1.5] text-[#737B8C]
+  `;
+  const tagTextCls = `
+    ${jost.className} font-medium
+    text-[clamp(12px,calc(100vw/1440*14),14px)]
+    leading-[1.5] tracking-[0.10em]
+  `;
+
+  // Reusable text-side padding (kept off the image so it can be full-bleed)
+  const sidePad = "px-[clamp(16px,calc(100vw/1440*109),109px)]";
 
   return (
-    <div
-      className="
-        w-full
-        bg-white rounded-[16px]
-        /* Figma: pt/pb 96 desktop, inner px approximated to preserve 1280 outer width */
-        px-4 sm:px-6 md:px-[109px]
-        pt-12 sm:pt-20 md:pt-[96px]
-        pb-12 sm:pb-20 md:pb-[96px]
-        flex flex-col items-center
-        gap-[48px]
-      "
-    >
-      {/* Title + date + tags */}
-      <header className="w-full flex flex-col gap-4 sm:gap-6">
-        <h1 className={titleCls}>{title}</h1>
+    // Center the white card; enforce exact max-widths per breakpoint
+    <div className="w-full flex justify-center">
+      <div
+        className="
+          bg-white rounded-[16px] overflow-hidden
+          w-full
+          max-w-[343px]                 /* 375–599 white area width */
+          min-[600px]:max-w-[720px]     /* 600–1023 white area width */
+          min-[1024px]:max-w-[1280px]   /* ≥1024 white area width */
+        "
+      >
+        {/* HEADER (title + date/tags) — padded, left-aligned */}
+        <div
+          className={`
+            ${sidePad}
+            pt-[clamp(48px,calc(100vw/1440*96),96px)]
+            pb-[clamp(24px,calc(100vw/1440*32),32px)]
+          `}
+        >
+          {/* Title block widths: 327 / 672 / 1062 */}
+          <div className="w-full max-w-[327px] min-[600px]:max-w-[672px] min-[1024px]:max-w-[1062px]">
+            <h1 className={titleCls}>{title}</h1>
+            {/* small gap below title */}
+            <div className="mt-[clamp(8px,calc(100vw/1440*16),16px)]" />
+          </div>
 
-        <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-          <time className={dateCls} dateTime={date}>
-            {formatDotDate(date)}
-          </time>
+          {/* Date + Tags widths & layout
+              - 375–599: 327 wide, column, 24 gap (date above, tags below)
+              - 600–1023: 672 wide, row, 24 gap
+              - ≥1024: 1062 wide, row, 48 gap
+          */}
+          <div
+            className="
+              w-full max-w-[327px] min-[600px]:max-w-[672px] min-[1024px]:max-w-[1062px]
+              flex flex-col min-[600px]:flex-row
+              items-start min-[600px]:items-center
+              gap-[24px] min-[1024px]:gap-[48px]
+            "
+          >
+            <time className={dateCls} dateTime={date}>
+              {formatDotDate(date)}
+            </time>
 
-          <div className="flex flex-wrap items-center gap-2">
-            {allTags.map((t) => {
-              const active = tags.map((x) => x.toLowerCase()).includes(t.toLowerCase());
-              const color = active ? "#000000" : "#B9BDC6";
-              return (
-                <span
-                  key={t}
-                  className={`inline-flex h-[22px] items-center rounded-[4px] border px-3 ${tagTextCls}`}
-                  style={{ borderColor: color, color }}
-                >
-                  {t}
-                </span>
-              );
-            })}
+            <div className="flex flex-wrap items-center gap-[clamp(6px,calc(100vw/1440*8),8px)]">
+              {allTags.map((t) => {
+                const active = tags.map((x) => x.toLowerCase()).includes(t.toLowerCase());
+                const color = active ? "#000000" : "#B9BDC6";
+                return (
+                  <span
+                    key={t}
+                    className={`inline-flex h-[22px] items-center rounded-[4px] border px-3 ${tagTextCls}`}
+                    style={{ borderColor: color, color }}
+                  >
+                    {t}
+                  </span>
+                );
+              })}
+            </div>
           </div>
         </div>
-      </header>
 
-      {/* First image */}
-      <div className="relative w-full h-[220px] sm:h-[320px] md:h-[450px] overflow-hidden rounded-[16px]">
-        <Image
-          src={heroSrc}
-          alt={heroAlt}
-          fill
-          className="object-cover"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 720px, 1280px"
-          priority
-        />
+        {/* HERO IMAGE — full-bleed to the card edges at each breakpoint
+            Exact sizes:
+              - 375–599: 343 × 214.375
+              - 600–1023: 720 × 450
+              - ≥1024: 1280 × 800
+        */}
+        <div className="w-full">
+          <div
+            className="
+              relative overflow-hidden
+              w-full
+              h-[214.375px]                 /* mobile height */
+              min-[600px]:h-[450px]         /* tablet height */
+              min-[1024px]:h-[800px]        /* desktop height */
+            "
+          >
+            <Image
+              src={heroSrc}
+              alt={heroAlt}
+              fill
+              className="object-cover"
+              sizes="(max-width: 599px) 343px, (max-width: 1023px) 720px, 1280px"
+              priority
+              decoding="async"
+            />
+          </div>
+        </div>
+
+        {/* BODY CONTENT — padded again; mobile vertical padding per your spec */}
+        <div
+          className={`
+            ${sidePad}
+            pt-[clamp(48px,calc(100vw/1440*64),64px)]
+            pb-[clamp(96px,calc(100vw/1440*96),96px)]
+          `}
+        >
+          {children}
+        </div>
       </div>
-
-      {/* Rest of content */}
-      {children}
     </div>
   );
 }

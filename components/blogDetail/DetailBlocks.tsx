@@ -1,3 +1,4 @@
+// components/blogDetail/DetailBlocks.tsx
 "use client";
 
 import Image from "next/image";
@@ -20,11 +21,7 @@ function renderWithRed(text: string) {
   let m: RegExpExecArray | null;
   while ((m = re.exec(text))) {
     if (m.index > last) nodes.push(<span key={last}>{text.slice(last, m.index)}</span>);
-    nodes.push(
-      <span key={m.index} className="text-[#AD002D]">
-        {m[1]}
-      </span>
-    );
+    nodes.push(<span key={m.index} className="text-[#AD002D]">{m[1]}</span>);
     last = m.index + m[0].length;
   }
   if (last < text.length) nodes.push(<span key={last}>{text.slice(last)}</span>);
@@ -68,21 +65,21 @@ export default function DetailBlocks({
   const I3alt = detail?.img3?.alt || detail?.img3?.caption || "Figure illustration for the article";
   const I3cap = detail?.img3?.caption ?? "Figure label or source";
 
-  const CALL_OUT = detail?.callout ?? "Highlighted callout block — extra width (up to 894px) per design.";
+  const CALL_OUT = detail?.callout ?? "Highlighted callout block — width matches text/images.";
 
-  // Typography — scale down on small screens, wrap long words safely
-  const tBase16 = `${notoSansJp.className} font-medium text-[15px] sm:text-[16px] leading-[155%] sm:leading-[150%] break-words overflow-wrap-anywhere hyphens-auto`;
-  const tBoldBoxed = `${notoSansJp.className} font-bold text-[20px] sm:text-[24px] md:text-[32px] leading-[145%] sm:leading-[150%] tracking-[0.05em] break-words overflow-wrap-anywhere hyphens-auto`;
-  const tBold24Red = `${notoSansJp.className} font-bold text-[18px] sm:text-[22px] md:text-[24px] leading-[150%] text-[#AD002D] break-words overflow-wrap-anywhere hyphens-auto`;
-  const capGray14 = `${notoSansJp.className} font-medium text-[13px] sm:text-[14px] leading-[150%] text-[#393E46] break-words overflow-wrap-anywhere hyphens-auto`;
-  const cap14 = `${notoSansJp.className} font-medium text-[13px] sm:text-[14px] leading-[150%] break-words overflow-wrap-anywhere hyphens-auto`;
+  // Typography — safe wrapping
+  const tBase16     = `${notoSansJp.className} font-medium text-[15px] sm:text-[16px] leading-[155%] sm:leading-[150%] break-words [overflow-wrap:anywhere] hyphens-auto`;
+  const tBoldBoxed  = `${notoSansJp.className} font-bold text-[20px] sm:text-[24px] md:text-[32px] leading-[145%] sm:leading-[150%] tracking-[0.05em] break-words [overflow-wrap:anywhere] hyphens-auto`;
+  const tBold24Red  = `${notoSansJp.className} font-bold text-[18px] sm:text-[22px] md:text-[24px] leading-[150%] text-[#AD002D] break-words [overflow-wrap:anywhere] hyphens-auto`;
+  const capGray14   = `${notoSansJp.className} font-medium text-[13px] sm:text-[14px] leading-[150%] text-[#393E46] break-words [overflow-wrap:anywhere] hyphens-auto`;
+  const cap14       = `${notoSansJp.className} font-medium text-[13px] sm:text-[14px] leading-[150%] break-words [overflow-wrap:anywhere] hyphens-auto`;
 
   const LeftBar = () => <span aria-hidden="true" className="shrink-0 w-2 self-stretch bg-[#AD002D]" />;
 
   return (
-    <div className="w-full overflow-x-hidden flex justify-center px-4 sm:px-6">
-      {/* Content container */}
-      <div className="w-full max-w-[846px]">
+    <div className="w-full flex justify-center">
+      {/* 327 (375–599) / 672 (600–1023) / 846 (≥1024) */}
+      <div className="w-full max-w-[327px] min-[600px]:max-w-[672px] min-[1024px]:max-w-[846px]">
         {/* 1 Intro */}
         <div className="pt-6 sm:pt-8">
           <p className={tBase16}>{T1}</p>
@@ -96,21 +93,21 @@ export default function DetailBlocks({
           </div>
         </div>
 
-        {/* 3 Image 1 — responsive wrapper (aspect on mobile, fixed height on md+) */}
+        {/* 3 Image 1 */}
         <div className="pt-6 sm:pt-8">
-          <div className="relative w-full mx-auto overflow-hidden rounded-[16px] aspect-[16/10] md:h-[450px] md:max-w-[720px]">
+          <div className="relative w-full overflow-hidden rounded-[16px] aspect-[16/10]">
             <Image
               src={I1}
               alt={I1alt}
               fill
               className="object-cover"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 720px, 720px"
+              sizes="(max-width: 599px) 327px, (max-width: 1023px) 672px, 846px"
             />
           </div>
         </div>
 
         {/* 4 Caption 1 */}
-        <div className="mt-[4px] mx-auto w-full md:max-w-[720px]">
+        <div className="mt-[4px] w-full">
           <p className={capGray14}>{I1cap}</p>
         </div>
 
@@ -139,19 +136,19 @@ export default function DetailBlocks({
 
         {/* 9 Image 2 */}
         <div className="pt-6 sm:pt-8">
-          <div className="relative w-full mx-auto overflow-hidden rounded-[16px] aspect-[3/2] md:h-[406px] md:max-w-[672px]">
+          <div className="relative w-full overflow-hidden rounded-[16px] aspect-[3/2]">
             <Image
               src={I2}
               alt={I2alt}
               fill
               className="object-cover"
-              sizes="(max-width: 640px) 100vw, 672px"
+              sizes="(max-width: 599px) 327px, (max-width: 1023px) 672px, 846px"
             />
           </div>
         </div>
 
         {/* 10 Caption 2 */}
-        <div className="mt-[4px] mx-auto w-full md:max-w-[672px]">
+        <div className="mt-[4px] w-full">
           <p className={cap14}>{I2cap}</p>
         </div>
 
@@ -160,14 +157,14 @@ export default function DetailBlocks({
           <p className={tBold24Red}>{T11}</p>
         </div>
 
-        {/* 12a Body with red spans */}
+        {/* 12a Body */}
         <div className="pt-6 sm:pt-8">
           <p className={tBase16}>{renderWithRed(T12a)}</p>
         </div>
 
-        {/* 12b Callout — was md:w-[894px] (caused overflow); now fluid with max-w */}
-        <div className="pt-6 sm:pt-8 flex justify-center">
-          <div className="w-full max-w-[894px] rounded-[8px] bg-[#F1F2F4] p-4 sm:p-6">
+        {/* 12b Callout */}
+        <div className="pt-6 sm:pt-8">
+          <div className="w-full rounded-[8px] bg-[#F1F2F4] p-4 sm:p-6">
             <p className={cap14}>{CALL_OUT}</p>
           </div>
         </div>
@@ -187,19 +184,19 @@ export default function DetailBlocks({
 
         {/* 13 Image 3 */}
         <div className="pt-6 sm:pt-8">
-          <div className="relative w-full mx-auto overflow-hidden rounded-[16px] aspect-[4/3] md:h-[474px] md:max-w-[672px]">
+          <div className="relative w-full overflow-hidden rounded-[16px] aspect-[4/3]">
             <Image
               src={I3}
               alt={I3alt}
               fill
               className="object-cover"
-              sizes="(max-width: 640px) 100vw, 672px"
+              sizes="(max-width: 599px) 327px, (max-width: 1023px) 672px, 846px"
             />
           </div>
         </div>
 
         {/* 14 Caption 3 */}
-        <div className="mt-[4px] mx-auto w-full md:max-w-[672px]">
+        <div className="mt-[4px] w-full">
           <p className={capGray14}>{I3cap}</p>
         </div>
 

@@ -1,3 +1,4 @@
+// app/not-found.tsx  (kept; no clamp needed)
 import Link from "next/link";
 
 export default function NotFound() {

@@ -34,7 +34,7 @@ async function fetchAllBlogs(): Promise<Blog[]> {
     return r.json();
   } else {
     // prod: local data file
-    const { blogPosts } = await import("../../lib/server/blogData");
+    const { blogPosts } = await import("../../../../src/app/lib/server/blogData");
     return blogPosts as Blog[];
   }
 }

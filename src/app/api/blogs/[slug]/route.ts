@@ -35,7 +35,7 @@ function ensureContent(post: Blog): Blog {
 }
 
 async function fetchAllFromDev(): Promise<Blog[]> {
-  const r = await fetch(`${JSON_SERVER_URL}/blogs`, { cache: "no-store" });
+  const r = await fetch(`${JSON_SERVER_URL}/blog`, { cache: "no-store" });
   if (!r.ok) throw new Error(`JSON Server fetch failed: ${r.status}`);
   return (await r.json()) as Blog[];
 }

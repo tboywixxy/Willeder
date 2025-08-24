@@ -29,7 +29,7 @@ const JSON_SERVER_URL = process.env.JSON_SERVER_URL; // e.g. http://localhost:30
 async function fetchAllBlogs(): Promise<Blog[]> {
   if (JSON_SERVER_URL) {
     // dev: pull from json-server
-    const r = await fetch(`${JSON_SERVER_URL}/blogs`, { cache: "no-store" });
+    const r = await fetch(`${JSON_SERVER_URL}/blog`, { cache: "no-store" });
     if (!r.ok) throw new Error(`JSON Server fetch failed: ${r.status}`);
     return r.json();
   } else {

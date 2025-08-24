@@ -41,7 +41,7 @@ export default function Header() {
               aria-label="Willeder Home"
             >
               <Image
-                src="/Willeder-logo.png"
+                src="/willeder-logo.png"
                 alt="Willeder logo"
                 width={176}
                 height={40}

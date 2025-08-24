@@ -1,17 +1,14 @@
-// src/components/Header.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import { notoSansJp } from "@/app/fonts";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const headerRef = useRef<HTMLElement | null>(null);
 
-  // Close menu when viewport crosses >= 600
+  // Close menu when viewport crosses >= 600px (CSS also hides it, this just resets state)
   useEffect(() => {
     const mql = window.matchMedia("(min-width: 600px)");
     const handler = (e: MediaQueryListEvent) => {
@@ -21,7 +18,7 @@ export default function Header() {
     return () => mql.removeEventListener("change", handler);
   }, []);
 
-  // Close on scroll, outside tap, Esc; lock body scroll while open
+  // Close on scroll, outside click, or Esc; lock body scroll while open
   useEffect(() => {
     if (!open) return;
     const onScroll = () => setOpen(false);
@@ -49,17 +46,13 @@ export default function Header() {
   }, [open]);
 
   const BASE = 1440;
-
+  const headerHClamp = "clamp(48px,calc(100vw/1440*64),64px)";
   const navText =
-    `${notoSansJp.className} font-bold ` +
+    `font-sans font-bold ` +
     `text-[clamp(14px,calc(100vw/${BASE}*16),16px)] ` +
     `leading-[1.5] tracking-[0.05em] align-middle`;
-
   const mobileCtaText =
-    `font-bold text-[clamp(18px,calc(100vw/${BASE}*24),24px)] leading-[1.5] tracking-[0.05em]`;
-
-  // Same clamp used for header height; use as a string for CSS top
-  const headerHClamp = "clamp(48px,calc(100vw/1440*64),64px)";
+    `font-sans font-bold text-[clamp(18px,calc(100vw/${BASE}*24),24px)] leading-[1.5] tracking-[0.05em]`;
 
   return (
     <header ref={headerRef} className="sticky top-0 z-50 overflow-x-clip">
@@ -77,13 +70,8 @@ export default function Header() {
           <div className="flex items-center h-full shrink-0">
             <Link
               href="/"
-              className="
-                flex items-center
-                h-10
-                w-[clamp(128px,calc(100vw/1440*176),176px)]
-                p-1 min-[600px]:py-1 min-[600px]:px-2
-                gap-[10px]
-              "
+              prefetch={false}
+              className="flex items-center h-10 w-[clamp(128px,calc(100vw/1440*176),176px)] p-1 min-[600px]:py-1 min-[600px]:px-2 gap-[10px]"
               aria-label="Willeder Home"
             >
               <Image
@@ -91,7 +79,10 @@ export default function Header() {
                 alt="Willeder logo"
                 width={176}
                 height={40}
-                priority
+                sizes="(max-width:600px) 128px, 176px"
+                decoding="async"
+                priority={false}
+                style={{ display: "block", contain: "size layout" }}
               />
             </Link>
           </div>
@@ -111,12 +102,14 @@ export default function Header() {
                 <div className="flex items-center gap-[96px]">
                   <Link
                     href="/"
+                    prefetch={false}
                     className={`${navText} text-[#AD002D] hover:underline`}
                   >
                     Home
                   </Link>
                   <Link
                     href="/blog"
+                    prefetch={false}
                     className={`${navText} text-black hover:underline`}
                   >
                     Blogs
@@ -124,7 +117,7 @@ export default function Header() {
                 </div>
               </nav>
 
-              {/* Contact (desktop) with hover animation */}
+              {/* Contact (desktop) */}
               <div
                 className="
                   hidden min-[600px]:flex shrink-0
@@ -136,16 +129,19 @@ export default function Header() {
               >
                 <Link
                   href="/contact"
+                  prefetch={false}
                   className={`group flex h-full w-full items-center justify-center gap-3 text-white ${navText} transition-colors duration-200 hover:bg-[#1a1a1a]`}
                 >
                   <span>Contact</span>
                   <span className="relative block w-[34px] h-[24px]">
                     <Image
                       src="/images/services/arrow 2.png"
-                      alt="Contact icon"
+                      alt=""
                       fill
                       className="object-contain transition-transform duration-200 group-hover:translate-x-1"
                       sizes="34px"
+                      decoding="async"
+                      loading="lazy"
                     />
                   </span>
                 </Link>
@@ -164,18 +160,20 @@ export default function Header() {
               >
                 <span className="sr-only">Menu</span>
                 <div className="relative h-5 w-6">
-                  <motion.span
-                    className="absolute left-0 right-0 top-1/2 block h-0.5 bg-black"
-                    initial={false}
-                    animate={open ? { rotate: 45, y: 0 } : { rotate: 0, y: -6 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  {/* Top bar */}
+                  <span
+                    className={[
+                      "absolute left-0 right-0 top-1/2 block h-0.5 bg-black transition-transform duration-200",
+                      open ? "rotate-45 translate-y-0" : "-translate-y-1.5",
+                    ].join(" ")}
                     style={{ transformOrigin: "50% 50%" }}
                   />
-                  <motion.span
-                    className="absolute left-0 right-0 top-1/2 block h-0.5 bg-black"
-                    initial={false}
-                    animate={open ? { rotate: -45, y: 0 } : { rotate: 0, y: 6 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  {/* Bottom bar */}
+                  <span
+                    className={[
+                      "absolute left-0 right-0 top-1/2 block h-0.5 bg-black transition-transform duration-200",
+                      open ? "-rotate-45 translate-y-0" : "translate-y-1.5",
+                    ].join(" ")}
                     style={{ transformOrigin: "50% 50%" }}
                   />
                 </div>
@@ -183,73 +181,69 @@ export default function Header() {
             </div>
 
             {/* Mobile menu (edge-to-edge, fixed) */}
-            <AnimatePresence>
-              {open && (
-                <motion.div
-                  id="mobile-menu"
-                  key="mobile-menu"
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.18 }}
-                  className="
-                    fixed inset-x-0
-                    min-[600px]:hidden
-                    bg-white text-black shadow-lg border-b
-                    z-[100]
-                  "
-                  role="dialog"
-                  aria-modal="true"
-                  style={{ top: headerHClamp }}
-                >
-                  <ul className="flex flex-col items-center justify-center text-center divide-y divide-black/10">
-                    <li className="w-full">
-                      <Link
-                        href="/"
-                        className={`${navText} block px-4 py-3 text-black`}
-                        onClick={() => setOpen(false)}
-                      >
-                        Home
-                      </Link>
-                    </li>
-                    <li className="w-full">
-                      <Link
-                        href="/blog"
-                        className={`${navText} block px-4 py-3 text-black`}
-                        onClick={() => setOpen(false)}
-                      >
-                        Blogs
-                      </Link>
-                    </li>
-                    <li className="w-full">
-                      {/* Contact CTA (mobile) with hover motion */}
-                      <Link
-                        href="/contact"
-                        onClick={() => setOpen(false)}
-                        className="
-                          group my-3
-                          mx-4
-                          flex items-center justify-center gap-4 px-12 py-4
-                          bg-[#AD002D] text-white rounded-[16px]
-                          transition-colors duration-200 hover:bg-[#c51644]
-                        "
-                      >
-                        <span className={mobileCtaText}>Contact</span>
-                        <span className="relative block w-[21px] h-[24.25px] -top-[0.12px]">
-                          <Image
-                            src="/images/services/arrow 2.png"
-                            alt="Contact icon"
-                            fill
-                            className="object-contain transition-transform duration-200 group-hover:translate-x-1"
-                            sizes="21px"
-                          />
-                        </span>
-                      </Link>
-                    </li>
-                  </ul>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {open && (
+              <div
+                id="mobile-menu"
+                className="
+                  fixed inset-x-0 min-[600px]:hidden
+                  bg-white text-black shadow-lg border-b
+                  z-[100] will-change-transform transition-transform duration-200
+                "
+                role="dialog"
+                aria-modal="true"
+                style={{ top: headerHClamp }}
+              >
+                <ul className="flex flex-col items-center justify-center text-center divide-y divide-black/10">
+                  <li className="w-full">
+                    <Link
+                      href="/"
+                      prefetch={false}
+                      className={`${navText} block px-4 py-3 text-black`}
+                      onClick={() => setOpen(false)}
+                    >
+                      Home
+                    </Link>
+                  </li>
+                  <li className="w-full">
+                    <Link
+                      href="/blog"
+                      prefetch={false}
+                      className={`${navText} block px-4 py-3 text-black`}
+                      onClick={() => setOpen(false)}
+                    >
+                      Blogs
+                    </Link>
+                  </li>
+                  <li className="w-full">
+                    {/* Contact CTA (mobile) */}
+                    <Link
+                      href="/contact"
+                      prefetch={false}
+                      onClick={() => setOpen(false)}
+                      className="
+                        group my-3 mx-4
+                        flex items-center justify-center gap-4 px-12 py-4
+                        bg-[#AD002D] text-white rounded-[16px]
+                        transition-colors duration-200 hover:bg-[#c51644]
+                      "
+                    >
+                      <span className={mobileCtaText}>Contact</span>
+                      <span className="relative block w-[21px] h-[24.25px] -top-[0.12px]">
+                        <Image
+                          src="/images/services/arrow 2.png"
+                          alt=""
+                          fill
+                          className="object-contain transition-transform duration-200 group-hover:translate-x-1"
+                          sizes="21px"
+                          decoding="async"
+                          loading="lazy"
+                        />
+                      </span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+// app/contact/page.tsx
 import type { Metadata } from "next";
 import Image from "next/image";
 import FormClient from "./FormClient";
@@ -7,13 +8,12 @@ export const metadata: Metadata = {
   description: "Get in touch with Willeder",
 };
 
-// make this route fully static
 export const dynamic = "force-static";
 export const revalidate = false;
 
 export default function ContactPage() {
   return (
-    <section className="bg-white">
+    <section className="bg-white" lang="ja">
       <div
         className="
           mx-auto w-full max-w-[1440px]
@@ -191,9 +191,12 @@ export default function ContactPage() {
                                  text-[clamp(20px,calc(100vw/1440*24),24px)]">
                   Submit
                 </span>
-                <span className="relative block -top-[0.12px]
+                <span
+                  className="relative block -top-[0.12px]
                                  w-[clamp(25px,calc(100vw/1440*34),34px)]
-                                 h-[clamp(18px,calc(100vw/1440*24),24px)]" aria-hidden="true">
+                                 h-[clamp(18px,calc(100vw/1440*24),24px)]"
+                  aria-hidden="true"
+                >
                   <Image
                     src="/images/services/arrow 2.png"
                     alt=""
@@ -202,6 +205,7 @@ export default function ContactPage() {
                     sizes="(max-width: 599px) 25px, 34px"
                     decoding="async"
                     loading="lazy"
+                    style={{ display: "block", contain: "size layout" }}
                   />
                 </span>
               </button>

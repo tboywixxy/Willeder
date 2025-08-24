@@ -1,7 +1,8 @@
+// app/api/contact/route.ts
 import { NextResponse } from "next/server";
 import nodemailer, { getTestMessageUrl, type SentMessageInfo } from "nodemailer";
 
-export const runtime = "nodejs"; // required for Nodemailer on Vercel
+export const runtime = "nodejs";
 
 function isEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -11,13 +12,12 @@ export async function POST(req: Request) {
   try {
     const form = await req.formData();
 
-    // Honeypot (bots)
+    // Honeypot
     const company = (form.get("company") as string) || "";
     if (company) return NextResponse.json({ ok: true });
 
     const name = (form.get("name") as string)?.trim() || "";
     const email = (form.get("email") as string)?.trim() || "";
-    // Accept "phone" (new) or "subject" (legacy)
     const phone = ((form.get("phone") as string) || (form.get("subject") as string) || "").trim();
     const message = (form.get("message") as string)?.trim() || "";
 
@@ -37,10 +37,7 @@ export async function POST(req: Request) {
 
     if (!host || !user || !pass || !from || !to) {
       console.error("Missing required SMTP env vars.");
-      return NextResponse.json(
-        { ok: false, error: "Server misconfiguration." },
-        { status: 500 }
-      );
+      return NextResponse.json({ ok: false, error: "Server misconfiguration." }, { status: 500 });
     }
 
     const transporter = nodemailer.createTransport({

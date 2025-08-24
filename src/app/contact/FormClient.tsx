@@ -1,3 +1,4 @@
+// app/contact/FormClient.tsx
 "use client";
 
 import { useRef, useState } from "react";
@@ -13,7 +14,6 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
 
   return (
     <>
-      {/* Inline status banner */}
       {msg ? (
         <div
           className={[

@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import FormClient from "./FormClient";   // plain import (no next/dynamic)
-import { jost } from "../fonts";
+import FormClient from "./FormClient";
 
 export const metadata: Metadata = {
   title: "Contact | Willeder",
   description: "Get in touch with Willeder",
 };
 
-// Make the route static + cacheable at the HTML level
+// make this route fully static
 export const dynamic = "force-static";
 export const revalidate = false;
 
@@ -25,16 +24,16 @@ export default function ContactPage() {
         {/* Heading */}
         <div className="mx-auto w-full max-w-[1280px] flex flex-col items-center gap-4 mb-12">
           <h1
-            className={`
-              ${jost.className} font-bold
+            className="
+              font-sans font-bold
               text-[clamp(24px,calc(100vw/1440*32),32px)]
               leading-[1.5] tracking-[0.05em] text-center
-            `}
+            "
           >
             お問い合わせ
           </h1>
 
-        {/* Divider + subheading + divider */}
+          {/* Divider + subheading + divider */}
           <div className="w-full flex items-center gap-4 justify-center" role="presentation" aria-hidden="true">
             <span className="h-px w-[clamp(120px,calc(100vw/1440*571.5),571.5px)] bg-black" />
             <div
@@ -84,6 +83,7 @@ export default function ContactPage() {
                            min-h-[clamp(48px,calc(100vw/1440*55),55px)] px-4
                            font-sans placeholder:font-sans placeholder:font-medium placeholder:text-[#B5B5B5]
                            placeholder:text-[clamp(16px,calc(100vw/1440*18),18px)] placeholder:leading-[1.25]"
+                aria-required="true"
               />
             </div>
 
@@ -107,6 +107,7 @@ export default function ContactPage() {
                            min-h-[clamp(48px,calc(100vw/1440*55),55px)] px-4
                            font-sans placeholder:font-sans placeholder:font-medium placeholder:text-[#B5B5B5]
                            placeholder:text-[clamp(16px,calc(100vw/1440*18),18px)] placeholder:leading-[1.25]"
+                aria-required="true"
               />
             </div>
 
@@ -130,6 +131,7 @@ export default function ContactPage() {
                            min-h-[clamp(48px,calc(100vw/1440*55),55px)] px-4
                            font-sans placeholder:font-sans placeholder:font-medium placeholder:text-[#B5B5B5]
                            placeholder:text-[clamp(16px,calc(100vw/1440*18),18px)] placeholder:leading-[1.25]"
+                aria-required="true"
               />
             </div>
 
@@ -151,6 +153,7 @@ export default function ContactPage() {
                            min-h-[clamp(140px,calc(100vw/1440*160),160px)] px-4 py-4
                            font-sans placeholder:font-sans placeholder:font-medium placeholder:text-[#B5B5B5]
                            placeholder:text-[clamp(16px,calc(100vw/1440*18),18px)] placeholder:leading-[1.25]"
+                aria-required="true"
               />
             </div>
 
@@ -162,6 +165,7 @@ export default function ContactPage() {
                 type="checkbox"
                 required
                 className="w-[30px] h-[30px] border border-black rounded-[4px] accent-black"
+                aria-required="true"
               />
               <label
                 htmlFor="agree"

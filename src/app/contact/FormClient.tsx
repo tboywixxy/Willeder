@@ -13,6 +13,7 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
 
   return (
     <>
+      {/* Inline status banner */}
       {msg ? (
         <div
           className={[

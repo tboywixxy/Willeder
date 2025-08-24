@@ -1,10 +1,18 @@
-// app/contact/FormClient.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 type Status = "idle" | "sending" | "ok" | "error";
+type ApiResponse = { ok?: boolean; error?: string };
+
+function isApiResponse(val: unknown): val is ApiResponse {
+  if (typeof val !== "object" || val === null) return false;
+  const obj = val as Record<string, unknown>;
+  const okValid = obj.ok === undefined || typeof obj.ok === "boolean";
+  const errValid = obj.error === undefined || typeof obj.error === "string";
+  return okValid && errValid;
+}
 
 export default function FormClient({ children }: { children: React.ReactNode }) {
   const formRef = useRef<HTMLFormElement | null>(null);
@@ -31,7 +39,7 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
         cleanupTimer = setTimeout(() => {
           setMsg("");
           setStatus("idle");
-        }, 300); // match transition
+        }, 300); // match transition duration
       }, 2000);
     } else if (status === "idle" && !msg) {
       setToastVisible(false);
@@ -110,15 +118,16 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
               headers: { Accept: "application/json" },
             });
 
-            const data = await res.json().catch(() => ({}));
+            const raw: unknown = await res.json().catch(() => ({}));
+            const data: ApiResponse = isApiResponse(raw) ? raw : {};
 
-            if (res.ok && (data as any)?.ok) {
+            if (res.ok && data.ok) {
               setStatus("ok");
               setMsg("Thanks! Your message has been sent.");
               formEl.reset();
             } else {
               setStatus("error");
-              setMsg((data as any)?.error || "Something went wrong.");
+              setMsg(data.error ?? "Something went wrong.");
             }
           } catch {
             setStatus("error");

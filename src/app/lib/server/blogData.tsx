@@ -548,7 +548,7 @@ export const blogPosts = [
     {
       "id": "15",
       "slug": "writing-clear-ui-copy",
-      "title": "Writing Clear UI Copy",
+      "title": "Writing Clear UI Copy it",
       "thumbnail": "https://picsum.photos/seed/uicopy/1200/630",
       "tags": ["Branding", "Other"],
       "createdAt": "2025-08-15",

@@ -1,7 +1,6 @@
-// src/app/api/blogs/route.ts
 import { NextResponse } from "next/server";
 
-export const runtime = "nodejs";     // needed for Node on Vercel
+export const runtime = "nodejs";     // Node runtime on Vercel
 export const revalidate = 60;        // ISR for 60s
 
 type DetailImage = { src: string; alt?: string; caption?: string };
@@ -21,22 +20,13 @@ export type Blog = {
   tags: string[];
   createdAt: string;
   content?: string;       // ensured below
-  detail?: DetailPayload; // optional, for your 15-block layout
+  detail?: DetailPayload; // optional, for 15-block layout
 };
 
-const JSON_SERVER_URL = process.env.JSON_SERVER_URL; // e.g. http://localhost:3001 (dev ONLY)
-
 async function fetchAllBlogs(): Promise<Blog[]> {
-  if (JSON_SERVER_URL) {
-    // dev: pull from json-server
-    const r = await fetch(`${JSON_SERVER_URL}/blog`, { cache: "no-store" });
-    if (!r.ok) throw new Error(`JSON Server fetch failed: ${r.status}`);
-    return r.json();
-  } else {
-    // prod: local data file
-    const { blogPosts } = await import("@/app/lib/server/blogData");
-    return blogPosts as Blog[];
-  }
+  // ALWAYS load from local data (works in dev & prod)
+  const { blogPosts } = await import("../../lib/server/blogData");
+  return blogPosts as Blog[];
 }
 
 /** Ensure 600+ chars and includes <h2>, <p>, <img> */

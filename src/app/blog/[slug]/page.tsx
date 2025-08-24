@@ -226,18 +226,18 @@ function Suggested({ posts, currentSlug }: { posts: Blog[]; currentSlug: string 
 /* ---------------- Page ---------------- */
 export default async function BlogDetailPage(
   {
-    params,
-    searchParams,
-  }: {
-    params: Promise<{ slug: string }>;
-    searchParams?: { from?: string };
-  }
-) {
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ from?: string }>;
+}) {
   const { slug } = await params;
-  const fromSlug = searchParams?.from;
+  const { from: fromSlug } = (await searchParams) ?? {};
 
   const post = await safeGetPost(slug);
   if (!post) return notFound();
+
 
   const all = await getAll(9999);
 

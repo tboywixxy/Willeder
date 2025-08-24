@@ -16,7 +16,7 @@ export default function Footer() {
           {/* Row 1: Brand image — 120×24 */}
           <div className="flex items-center">
             <Image
-              src="/willeder-w.png" // <-- replace with your asset
+              src="/Willeder-w.png" // <-- replace with your asset
               alt="Willeder"
               width={120}
               height={24}

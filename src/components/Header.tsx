@@ -1,3 +1,4 @@
+// src/components/Header.tsx
 "use client";
 
 import Link from "next/link";
@@ -42,15 +43,10 @@ export default function Header() {
 
   const BASE = 1440;
   const headerHClamp = "clamp(48px,calc(100vw/1440*64),64px)";
-
   const navText =
-    `font-sans font-bold ` +
-    `text-[clamp(14px,calc(100vw/${BASE}*16),16px)] ` +
-    `leading-[1.5] tracking-[0.05em] align-middle`;
-
+    `font-sans font-bold text-[clamp(14px,calc(100vw/${BASE}*16),16px)] leading-[1.5] tracking-[0.05em] align-middle`;
   const linkCls = (active: boolean) =>
     `${navText} ${active ? "text-[#AD002D]" : "text-black"} hover:underline`;
-
   const mobileCtaText =
     `font-sans font-bold text-[clamp(18px,calc(100vw/${BASE}*24),24px)] leading-[1.5] tracking-[0.05em]`;
 
@@ -70,25 +66,24 @@ export default function Header() {
             <Link
               href="/"
               prefetch={false}
-              className="
-                flex items-center
-                h-12
-                w-[clamp(128px,calc(100vw/1440*176),230px)]
-                p-1 min-[600px]:py-1 min-[600px]:px-0
-                gap-[10px]
-              "
               aria-label="Willeder Home"
+              className="flex items-center h-full p-0"
             >
-              {/* Reserve space with aspect ratio box to avoid unsized-media reflow */}
-              <span className="relative block w-full aspect-[176/60]">
+              {/* Fixed-size wrapper prevents CLS on the logo */}
+              <span
+                className="
+                  relative block
+                  w-[128px] h-[44px]         /* ≤600px: 128×44 */
+                  min-[600px]:w-[176px] 
+                  min-[600px]:h-[60px]       /* ≥600px: 176×60 */
+                "
+              >
                 <Image
                   src="/willeder-logo.png"
                   alt="Willeder logo"
                   fill
+                  priority
                   sizes="(max-width:600px) 128px, 176px"
-                  decoding="async"
-                  priority={false}
-                  fetchPriority="low"
                   className="object-contain"
                 />
               </span>
@@ -97,7 +92,6 @@ export default function Header() {
 
           {/* Right side */}
           <div className="flex items-stretch flex-1 min-w-0">
-            {/* ≥600: Nav + Contact */}
             <div className="hidden min-[600px]:flex items-stretch ml-auto">
               <nav
                 className="
@@ -117,7 +111,7 @@ export default function Header() {
                 </div>
               </nav>
 
-              {/* Contact (desktop) — CTA style only */}
+              {/* Contact (desktop) */}
               <div
                 className="
                   hidden min-[600px]:flex shrink-0
@@ -135,11 +129,10 @@ export default function Header() {
                   <span>お問い合わせ</span>
                   <span className="relative block w-[34px] h-[24px]">
                     <Image
-                      src="/images/services/arrow-2.png" /* renamed (no space) */
+                      src="/images/services/arrow 2.png"
                       alt=""
                       fill
                       sizes="34px"
-                      fetchPriority="low"
                       className="object-contain transition-transform duration-200 group-hover:translate-x-1"
                     />
                   </span>
@@ -159,23 +152,12 @@ export default function Header() {
               >
                 <span className="sr-only">Menu</span>
                 <span className="relative h-5 w-6 block">
-                  <span
-                    className="
-                      absolute left-0 right-0 top-1/2 block h-0.5 bg-black
-                      -translate-y-1.5 transition-transform duration-200
-                      group-open:translate-y-0 group-open:rotate-45
-                    "
-                  />
-                  <span
-                    className="
-                      absolute left-0 right-0 top-1/2 block h-0.5 bg-black
-                      translate-y-1.5 transition-transform duration-200
-                      group-open:translate-y-0 group-open:-rotate-45
-                    "
-                  />
+                  <span className="absolute left-0 right-0 top-1/2 block h-0.5 bg-black -translate-y-1.5 transition-transform duration-200 group-open:translate-y-0 group-open:rotate-45" />
+                  <span className="absolute left-0 right-0 top-1/2 block h-0.5 bg-black translate-y-1.5 transition-transform duration-200 group-open:translate-y-0 group-open:-rotate-45" />
                 </span>
               </summary>
 
+              {/* Mobile sheet */}
               <div
                 className="
                   fixed inset-x-0 z-[100] border-b bg-white text-black shadow-lg
@@ -189,22 +171,12 @@ export default function Header() {
               >
                 <ul className="flex flex-col items-center justify-center text-center divide-y divide-black/10">
                   <li className="w-full">
-                    <Link
-                      href="/"
-                      prefetch={false}
-                      onClick={closeMobileMenu}
-                      className={`${linkCls(isHomeActive)} block px-4 py-3`}
-                    >
+                    <Link href="/" prefetch={false} onClick={closeMobileMenu} className={`${linkCls(isHomeActive)} block px-4 py-3`}>
                       Home
                     </Link>
                   </li>
                   <li className="w-full">
-                    <Link
-                      href="/blog"
-                      prefetch={false}
-                      onClick={closeMobileMenu}
-                      className={`${linkCls(isBlogActive)} block px-4 py-3`}
-                    >
+                    <Link href="/blog" prefetch={false} onClick={closeMobileMenu} className={`${linkCls(isBlogActive)} block px-4 py-3`}>
                       Blogs
                     </Link>
                   </li>
@@ -221,14 +193,7 @@ export default function Header() {
                     >
                       <span className={mobileCtaText}>Contact</span>
                       <span className="relative block w-[21px] h-[24.25px] -top-[0.12px] transition-transform duration-200 group-hover:translate-x-1">
-                        <Image
-                          src="/images/services/arrow-2.png" /* renamed (no space) */
-                          alt=""
-                          fill
-                          sizes="21px"
-                          fetchPriority="low"
-                          className="object-contain"
-                        />
+                        <Image src="/images/services/arrow 2.png" alt="" fill sizes="21px" className="object-contain" />
                       </span>
                     </Link>
                   </li>

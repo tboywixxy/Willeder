@@ -1,3 +1,4 @@
+// src/components/Footer.tsx  (Server Component)
 import Image from "next/image";
 import Link from "next/link";
 
@@ -19,7 +20,6 @@ export default function Footer() {
               sizes="120px"
               decoding="async"
               priority={false}
-              fetchPriority="low"
               style={{ display: "block", contain: "size layout" }}
             />
           </div>

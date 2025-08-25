@@ -80,9 +80,9 @@ export default function Header() {
               prefetch={false}
               className="
                 flex items-center
-                h-10
-                w-[clamp(128px,calc(100vw/1440*176),176px)]
-                p-1 min-[600px]:py-1 min-[600px]:px-2
+                h-12
+                w-[clamp(128px,calc(100vw/1440*176),230px)]
+                p-1 min-[600px]:py-1 min-[600px]:px-0
                 gap-[10px]
               "
               aria-label="Willeder Home"
@@ -91,7 +91,7 @@ export default function Header() {
                 src="/willeder-logo.png"
                 alt="Willeder logo"
                 width={176}
-                height={40}
+                height={60}
                 sizes="(max-width:600px) 128px, 176px"
                 decoding="async"
                 priority={false}
@@ -108,17 +108,17 @@ export default function Header() {
                 className="
                   flex items-center h-[clamp(48px,calc(100vw/1440*64),64px)]
                   whitespace-nowrap shrink-0
-                  min-[600px]:mr-8 min-[768px]:mr-[96px]
+                  min-[600px]:mr-8 min-[768px]:mr-[89px]
                 "
                 aria-label="Primary"
               >
-                <div className="flex items-center gap-[96px]">
+                <div className="flex items-center gap-[60px]">
                   <Link href="/" prefetch={false} className={linkCls(isHomeActive)}>
-                    Home
+                    TOP
                   </Link>
                   {/* Blogs list; stays active for /blog and /blog/[slug] */}
                   <Link href="/blog" prefetch={false} className={linkCls(isBlogActive)}>
-                    Blogs
+                    ブログ
                   </Link>
                 </div>
               </nav>
@@ -127,7 +127,7 @@ export default function Header() {
               <div
                 className="
                   hidden min-[600px]:flex shrink-0
-                  w-[198px]
+                  w-[190px]
                   h-[clamp(48px,calc(100vw/1440*64),64px)]
                   pt-2 pr-4 pb-2 pl-8 gap-4
                   bg-black
@@ -136,9 +136,9 @@ export default function Header() {
                 <Link
                   href="/contact"
                   prefetch={false}
-                  className={`group flex h-full w-full items-center justify-center gap-3 text-white ${navText} transition-colors duration-200 hover:bg-[#1a1a1a]`}
+                  className={`group flex h-full w-full items-center justify-center gap-2 text-white ${navText} transition-colors duration-200 hover:bg-[#1a1a1a]`}
                 >
-                  <span>Contact</span>
+                  <span>お問い合わせ</span>
                   <span className="relative block w-[34px] h-[24px]">
                     <Image
                       src="/images/services/arrow 2.png"

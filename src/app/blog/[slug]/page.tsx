@@ -1,3 +1,4 @@
+// src/app/blog/[slug]/page.tsx
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -5,7 +6,7 @@ import DetailFrame from "@/components/blogDetail/DetailFrame";
 import DetailBlocks from "@/components/blogDetail/DetailBlocks";
 import BlogCard from "@/components/BlogCard";
 import { absoluteUrl } from "@/lib/absolute-url";
-import { blogPosts } from "@/app/lib/server/blogData"; // fallback only
+import { blogPosts } from "@/app/lib/server/blogData";
 
 export const revalidate = 60;
 export const dynamic = "force-dynamic";
@@ -100,7 +101,7 @@ async function getSuggestions(current: Blog, fromSlug?: string): Promise<Blog[]>
     const fillers = all.filter((b) => isEligible(b) && !overlapsTag(b));
     related = [...related, ...fillers];
   }
-  return related.slice(0, 3); // ← exactly 3
+  return related.slice(0, 3); // exactly 3
 }
 
 /* ---------------- SEO ---------------- */
@@ -179,34 +180,39 @@ export default async function BlogDetailPage({
               <DetailBlocks img1={img1} img2={img2} img3={img3} detail={d} />
             </DetailFrame>
 
-            {/* Prev / Next */}
+            {/* Prev/Next — centered bar */}
             {(prev || next) && (
               <nav
                 aria-label="Post pagination"
-                className="
-                  grid gap-4
-                  grid-cols-1 min-[600px]:grid-cols-2
-                "
+                className="w-full flex justify-center"
               >
-                {/* Prev (newer) on the left */}
-                <div className="min-h-[44px]">
+                <div className="flex flex-col min-[600px]:flex-row items-center justify-center gap-4">
+                  {/* Prev (newer) */}
                   {prev && (
                     <Link
                       href={`/blog/${encodeURIComponent(prev.slug)}?from=${encodeURIComponent(post.slug)}`}
-                      className="group inline-flex items-center gap-3 text-black hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+                      className="
+                        inline-flex items-center gap-3 rounded-[8px] border border-black
+                        px-4 py-2 bg-white text-black hover:bg-black hover:text-white
+                        focus:outline-none focus-visible:ring-2 focus-visible:ring-black
+                        transition
+                      "
                     >
                       <span aria-hidden>←</span>
                       <span className="truncate">Previous: {prev.title}</span>
                     </Link>
                   )}
-                </div>
 
-                {/* Next (older) on the right */}
-                <div className="min-h-[44px] text-left min-[600px]:text-right">
+                  {/* Next (older) */}
                   {next && (
                     <Link
                       href={`/blog/${encodeURIComponent(next.slug)}?from=${encodeURIComponent(post.slug)}`}
-                      className="group inline-flex items-center gap-3 text-black hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+                      className="
+                        inline-flex items-center gap-3 rounded-[8px] border border-black
+                        px-4 py-2 bg-white text-black hover:bg-black hover:text-white
+                        focus:outline-none focus-visible:ring-2 focus-visible:ring-black
+                        transition
+                      "
                     >
                       <span className="truncate">Next: {next.title}</span>
                       <span aria-hidden>→</span>
@@ -216,12 +222,13 @@ export default async function BlogDetailPage({
               </nav>
             )}
 
-            {/* Suggested (exactly 3) */}
+            {/* Suggested (exactly 3) + See more (right) */}
             {suggestions.length > 0 && (
               <section aria-labelledby="suggested-heading" className="pb-16">
                 <h2 id="suggested-heading" className="sr-only">
                   Suggested posts
                 </h2>
+
                 <ul
                   className="
                     grid gap-6
@@ -236,7 +243,6 @@ export default async function BlogDetailPage({
                         thumbnail={b.thumbnail}
                         createdAt={b.createdAt}
                         variant="showcase"
-                        // grey-out tags not on the current post
                         grayTags={ALL_TAGS.filter(
                           (t) =>
                             !post.tags.map((x) => x.toLowerCase()).includes(t.toLowerCase())
@@ -246,6 +252,17 @@ export default async function BlogDetailPage({
                     </li>
                   ))}
                 </ul>
+
+                {/* See more, aligned right */}
+                <div className="mt-8 w-full flex justify-end">
+                  <Link
+                    href="/blog"
+                    className="inline-flex items-center gap-2 text-black hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
+                  >
+                    <span>See more</span>
+                    <span aria-hidden>→</span>
+                  </Link>
+                </div>
               </section>
             )}
           </div>

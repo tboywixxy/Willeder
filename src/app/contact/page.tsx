@@ -1,6 +1,5 @@
 // app/contact/page.tsx
 import type { Metadata } from "next";
-import Image from "next/image";
 import FormClient from "./FormClient";
 
 export const metadata: Metadata = {
@@ -33,7 +32,7 @@ export default function ContactPage() {
             お問い合わせ
           </h1>
 
-          {/* Divider + subheading + divider */}
+        {/* Divider + subheading + divider */}
           <div className="w-full flex items-center gap-4 justify-center" role="presentation" aria-hidden="true">
             <span className="h-px w-[clamp(120px,calc(100vw/1440*571.5),571.5px)] bg-black" />
             <div
@@ -66,19 +65,11 @@ export default function ContactPage() {
 
             {/* Name */}
             <div className="w-full max-w-[1080px] space-y-2">
-              <label
-                htmlFor="name"
-                className="block font-sans font-medium text-black text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1]"
-              >
+              <label htmlFor="name" className="block font-sans font-medium text-black text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1]">
                 お名前*
               </label>
               <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                autoComplete="name"
-                placeholder="お名前をご入力ください"
+                id="name" name="name" type="text" required autoComplete="name" placeholder="お名前をご入力ください"
                 className="w-full rounded-[8px] border border-black bg-white outline-none focus:ring-2 focus:ring-black
                            min-h-[clamp(48px,calc(100vw/1440*55),55px)] px-4
                            font-sans placeholder:font-sans placeholder:font-medium placeholder:text-[#B5B5B5]
@@ -89,20 +80,11 @@ export default function ContactPage() {
 
             {/* Email */}
             <div className="w-full max-w-[1080px] space-y-2">
-              <label
-                htmlFor="email"
-                className="block font-sans font-medium text-black text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1]"
-              >
+              <label htmlFor="email" className="block font-sans font-medium text-black text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1]">
                 メールアドレス*
               </label>
               <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                inputMode="email"
-                placeholder="メールアドレスをご入力ください"
+                id="email" name="email" type="email" required autoComplete="email" inputMode="email" placeholder="メールアドレスをご入力ください"
                 className="w-full rounded-[8px] border border-black bg-white outline-none focus:ring-2 focus:ring-black
                            min-h-[clamp(48px,calc(100vw/1440*55),55px)] px-4
                            font-sans placeholder:font-sans placeholder:font-medium placeholder:text-[#B5B5B5]
@@ -113,20 +95,11 @@ export default function ContactPage() {
 
             {/* Phone */}
             <div className="w-full max-w-[1080px] space-y-2">
-              <label
-                htmlFor="phone"
-                className="block font-sans font-medium text-black text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1]"
-              >
+              <label htmlFor="phone" className="block font-sans font-medium text-black text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1]">
                 電話番号*
               </label>
               <input
-                id="phone"
-                name="phone"
-                type="tel"
-                required
-                autoComplete="tel"
-                inputMode="tel"
-                placeholder="電話番号をご入力ください"
+                id="phone" name="phone" type="tel" required autoComplete="tel" inputMode="tel" placeholder="電話番号をご入力ください"
                 className="w-full rounded-[8px] border border-black bg-white outline-none focus:ring-2 focus:ring-black
                            min-h-[clamp(48px,calc(100vw/1440*55),55px)] px-4
                            font-sans placeholder:font-sans placeholder:font-medium placeholder:text-[#B5B5B5]
@@ -137,18 +110,11 @@ export default function ContactPage() {
 
             {/* Message */}
             <div className="w-full max-w-[1080px] space-y-2">
-              <label
-                htmlFor="message"
-                className="block font-sans font-medium text-black text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1]"
-              >
+              <label htmlFor="message" className="block font-sans font-medium text-black text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1]">
                 お問い合わせ内容*
               </label>
               <textarea
-                id="message"
-                name="message"
-                required
-                autoComplete="on"
-                placeholder="お問い合わせ内容をご入力ください"
+                id="message" name="message" required autoComplete="on" placeholder="お問い合わせ内容をご入力ください"
                 className="w-full rounded-[8px] border border-black bg-white outline-none focus:ring-2 focus:ring-black resize-y
                            min-h-[clamp(140px,calc(100vw/1440*160),160px)] px-4 py-4
                            font-sans placeholder:font-sans placeholder:font-medium placeholder:text-[#B5B5B5]
@@ -159,19 +125,8 @@ export default function ContactPage() {
 
             {/* Checkbox */}
             <div className="w-full max-w-[1080px] flex items-start gap-3">
-              <input
-                id="agree"
-                name="agree"
-                type="checkbox"
-                required
-                className="w-[30px] h-[30px] border border-black rounded-[4px] accent-black"
-                aria-required="true"
-              />
-              <label
-                htmlFor="agree"
-                className="font-sans font-medium underline underline-offset-0 decoration-solid
-                           text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1.25]"
-              >
+              <input id="agree" name="agree" type="checkbox" required className="w-[30px] h-[30px] border border-black rounded-[4px] accent-black" aria-required="true" />
+              <label htmlFor="agree" className="font-sans font-medium underline underline-offset-0 decoration-solid text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1.25]">
                 プライバシーポリシーに同意する
               </label>
             </div>
@@ -187,25 +142,19 @@ export default function ContactPage() {
                            px-[clamp(24px,calc(100vw/1440*48),48px)] py-4 disabled:opacity-60 disabled:cursor-not-allowed"
                 aria-label="Submit contact form"
               >
-                <span className="font-sans font-bold leading-[1.5] tracking-[0.05em]
-                                 text-[clamp(20px,calc(100vw/1440*24),24px)]">
+                <span className="font-sans font-bold leading-[1.5] tracking-[0.05em] text-[clamp(20px,calc(100vw/1440*24),24px)]">
                   Submit
                 </span>
-                <span
-                  className="relative block -top-[0.12px]
-                                 w-[clamp(25px,calc(100vw/1440*34),34px)]
-                                 h-[clamp(18px,calc(100vw/1440*24),24px)]"
-                  aria-hidden="true"
-                >
-                  <Image
-                    src="/images/services/arrow 2.png"
+                <span className="relative block -top-[0.12px] w-[clamp(25px,calc(100vw/1440*34),34px)] h-[clamp(18px,calc(100vw/1440*24),24px)]" aria-hidden="true">
+                  {/* Use plain <img> for tiny icon */}
+                  <img
+                    src="/images/services/arrow%202.png"
+                    width={34}
+                    height={24}
                     alt=""
-                    fill
-                    className="object-contain"
-                    sizes="(max-width: 599px) 25px, 34px"
-                    decoding="async"
                     loading="lazy"
-                    style={{ display: "block", contain: "size layout" }}
+                    decoding="async"
+                    className="block"
                   />
                 </span>
               </button>

@@ -29,9 +29,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
   },
-  // Helps Lighthouse (and Android address bar color)
   other: { "theme-color": "#ffffff" },
-  // Be explicit; Next sets one automatically but this keeps LH happy in some runs
   viewport: {
     width: "device-width",
     initialScale: 1,
@@ -42,9 +40,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        {/* LCP improvement for remote images */}
-        <link rel="preconnect" href="https://picsum.photos" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://picsum.photos" />
+        {/* Removed global preconnect/dns-prefetch to picsum.photos.
+            If needed, add those hints only on pages that actually load picsum images. */}
       </head>
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
         <Header />

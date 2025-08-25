@@ -1,9 +1,45 @@
-// src/components/Header.tsx
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useCallback } from "react";
 
 export default function Header() {
-  // Keep CSS-only mobile menu; no client JS needed
+  const pathname = usePathname() || "/";
+  const detailsRef = useRef<HTMLDetailsElement | null>(null);
+
+  const closeMobileMenu = useCallback(() => {
+    if (detailsRef.current?.open) detailsRef.current.open = false;
+  }, []);
+
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      const el = detailsRef.current;
+      if (!el || !el.open) return;
+      const target = e.target as Node | null;
+      if (target && el.contains(target)) return;
+      el.open = false;
+    };
+    const onScroll = () => {
+      const el = detailsRef.current;
+      if (el?.open) el.open = false;
+    };
+    document.addEventListener("click", onDocClick, true);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      document.removeEventListener("click", onDocClick, true);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    closeMobileMenu();
+  }, [pathname, closeMobileMenu]);
+
+  const isBlogActive = pathname === "/blog" || pathname.startsWith("/blog/");
+  const isHomeActive = pathname === "/" && !isBlogActive;
+
   const BASE = 1440;
   const headerHClamp = "clamp(48px,calc(100vw/1440*64),64px)";
 
@@ -11,6 +47,12 @@ export default function Header() {
     `font-sans font-bold ` +
     `text-[clamp(14px,calc(100vw/${BASE}*16),16px)] ` +
     `leading-[1.5] tracking-[0.05em] align-middle`;
+
+  const linkCls = (active: boolean) =>
+    `${navText} ${active ? "text-[#AD002D]" : "text-black"} hover:underline`;
+
+  const mobileCtaText =
+    `font-sans font-bold text-[clamp(18px,calc(100vw/${BASE}*24),24px)] leading-[1.5] tracking-[0.05em]`;
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b">
@@ -28,18 +70,28 @@ export default function Header() {
             <Link
               href="/"
               prefetch={false}
-              className="flex items-center h-12 w-[clamp(128px,calc(100vw/1440*176),230px)] p-1 gap-[10px]"
+              className="
+                flex items-center
+                h-12
+                w-[clamp(128px,calc(100vw/1440*176),230px)]
+                p-1 min-[600px]:py-1 min-[600px]:px-0
+                gap-[10px]
+              "
               aria-label="Willeder Home"
             >
-              <Image
-                src="/willeder-logo.png"
-                alt="Willeder logo"
-                width={176}
-                height={60}
-                sizes="(max-width:600px) 128px, 176px"
-                priority={false}
-                className="block"
-              />
+              {/* Reserve space with aspect ratio box to avoid unsized-media reflow */}
+              <span className="relative block w-full aspect-[176/60]">
+                <Image
+                  src="/willeder-logo.png"
+                  alt="Willeder logo"
+                  fill
+                  sizes="(max-width:600px) 128px, 176px"
+                  decoding="async"
+                  priority={false}
+                  fetchPriority="low"
+                  className="object-contain"
+                />
+              </span>
             </Link>
           </div>
 
@@ -56,10 +108,10 @@ export default function Header() {
                 aria-label="Primary"
               >
                 <div className="flex items-center gap-[60px]">
-                  <Link href="/" prefetch={false} className={`${navText} text-black hover:underline`}>
+                  <Link href="/" prefetch={false} className={linkCls(isHomeActive)}>
                     TOP
                   </Link>
-                  <Link href="/blog" prefetch={false} className={`${navText} text-black hover:underline`}>
+                  <Link href="/blog" prefetch={false} className={linkCls(isBlogActive)}>
                     ブログ
                   </Link>
                 </div>
@@ -81,24 +133,22 @@ export default function Header() {
                   className={`group flex h-full w-full items-center justify-center gap-2 text-white ${navText} transition-colors duration-200 hover:bg-[#1a1a1a]`}
                 >
                   <span>お問い合わせ</span>
-                  {/* Tiny icon → plain <img> to avoid any image runtime */}
                   <span className="relative block w-[34px] h-[24px]">
-                    <img
-                      src="/images/services/arrow%202.png"
-                      width={34}
-                      height={24}
+                    <Image
+                      src="/images/services/arrow-2.png" /* renamed (no space) */
                       alt=""
-                      loading="lazy"
-                      decoding="async"
-                      className="block"
+                      fill
+                      sizes="34px"
+                      fetchPriority="low"
+                      className="object-contain transition-transform duration-200 group-hover:translate-x-1"
                     />
                   </span>
                 </Link>
               </div>
             </div>
 
-            {/* <600: Hamburger — pure CSS <details> */}
-            <details className="ml-auto min-[600px]:hidden group relative">
+            {/* <600: Hamburger */}
+            <details ref={detailsRef} className="ml-auto min-[600px]:hidden group relative">
               <summary
                 className="
                   w-12 h-12 flex items-center justify-center
@@ -109,7 +159,6 @@ export default function Header() {
               >
                 <span className="sr-only">Menu</span>
                 <span className="relative h-5 w-6 block">
-                  {/* top bar */}
                   <span
                     className="
                       absolute left-0 right-0 top-1/2 block h-0.5 bg-black
@@ -117,7 +166,6 @@ export default function Header() {
                       group-open:translate-y-0 group-open:rotate-45
                     "
                   />
-                  {/* bottom bar */}
                   <span
                     className="
                       absolute left-0 right-0 top-1/2 block h-0.5 bg-black
@@ -128,7 +176,6 @@ export default function Header() {
                 </span>
               </summary>
 
-              {/* Mobile sheet */}
               <div
                 className="
                   fixed inset-x-0 z-[100] border-b bg-white text-black shadow-lg
@@ -142,12 +189,22 @@ export default function Header() {
               >
                 <ul className="flex flex-col items-center justify-center text-center divide-y divide-black/10">
                   <li className="w-full">
-                    <Link href="/" prefetch={false} className={`${navText} text-black block px-4 py-3`}>
+                    <Link
+                      href="/"
+                      prefetch={false}
+                      onClick={closeMobileMenu}
+                      className={`${linkCls(isHomeActive)} block px-4 py-3`}
+                    >
                       Home
                     </Link>
                   </li>
                   <li className="w-full">
-                    <Link href="/blog" prefetch={false} className={`${navText} text-black block px-4 py-3`}>
+                    <Link
+                      href="/blog"
+                      prefetch={false}
+                      onClick={closeMobileMenu}
+                      className={`${linkCls(isBlogActive)} block px-4 py-3`}
+                    >
                       Blogs
                     </Link>
                   </li>
@@ -155,24 +212,22 @@ export default function Header() {
                     <Link
                       href="/contact"
                       prefetch={false}
+                      onClick={closeMobileMenu}
                       className="
                         group my-3 mx-4 flex items-center justify-center gap-4
                         px-12 py-4 bg-[#AD002D] text-white rounded-[16px]
                         transition-colors duration-200 hover:bg-[#c51644]
                       "
                     >
-                      <span className={`font-sans font-bold text-[clamp(18px,calc(100vw/${BASE}*24),24px)] leading-[1.5] tracking-[0.05em]`}>
-                        Contact
-                      </span>
-                      <span className="relative block w-[21px] h-[24.25px] -top-[0.12px]">
-                        <img
-                          src="/images/services/arrow%202.png"
-                          width={21}
-                          height={24}
+                      <span className={mobileCtaText}>Contact</span>
+                      <span className="relative block w-[21px] h-[24.25px] -top-[0.12px] transition-transform duration-200 group-hover:translate-x-1">
+                        <Image
+                          src="/images/services/arrow-2.png" /* renamed (no space) */
                           alt=""
-                          loading="lazy"
-                          decoding="async"
-                          className="block"
+                          fill
+                          sizes="21px"
+                          fetchPriority="low"
+                          className="object-contain"
                         />
                       </span>
                     </Link>

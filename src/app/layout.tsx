@@ -1,4 +1,3 @@
-// src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "../components/Header";
@@ -30,20 +29,17 @@ export const metadata: Metadata = {
     card: "summary_large_image",
   },
   other: { "theme-color": "#ffffff" },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-  },
+  viewport: { width: "device-width", initialScale: 1 },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" className="scroll-smooth">
       <head>
-        {/* Removed global preconnect/dns-prefetch to picsum.photos.
-            If needed, add those hints only on pages that actually load picsum images. */}
+        <link rel="preconnect" href="https://picsum.photos" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://picsum.photos" />
       </head>
-      <body className="min-h-screen flex flex-col" suppressHydrationWarning>
+      <body className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

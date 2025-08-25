@@ -1,7 +1,7 @@
-// app/contact/FormClient.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 type Status = "idle" | "sending" | "ok" | "error";
 type ApiResponse = { ok?: boolean; error?: string };
@@ -20,7 +20,18 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
   const [msg, setMsg] = useState("");
   const [toastVisible, setToastVisible] = useState(false);
 
+  // mount gate for portal: only true after first non-idle state
+  const [mounted, setMounted] = useState(false);
+  const [portalReady, setPortalReady] = useState(false);
+
   const isSending = status === "sending";
+
+  useEffect(() => setMounted(true), []);
+
+  // Enable portal only after we actually need to show a toast at least once
+  useEffect(() => {
+    if (status !== "idle") setPortalReady(true);
+  }, [status]);
 
   // Show/hide logic + auto-dismiss for ok/error
   useEffect(() => {
@@ -29,7 +40,6 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
 
     if (status === "sending") {
       setToastVisible(true);
-      setMsg("Sending…");
     } else if (status === "ok" || status === "error") {
       setToastVisible(true);
       hideTimer = setTimeout(() => {
@@ -37,7 +47,7 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
         cleanupTimer = setTimeout(() => {
           setMsg("");
           setStatus("idle");
-        }, 300);
+        }, 300); // match transition duration
       }, 2000);
     } else if (status === "idle" && !msg) {
       setToastVisible(false);
@@ -49,11 +59,26 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
     };
   }, [status, msg]);
 
-  return (
-    <>
-      {/* Inline toast (no React portal) */}
+  // Inline aria-live placeholder (no portal cost on initial paint)
+  const inlineLive = (
+    <div
+      aria-live={status === "sending" ? "polite" : "assertive"}
+      aria-atomic="true"
+      className="sr-only"
+    >
+      {msg}
+    </div>
+  );
+
+  const toastNode =
+    mounted &&
+    portalReady &&
+    createPortal(
       <div
-        className="fixed inset-x-0 top-0 z-[2147483647] flex justify-center pointer-events-none"
+        className="
+          fixed inset-x-0 top-0 z-[2147483647]
+          flex justify-center pointer-events-none
+        "
         aria-live={status === "sending" ? "polite" : "assertive"}
         aria-atomic="true"
       >
@@ -62,15 +87,30 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
             "mt-4 inline-flex items-center justify-center gap-2",
             "px-4 py-2 rounded-md text-white shadow-lg",
             "w-auto max-w-[90vw] text-center break-words whitespace-pre-line",
+            "pointer-events-auto",
+            status === "ok"
+              ? "bg-green-600"
+              : status === "error"
+              ? "bg-red-600"
+              : "bg-gray-800",
             "transform transition-all duration-300 ease-out",
             toastVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0",
-            status === "ok" ? "bg-green-600" : status === "error" ? "bg-red-600" : "bg-gray-800",
           ].join(" ")}
           role={status === "error" ? "alert" : "status"}
         >
           {msg}
         </div>
-      </div>
+      </div>,
+      document.body
+    );
+
+  return (
+    <>
+      {/* inline aria-live placeholder (cheap) */}
+      {inlineLive}
+
+      {/* portal toast (mounted lazily on first use) */}
+      {toastNode}
 
       <form
         ref={formRef}
@@ -87,6 +127,7 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
           }
 
           setStatus("sending");
+          setMsg("Sending…");
 
           const body = new FormData(formEl);
 

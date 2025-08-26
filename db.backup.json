@@ -3,7 +3,7 @@
     {
       "id": "1",
       "slug": "designing-with-clarity",
-      "title": "Jeaning",
+      "title": "Frontend Architecture designing-with-clarity",
       "thumbnail": "https://picsum.photos/seed/clarity/1200/630",
       "tags": [
         "Design",
@@ -12,14 +12,14 @@
       "createdAt": "2025-08-01",
       "detail": {
         "t1": "Clarity begins with intent—every pixel should serve understanding, removing visual noise so meaning comes through first.",
-        "t2": "We reduce choices per screen and group content by meaning, letting structure guide the next decision naturally.",
+        "t2": "We reduce   per screen and group content by meaning, letting structure guide the next decision naturally.",
         "t5": "Typography sets rhythm; spacing reinforces hierarchy, and consistent scales keep interfaces honest—{{red}}making clarity feel intentional on every screen{{/red}}.",
         "t6": "Accessible contrast and strong focus styles build trust; sensible motion and readable lengths keep fatigue low.",
         "t7": "Empty states teach and guide the next action, turning dead ends into micro-onboarding moments.",
         "t8": "Copy should state outcomes, not destinations, so users always know what happens when they commit.",
         "t11": "Design reviews focus on user outcomes, not decoration; we ask if the next step is obvious and safe.",
         "t12a": "Document decisions so future changes stay aligned; a brief rationale and link to examples helps—{{red}}the decision record becomes the single source of truth{{/red}}.",
-        "t12c": "Tokens map Figma choices to CSS variables so names reflect purpose, not raw values.",
+        "t12c": "Tokens map Figma   to CSS variables so names reflect purpose, not raw values.",
         "t12d": "Consistency scales teams without slowing creativity by removing trivia from daily decisions.",
         "t15a": "Measure success via completion and errors avoided; {{red}}favor outcomes over output{{/red}} and review targets monthly.",
         "t15b": "Ship small, learn quickly, refine deliberately; insight beats certainty.",
@@ -39,15 +39,15 @@
           "alt": "Accessible color examples",
           "caption": "Contrast meets AA for body and UI text."
         },
-        "callout": "Clarity is a team sport—codify choices and stick to them."
+        "callout": "Clarity is a team sport—codify   and stick to them."
       },
-      "content": "<h2>Jeaning</h2><p>Clarity begins with intent—every pixel should serve understanding. We reduce choices per screen and group content by meaning. Typography sets rhythm; spacing reinforces hierarchy.</p><img src=\"https://picsum.photos/seed/clarity-img1/800/450\" alt=\"Type scale sample\" /><p>Accessible contrast and strong focus styles build trust. Empty states teach and guide the next action. Copy should state outcomes, not destinations.</p><p>Design reviews focus on user outcomes, not decoration. Document decisions so future changes stay aligned. Tokens map Figma choices to CSS variables.</p><img src=\"https://picsum.photos/seed/clarity-img2/800/450\" alt=\"Layout spacing grid\" /><p>Consistency scales teams without slowing creativity. Measure success via completion and errors avoided. Ship small, learn quickly, refine deliberately. Clarity is a habit formed by constraints and care.</p><img src=\"https://picsum.photos/seed/clarity-img3/800/450\" alt=\"Accessible color examples\" />",
+      "content": "<h2>Jeaning</h2><p>Clarity begins with intent—every pixel should serve understanding. We reduce   per screen and group content by meaning. Typography sets rhythm; spacing reinforces hierarchy.</p><img src=\"https://picsum.photos/seed/clarity-img1/800/450\" alt=\"Type scale sample\" /><p>Accessible contrast and strong focus styles build trust. Empty states teach and guide the next action. Copy should state outcomes, not destinations.</p><p>Design reviews focus on user outcomes, not decoration. Document decisions so future changes stay aligned. Tokens map Figma   to CSS variables.</p><img src=\"https://picsum.photos/seed/clarity-img2/800/450\" alt=\"Layout spacing grid\" /><p>Consistency scales teams without slowing creativity. Measure success via completion and errors avoided. Ship small, learn quickly, refine deliberately. Clarity is a habit formed by constraints and care.</p><img src=\"https://picsum.photos/seed/clarity-img3/800/450\" alt=\"Accessible color examples\" />",
       "tagsText": "Design, Branding"
     },
     {
       "id": "2",
       "slug": "nextjs-app-router-basics",
-      "title": "Next.js App Router Basics",
+      "title": "Next.js App Router Basics Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/approuter/1200/630",
       "tags": [
         "Engineering",
@@ -91,7 +91,7 @@
     {
       "id": "3",
       "slug": "performance-first",
-      "title": "Performance First",
+      "title": "Performance First Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/perf/1200/630",
       "tags": [
         "Engineering",
@@ -135,7 +135,7 @@
     {
       "id": "4",
       "slug": "content-strategy-for-blogs",
-      "title": "Content Strategy for Blogs",
+      "title": "Content Strategy for Blogs Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/strategy/1200/630",
       "tags": [
         "Branding",
@@ -179,7 +179,7 @@
     {
       "id": "5",
       "slug": "scaling-with-json-server",
-      "title": "Scaling Local Dev with JSON Server",
+      "title": "Scaling Local Dev with JSON Server Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/jsonserver/1200/630",
       "tags": [
         "IT Consulting",
@@ -223,7 +223,7 @@
     {
       "id": "6",
       "slug": "nodemailer-on-vercel",
-      "title": "Nodemailer on Vercel",
+      "title": "Nodemailer on Vercel Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/nodemailer/1200/630",
       "tags": [
         "Engineering",
@@ -267,7 +267,7 @@
     {
       "id": "7",
       "slug": "responsive-figma-to-css",
-      "title": "Responsive Figma → CSS with clamp()",
+      "title": "Responsive Figma → CSS with clamp() Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/figmacss/1200/630",
       "tags": [
         "Design",
@@ -311,7 +311,7 @@
     {
       "id": "8",
       "slug": "accessibility-aa-checklist",
-      "title": "Accessibility AA Checklist",
+      "title": "Accessibility AA Checklist Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/a11y/1200/630",
       "tags": [
         "Design",
@@ -331,7 +331,7 @@
         "t12d": "Avoid motion that harms vestibular comfort; honor reduced motion.",
         "t15a": "Inclusive by default scales best; {{red}}accessibility helps everyone{{/red}}.",
         "t15b": "Make checks part of PRs so regressions don’t sneak in.",
-        "t15c": "Everyone benefits from accessible choices in the end.",
+        "t15c": "Everyone benefits from accessible   in the end.",
         "img1": {
           "src": "https://picsum.photos/seed/a11y1/800/450",
           "alt": "Focus ring",
@@ -349,13 +349,13 @@
         },
         "callout": "Habits, not heroics, make products accessible."
       },
-      "content": "<h2>Accessibility AA Checklist</h2><p>Accessibility is quality work, not an add-on. Use landmarks, ordered headings, and visible focus. Color is never the only signal.</p><img src=\"https://picsum.photos/seed/a11y1/800/450\" alt=\"Focus ring\" /><p>Labels must be clear and persistent. Keyboard users complete every flow. aria-live announces async updates.</p><p>Provide transcripts and alt text with context. Test with a screen reader weekly. Check contrast against AA.</p><img src=\"https://picsum.photos/seed/a11y2/800/450\" alt=\"Contrast tool\" /><p>Avoid motion that harms vestibular comfort. Inclusive by default scales best. Make checks part of PRs. Everyone benefits from accessible choices.</p><img src=\"https://picsum.photos/seed/a11y3/800/450\" alt=\"Keyboard testing\" />",
+      "content": "<h2>Accessibility AA Checklist</h2><p>Accessibility is quality work, not an add-on. Use landmarks, ordered headings, and visible focus. Color is never the only signal.</p><img src=\"https://picsum.photos/seed/a11y1/800/450\" alt=\"Focus ring\" /><p>Labels must be clear and persistent. Keyboard users complete every flow. aria-live announces async updates.</p><p>Provide transcripts and alt text with context. Test with a screen reader weekly. Check contrast against AA.</p><img src=\"https://picsum.photos/seed/a11y2/800/450\" alt=\"Contrast tool\" /><p>Avoid motion that harms vestibular comfort. Inclusive by default scales best. Make checks part of PRs. Everyone benefits from accessible  .</p><img src=\"https://picsum.photos/seed/a11y3/800/450\" alt=\"Keyboard testing\" />",
       "tagsText": "Design, Other"
     },
     {
       "id": "9",
       "slug": "lighthouse-scores-mobile",
-      "title": "Hitting 90+ Lighthouse (Mobile)",
+      "title": "Hitting 90+ Lighthouse (Mobile) Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/lh/1200/630",
       "tags": [
         "Engineering",
@@ -363,7 +363,7 @@
       ],
       "createdAt": "2025-08-09",
       "detail": {
-        "t1": "Great scores follow good choices repeated consistently.",
+        "t1": "Great scores follow good   repeated consistently.",
         "t2": "Control the critical path and reduce JS to what’s essential.",
         "t5": "Serve modern formats and explicit sizes; {{red}}reserve space to tame CLS{{/red}}.",
         "t6": "Hydrate fewer components by default; choose islands intentionally.",
@@ -393,13 +393,13 @@
         },
         "callout": "Set budgets early—then keep them."
       },
-      "content": "<h2>Hitting 90+ Lighthouse (Mobile)</h2><p>Great scores follow good choices. Control the critical path and reduce JS. Serve modern formats and explicit sizes.</p><img src=\"https://picsum.photos/seed/lh1/800/450\" alt=\"Vitals chart\" /><p>Hydrate fewer components by default. Audit fonts and third-party scripts. Prefer route-level code splitting.</p><p>Measure on a mid-tier phone. Field data validates lab wins. Avoid layout thrash; reserve space.</p><img src=\"https://picsum.photos/seed/lh2/800/450\" alt=\"Network panel\" /><p>Skeletons should feel deliberate. Guardrails in CI prevent regressions. Performance is product strategy. Fast feels trustworthy.</p><img src=\"https://picsum.photos/seed/lh3/800/450\" alt=\"Bundle report\" />",
+      "content": "<h2>Hitting 90+ Lighthouse (Mobile)</h2><p>Great scores follow good  . Control the critical path and reduce JS. Serve modern formats and explicit sizes.</p><img src=\"https://picsum.photos/seed/lh1/800/450\" alt=\"Vitals chart\" /><p>Hydrate fewer components by default. Audit fonts and third-party scripts. Prefer route-level code splitting.</p><p>Measure on a mid-tier phone. Field data validates lab wins. Avoid layout thrash; reserve space.</p><img src=\"https://picsum.photos/seed/lh2/800/450\" alt=\"Network panel\" /><p>Skeletons should feel deliberate. Guardrails in CI prevent regressions. Performance is product strategy. Fast feels trustworthy.</p><img src=\"https://picsum.photos/seed/lh3/800/450\" alt=\"Bundle report\" />",
       "tagsText": "Engineering, Design"
     },
     {
       "id": "10",
       "slug": "branding-systems-101",
-      "title": "Branding Systems 101",
+      "title": "Branding Systems 101 Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/branding/1200/630",
       "tags": [
         "Branding"
@@ -441,52 +441,52 @@
     },
     {
       "id": "11",
-      "slug": "design-ops-in-practice",
-      "title": "Design Ops in Practice",
-      "thumbnail": "https://picsum.photos/seed/dops/1200/630",
+      "slug": "frontend-architecture-choices",
+      "title": "Frontend Architecture Choices right now today",
+      "thumbnail": "https://picsum.photos/seed/approuter/1200/630",
       "tags": [
-        "Design",
+        "Engineering",
         "IT Consulting"
       ],
-      "createdAt": "2025-08-11",
+      "createdAt": "2025-08-12",
       "detail": {
-        "t1": "Ops aligns people, process, and tools so work flows smoothly.",
-        "t2": "Make intake clear; reduce DM archaeology with shared queues.",
-        "t5": "Status should be visible without meetings; {{red}}dashboards beat slide decks{{/red}}.",
-        "t6": "Teach the system, not the file; mentor on principles.",
-        "t7": "Libraries and tokens pay compounding dividends when maintained.",
-        "t8": "Prototype when unknowns are high to retire risk early.",
-        "t11": "Define success criteria per initiative and revisit quarterly.",
-        "t12a": "Pair quant with qualitative insight; {{red}}numbers explain, stories persuade{{/red}}.",
-        "t12c": "Review and prune quarterly to avoid entropy.",
-        "t12d": "Ops creates a runway for creativity when friction is low.",
-        "t15a": "Good ops feels invisible; {{red}}the work feels lighter{{/red}}.",
-        "t15b": "Friction down, throughput up—that’s the loop.",
-        "t15c": "Process serves outcomes, not the other way around.",
+        "t1": "Webサイト制作において、初期の設計段階はプロジェクト全体のスピードと品質を左右する重要なステップです。近年ではクラウド型のデザインツール「Figma」を使うことで、従来の静的なワイヤーフレームやデザイン作業が、チーム全体で共有しやすくなり、修正も素早く反映できるようになりました。本記事では、Figmaを使った効率的なWebサイト設計のコツを3つの観点からご紹介します。",
+        "t2": "コンポーネント化でデザインの一貫性を保つ",
+        "t5": "Webサイトのデザインでは「ボタン」「ナビゲーション」「カード」など、同じ要素を繰り返し利用する場面が多くあります。Figmaのコンポーネント機能を活用することで、一度作成したUIパーツを何度でも再利用でき、後からデザインを変更した際も全ページに自動で反映されます。これにより、{{red}}一貫性のあるデザインを保ちながら修正作業の手間を最小限に抑えることが可能{{/red}}です。",
+        "t6": "Auto Layoutとレスポンシブ設計を組み合わせる",
+        "t7": "初期の設計段階",
+        "t8": "現代のWebサイトでは、PC・タブレット・スマートフォンといった複数のデバイスに対応するレスポンシブデザインが当たり前になっています。FigmaのAuto Layout機能を使うと、テキストの増減や画面サイズの違いに応じて要素が自動でリサイズされるため、実際のブラウザ挙動に近い状態でデザインを検証できます。",
+        "t11": "応用段階",
+        "t12a": "さらに、{{red}}3つの代表的なブレイクポイント（モバイル／タブレット／デスクトップ）をFigma上で用意しておくこと{{/red}}で、開発者への指示も明確になり、実装との齟齬を防ぐことができます。",
+        "t12c": "現代のWebサイト制作において、初期の設計段階はプロジェクト全体のスピードと品質を左右する重要なステップです。近年ではクラウド型のデザインツール「Figma」を使うことで、従来の静的なワイヤーフレームやデザイン作業が、チーム全体で共有しやすくなり、修正も素早く反映できるようになりました。本記事では、Figmaを使った効率的なWebサイト設計のコツを3つの観点からご紹介します。",
+        "t12d": "コメントとプロトタイプ機能でチーム全体を巻き込む",
+        "t15a": "Figmaの大きな強みは「共同作業」にあります。デザイナーだけでなく、{{red}}エンジニアやクライアントも同じファイルを開き、コメント機能を使って直接フィードバックを残せます。{{/red}}さらに、プロトタイプ機能でページ遷移やアニメーションを設定しておけば、実際のWebサイトの動きに近い形で確認でき、完成イメージの共有が容易になります。結果として、要件のすり合わせや修正が初期段階で済み、開発後の手戻りを減らすことができます。",
+        "t15b": "まとめ",
+        "t15c": "Figmaを活用したWebサイト設計のコツは、①コンポーネント化で一貫性を確保、②Auto Layoutでレスポンシブを想定したデザイン、③コメントやプロトタイプでチーム全体を巻き込む、の3点に集約されます。これらを意識することで、効率的かつ質の高いWebサイト制作が可能になり、開発の現場でも大きなメリットを得られるでしょう。",
         "img1": {
-          "src": "https://picsum.photos/seed/dops1/800/450",
-          "alt": "Kanban board",
-          "caption": "Clarity reduces context switching."
+          "src": "https://picsum.photos/seed/fa1/800/450",
+          "alt": "Component boundaries",
+          "caption": "Figmaのコンポーネントの設定例"
         },
         "img2": {
-          "src": "https://picsum.photos/seed/dops2/800/450",
-          "alt": "Metrics dashboard",
-          "caption": "Track the work that matters."
+          "src": "https://picsum.photos/seed/fa2/800/450",
+          "alt": "Perf budget sheet",
+          "caption": "FigmaのAuto Layoutの仕組み"
         },
         "img3": {
-          "src": "https://picsum.photos/seed/dops3/800/450",
-          "alt": "Design library",
-          "caption": "Reusable parts speed delivery."
+          "src": "https://picsum.photos/seed/fa3/800/450",
+          "alt": "Module graph",
+          "caption": "Figmaの標準機能であるコメントを使ったコミュニケーショ"
         },
-        "callout": "Make the best path the easiest path."
+        "callout": "Webサイト制作において、初期の設計段階はプロジェクト全体のスピードと品質を左右する重要なステップです。近年ではクラウド型のデザインツール「Figma」を使うことで、従来の静的なワイヤーフレームやデザイン作業が、チーム全体で共有しやすくなり、修正も素早く反映できるようになりました。本記事では、Figmaを使った効率的なWebサイト設計のコツを3つの観点からご紹介します。"
       },
-      "content": "<h2>Design Ops in Practice</h2><p>Ops aligns people, process, and tools. Make intake clear; reduce DM archaeology. Status should be visible without meetings.</p><img src=\"https://picsum.photos/seed/dops1/800/450\" alt=\"Kanban board\" /><p>Teach the system, not the file. Libraries and tokens pay compounding dividends. Prototype when unknowns are high.</p><p>Define success criteria per initiative. Pair quant with qualitative insight. Review and prune quarterly.</p><img src=\"https://picsum.photos/seed/dops2/800/450\" alt=\"Metrics dashboard\" /><p>Ops creates a runway for creativity. Good ops feels invisible. Friction down, throughput up. Process serves outcomes.</p><img src=\"https://picsum.photos/seed/dops3/800/450\" alt=\"Design library\" />",
-      "tagsText": "Design, IT Consulting"
+      "content": "<h2>Frontend Architecture  </h2><p>Architecture is a set of tradeoffs. Choose state tools based on scope. Keep presentational components pure.</p><img src=\"https://picsum.photos/seed/fa1/800/450\" alt=\"Component boundaries\" /><p>Move effects to the edges. Composition beats inheritance. Co-locate by feature for speed.</p><p>Shared boundaries make refactors safe. Establish budgets and splitting early. Hydrate less by default.</p><img src=\"https://picsum.photos/seed/fa2/800/450\" alt=\"Perf budget sheet\" /><p>Measure in the field continuously. Boring is good when it scales. Pick predictable over fashionable. Small pieces, loosely coupled.</p><img src=\"https://picsum.photos/seed/fa3/800/450\" alt=\"Module graph\" />",
+      "tagsText": "Engineering, IT Consulting"
     },
     {
       "id": "12",
-      "slug": "frontend-architecture-choices",
-      "title": "Frontend Architecture Choices",
+      "slug": "frontend-architecture-perf-budget-sheet",
+      "title": "Frontend Architecture for the pref budget sheet",
       "thumbnail": "https://picsum.photos/seed/fa/1200/630",
       "tags": [
         "Engineering",
@@ -494,43 +494,43 @@
       ],
       "createdAt": "2025-08-12",
       "detail": {
-        "t1": "Architecture is a set of tradeoffs made explicit and documented.",
-        "t2": "Choose state tools based on scope; simple beats global by default.",
-        "t5": "Keep presentational components pure; {{red}}impure edges belong at boundaries{{/red}}.",
-        "t6": "Move effects to the edges where testing is easier.",
-        "t7": "Composition beats inheritance when modeling behavior.",
-        "t8": "Co-locate by feature for speed and discoverability.",
-        "t11": "Shared boundaries make refactors safe and predictable.",
-        "t12a": "Establish budgets and splitting early; {{red}}don’t defer the hard calls{{/red}}.",
-        "t12c": "Hydrate less by default; render server-first where possible.",
-        "t12d": "Measure in the field continuously to learn from reality.",
-        "t15a": "Boring is good when it scales; {{red}}stability is a feature{{/red}}.",
-        "t15b": "Pick predictable over fashionable for longevity.",
-        "t15c": "Small pieces, loosely coupled, win the marathon.",
+        "t1": "Webサイト制作において、初期の設計段階はプロジェクト全体のスピードと品質を左右する重要なステップです。近年ではクラウド型のデザインツール「Figma」を使うことで、従来の静的なワイヤーフレームやデザイン作業が、チーム全体で共有しやすくなり、修正も素早く反映できるようになりました。本記事では、Figmaを使った効率的なWebサイト設計のコツを3つの観点からご紹介します。",
+        "t2": "コンポーネント化でデザインの一貫性を保つ",
+        "t5": "Webサイトのデザインでは「ボタン」「ナビゲーション」「カード」など、同じ要素を繰り返し利用する場面が多くあります。Figmaのコンポーネント機能を活用することで、一度作成したUIパーツを何度でも再利用でき、後からデザインを変更した際も全ページに自動で反映されます。これにより、{{red}}一貫性のあるデザインを保ちながら修正作業の手間を最小限に抑えることが可能{{/red}}です。",
+        "t6": "Auto Layoutとレスポンシブ設計を組み合わせる",
+        "t7": "初期の設計段階",
+        "t8": "現代のWebサイトでは、PC・タブレット・スマートフォンといった複数のデバイスに対応するレスポンシブデザインが当たり前になっています。FigmaのAuto Layout機能を使うと、テキストの増減や画面サイズの違いに応じて要素が自動でリサイズされるため、実際のブラウザ挙動に近い状態でデザインを検証できます。",
+        "t11": "応用段階",
+        "t12a": "さらに、{{red}}3つの代表的なブレイクポイント（モバイル／タブレット／デスクトップ）をFigma上で用意しておくこと{{/red}}で、開発者への指示も明確になり、実装との齟齬を防ぐことができます。",
+        "t12c": "現代のWebサイト制作において、初期の設計段階はプロジェクト全体のスピードと品質を左右する重要なステップです。近年ではクラウド型のデザインツール「Figma」を使うことで、従来の静的なワイヤーフレームやデザイン作業が、チーム全体で共有しやすくなり、修正も素早く反映できるようになりました。本記事では、Figmaを使った効率的なWebサイト設計のコツを3つの観点からご紹介します。",
+        "t12d": "コメントとプロトタイプ機能でチーム全体を巻き込む",
+        "t15a": "Figmaの大きな強みは「共同作業」にあります。デザイナーだけでなく、{{red}}エンジニアやクライアントも同じファイルを開き、コメント機能を使って直接フィードバックを残せます。{{/red}}さらに、プロトタイプ機能でページ遷移やアニメーションを設定しておけば、実際のWebサイトの動きに近い形で確認でき、完成イメージの共有が容易になります。結果として、要件のすり合わせや修正が初期段階で済み、開発後の手戻りを減らすことができます。",
+        "t15b": "まとめ",
+        "t15c": "Figmaを活用したWebサイト設計のコツは、①コンポーネント化で一貫性を確保、②Auto Layoutでレスポンシブを想定したデザイン、③コメントやプロトタイプでチーム全体を巻き込む、の3点に集約されます。これらを意識することで、効率的かつ質の高いWebサイト制作が可能になり、開発の現場でも大きなメリットを得られるでしょう。",
         "img1": {
           "src": "https://picsum.photos/seed/fa1/800/450",
           "alt": "Component boundaries",
-          "caption": "Small testable units survive change."
+          "caption": "Figmaのコンポーネントの設定例"
         },
         "img2": {
           "src": "https://picsum.photos/seed/fa2/800/450",
           "alt": "Perf budget sheet",
-          "caption": "Guardrails keep entropy in check."
+          "caption": "FigmaのAuto Layoutの仕組み"
         },
         "img3": {
           "src": "https://picsum.photos/seed/fa3/800/450",
           "alt": "Module graph",
-          "caption": "Feature folders reduce thrash."
+          "caption": "Figmaの標準機能であるコメントを使ったコミュニケーショ"
         },
-        "callout": "Architecture is what remains when features change."
+        "callout": "Webサイト制作において、初期の設計段階はプロジェクト全体のスピードと品質を左右する重要なステップです。近年ではクラウド型のデザインツール「Figma」を使うことで、従来の静的なワイヤーフレームやデザイン作業が、チーム全体で共有しやすくなり、修正も素早く反映できるようになりました。本記事では、Figmaを使った効率的なWebサイト設計のコツを3つの観点からご紹介します。"
       },
-      "content": "<h2>Frontend Architecture Choices</h2><p>Architecture is a set of tradeoffs. Choose state tools based on scope. Keep presentational components pure.</p><img src=\"https://picsum.photos/seed/fa1/800/450\" alt=\"Component boundaries\" /><p>Move effects to the edges. Composition beats inheritance. Co-locate by feature for speed.</p><p>Shared boundaries make refactors safe. Establish budgets and splitting early. Hydrate less by default.</p><img src=\"https://picsum.photos/seed/fa2/800/450\" alt=\"Perf budget sheet\" /><p>Measure in the field continuously. Boring is good when it scales. Pick predictable over fashionable. Small pieces, loosely coupled.</p><img src=\"https://picsum.photos/seed/fa3/800/450\" alt=\"Module graph\" />",
+      "content": "<h2>Frontend Architecture  </h2><p>Architecture is a set of tradeoffs. Choose state tools based on scope. Keep presentational components pure.</p><img src=\"https://picsum.photos/seed/fa1/800/450\" alt=\"Component boundaries\" /><p>Move effects to the edges. Composition beats inheritance. Co-locate by feature for speed.</p><p>Shared boundaries make refactors safe. Establish budgets and splitting early. Hydrate less by default.</p><img src=\"https://picsum.photos/seed/fa2/800/450\" alt=\"Perf budget sheet\" /><p>Measure in the field continuously. Boring is good when it scales. Pick predictable over fashionable. Small pieces, loosely coupled.</p><img src=\"https://picsum.photos/seed/fa3/800/450\" alt=\"Module graph\" />",
       "tagsText": "Engineering, IT Consulting"
     },
     {
       "id": "13",
-      "slug": "クラウド活用とデザインの融合で実現する次世代Webシステム",
-      "title": "クラウド活用とデザインの融合で実現する次世代Webシステム",
+      "slug": "shared-components-consistency-case-study",
+      "title": "Shared components kept look and feel consistent everywhere",
       "thumbnail": "https://picsum.photos/seed/cs/1200/630",
       "tags": [
         "Branding",
@@ -573,8 +573,8 @@
     },
     {
       "id": "14",
-      "slug": "UI/UX改善で業務効率を高めるデザイン思考",
-      "title": "UI/UX改善で業務効率を高めるデザイン思考",
+      "slug": "design-tokens-versioning",
+      "title": "Version tokens like APIs so consumers can upgrade safely.",
       "thumbnail": "https://picsum.photos/seed/tokens/1200/630",
       "tags": [
         "Design",
@@ -612,13 +612,13 @@
         },
         "callout": "Tokens are a means, not an end."
       },
-      "content": "<h2>Figmaで始める！効率的なWebサイト設計のコツ</h2><p>Name tokens by intent, not value. Keep spacing steps limited and consistent. Automate exports to CSS variables.</p><img src=\"https://picsum.photos/seed/tokens1/800/450\" alt=\"Token table\" /><p>Version tokens like APIs. Update components with the tokens. Docs show purpose with examples.</p><p>Build stories for states and sizes. Write lint rules for spacing and color. Encourage contributions with simple guides.</p><img src=\"https://picsum.photos/seed/tokens2/800/450\" alt=\"Storybook tokens\" /><p>Evolution beats fossilization. Tokens matter only when used. Strong defaults free teams. Production validates the system.</p><img src=\"https://picsum.photos/seed/tokens3/800/450\" alt=\"Variables in code\" />",
+      "content": "<h2>Figmaで始める効率的なWebサイト設計のコツ</h2><p>Name tokens by intent, not value. Keep spacing steps limited and consistent. Automate exports to CSS variables.</p><img src=\"https://picsum.photos/seed/tokens1/800/450\" alt=\"Token table\" /><p>Version tokens like APIs. Update components with the tokens. Docs show purpose with examples.</p><p>Build stories for states and sizes. Write lint rules for spacing and color. Encourage contributions with simple guides.</p><img src=\"https://picsum.photos/seed/tokens2/800/450\" alt=\"Storybook tokens\" /><p>Evolution beats fossilization. Tokens matter only when used. Strong defaults free teams. Production validates the system.</p><img src=\"https://picsum.photos/seed/tokens3/800/450\" alt=\"Variables in code\" />",
       "tagsText": "Design, Engineering"
     },
     {
       "id": "15",
-      "slug": "Figmaで始める！効率的なWebサイト設計のコツ",
-      "title": "Figmaで始める！効率的なWebサイト設計のコツ",
+      "slug": "writing-clear-ui-copy",
+      "title": "Frontend Architecture   Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/uicopy/1200/630",
       "tags": [
         "Branding",

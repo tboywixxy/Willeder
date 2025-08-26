@@ -2,7 +2,7 @@ export const blogPosts = [
     {
       "id": "1",
       "slug": "designing-with-clarity",
-      "title": "Frontend Architecture  ",
+      "title": "Frontend Architecture designing-with-clarity",
       "thumbnail": "https://picsum.photos/seed/clarity/1200/630",
       "tags": [
         "Design",
@@ -440,9 +440,9 @@ export const blogPosts = [
     },
     {
       "id": "11",
-      "slug": "Frontend Architecture Choices",
-      "title": "Frontend Architecture Choices",
-      "thumbnail": "https://picsum.photos/seed/fa/1200/630",
+      "slug": "frontend-architecture-choices",
+      "title": "Frontend Architecture Choices right now today",
+      "thumbnail": "https://picsum.photos/seed/approuter/1200/630",
       "tags": [
         "Engineering",
         "IT Consulting"
@@ -484,8 +484,8 @@ export const blogPosts = [
     },
     {
       "id": "12",
-      "slug": "frontend-architecture- ",
-      "title": "Frontend Architecture   for the pref budget sheet",
+      "slug": "frontend-architecture-perf-budget-sheet",
+      "title": "Frontend Architecture for the pref budget sheet",
       "thumbnail": "https://picsum.photos/seed/fa/1200/630",
       "tags": [
         "Engineering",
@@ -528,7 +528,7 @@ export const blogPosts = [
     },
     {
       "id": "13",
-      "slug": "Shared components kept look and feel consistent everywhere",
+      "slug": "shared-components-consistency-case-study",
       "title": "Shared components kept look and feel consistent everywhere",
       "thumbnail": "https://picsum.photos/seed/cs/1200/630",
       "tags": [
@@ -572,7 +572,7 @@ export const blogPosts = [
     },
     {
       "id": "14",
-      "slug": "Frontend Architecture  ",
+      "slug": "design-tokens-versioning",
       "title": "Version tokens like APIs so consumers can upgrade safely.",
       "thumbnail": "https://picsum.photos/seed/tokens/1200/630",
       "tags": [
@@ -616,7 +616,7 @@ export const blogPosts = [
     },
     {
       "id": "15",
-      "slug": "Frontend Architecture  ",
+      "slug": "writing-clear-ui-copy",
       "title": "Frontend Architecture   Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/uicopy/1200/630",
       "tags": [

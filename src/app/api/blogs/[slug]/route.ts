@@ -1,10 +1,31 @@
 import { NextResponse } from "next/server";
 import { blogPosts } from "@/app/lib/server/blogData";
-import type { Blog } from "../route";
 
 export const runtime = "nodejs";
 export const revalidate = 60;
 
+/* ---------------- Types ---------------- */
+type DetailImage = { src: string; alt?: string; caption?: string };
+type DetailPayload = {
+  t1?: string; t2?: string; t5?: string; t6?: string; t7?: string; t8?: string;
+  t11?: string; t12a?: string; t12c?: string; t12d?: string;
+  t15a?: string; t15b?: string; t15c?: string;
+  callout?: string;
+  img1?: DetailImage; img2?: DetailImage; img3?: DetailImage;
+};
+
+export type Blog = {
+  id: string;
+  slug: string;
+  title: string;
+  thumbnail: string;
+  tags: string[];
+  createdAt: string;
+  content?: string;
+  detail?: DetailPayload;
+};
+
+/* ---------------- Helpers ---------------- */
 const JSON_SERVER_URL = process.env.JSON_SERVER_URL;
 const useJson = process.env.NODE_ENV !== "production" && !!JSON_SERVER_URL;
 const normalize = (s: string) => s.trim().toLowerCase();
@@ -18,47 +39,53 @@ function ensureContent(post: Blog): Blog {
     /<img[\s>]/i.test(post.content)
   ) return post;
 
-  const title = post.title || "Untitled";
-  const img = post.thumbnail || "https://picsum.photos/seed/fallback/1200/630";
+  const d = post.detail || {};
+  const text = (...xs: (string | undefined)[]) => xs.filter(Boolean).join(" ");
   const html =
-    `<h2>${title}</h2>` +
-    `<p>${"This post is missing rich content. Filling with fallback text to satisfy the assignment.".repeat(6)}</p>` +
-    `<img src="${img}" alt="${title}" />` +
-    `<p>${"Please add real HTML content with <h2>, <p>, and <img> in your db.json.".repeat(6)}</p>`;
+    `<h2>${post.title}</h2>` +
+    `<p>${text(d.t1, d.t2, d.t5)}</p>` +
+    `<img src="${d.img1?.src || post.thumbnail}" alt="${d.img1?.alt || ""}" />` +
+    `<p>${text(d.t6, d.t7, d.t8)}</p>` +
+    `<p>${text(d.t11, d.t12a, d.t12c)}</p>` +
+    `<img src="${d.img2?.src || post.thumbnail}" alt="${d.img2?.alt || ""}" />` +
+    `<p>${text(d.t12d, d.t15a, d.t15b, d.t15c)}</p>` +
+    `<img src="${d.img3?.src || post.thumbnail}" alt="${d.img3?.alt || ""}" />`;
+
   const pad = (s: string) => (s.length >= 600 ? s : s + `<p>${"&nbsp;".repeat(620 - s.length)}</p>`);
   return { ...post, content: pad(html) };
 }
 
-async function parseJsonServerDetailResponse(r: Response): Promise<Blog | null> {
-  if (!r.ok) return null;
-  const body = await r.json();
-  const arr: any[] =
-    Array.isArray(body) ? body
-    : Array.isArray(body?.data) ? body.data
-    : Array.isArray(body?.items) ? body.items
-    : [];
-  return arr?.[0] ?? null;
-}
-
+/* ---------------- GET ---------------- */
 export async function GET(req: Request) {
   try {
     const { pathname } = new URL(req.url);
-    const rawSlug = decodeURIComponent(pathname.split("/").pop() || "").trim();
+    const rawSlug = decodeURIComponent(pathname.split("/").pop() ?? "").trim();
     if (!rawSlug) return NextResponse.json({ error: "Bad request" }, { status: 400 });
 
-    /* ---------- DEV: JSON Server v1 beta ---------- */
+    /* ---------- DEV: JSON Server ---------- */
     if (useJson) {
       try {
-        // Ask by slug; v1 may return { data: [...] }
-        const u = `${JSON_SERVER_URL!.replace(/\/$/, "")}/blogs?slug=${encodeURIComponent(rawSlug)}&_per_page=1`;
+        const u = `${JSON_SERVER_URL!.replace(/\/$/, "")}/blogs?slug=${encodeURIComponent(rawSlug)}&_limit=1`;
         const r = await fetch(u, { cache: "no-store" });
-        const found = await parseJsonServerDetailResponse(r);
-        if (found) {
-          const ensured = ensureContent(found as Blog);
-          console.log("[/api/blogs/[slug]] source=json-server", { url: u, slug: rawSlug, match: (found as any)?.slug });
-          return NextResponse.json(ensured, { headers: { "x-data-source": "json-server" } });
+        if (r.ok) {
+          // Type the JSON result to avoid implicit/explicit any
+          const arr: Blog[] = await r.json();
+          const hit = arr?.[0];
+          if (hit) {
+            console.log("[/api/blogs/[slug]] source=json-server", {
+              url: u, slug: rawSlug, match: hit.slug,
+            });
+            return NextResponse.json(ensureContent(hit), {
+              headers: { "x-data-source": "json-server" },
+            });
+          }
+        } else {
+          console.warn("[/api/blogs/[slug]] JSON Server non-OK; fallback to blogData", {
+            status: r.status, statusText: r.statusText,
+          });
         }
-      } catch (err) {
+      } catch (err: unknown) {
+        // Explicitly type catch param as unknown (fixes no-explicit-any)
         console.warn("[/api/blogs/[slug]] JSON Server fetch error; fallback to blogData", err);
       }
       // fall through to static
@@ -84,8 +111,10 @@ export async function GET(req: Request) {
       match: found.slug,
     });
 
-    return NextResponse.json(ensureContent(found), { headers: { "x-data-source": "blogData" } });
-  } catch (e) {
+    return NextResponse.json(ensureContent(found), {
+      headers: { "x-data-source": "blogData" },
+    });
+  } catch (e: unknown) {
     console.error("[/api/blogs/[slug]] error", e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }

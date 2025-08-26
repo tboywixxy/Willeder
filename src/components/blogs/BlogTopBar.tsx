@@ -35,7 +35,7 @@ export default function BlogTopBar({
   const buttonTextCls = `${notoSansJp.className} font-bold leading-[1.5] tracking-[0.05em] text-center text-[clamp(16px,calc(100vw/1440*20),20px)]`;
 
   return (
-    <div className="mx-auto w-full max-w-[1280px] flex flex-col items-center gap-6">
+    <div className="mx-auto w-full max-w-[1280px] flex flex-col items-center gap-[60px]">
       {/* Heading */}
       <div className="w-full flex flex-col items-center justify-center gap-2">
         <div className={topTextCls}>{headingTop}</div>
@@ -57,17 +57,18 @@ export default function BlogTopBar({
           onSubmit();
         }}
       >
-        <label htmlFor="blog-search" className="sr-only">Search blogs</label>
+        <label htmlFor="blog-search" className="sr-only">検索</label>
 
-        <input
+        <input 
           id="blog-search"
           type="search"
-          placeholder="Search blog titles or tags…"
+          placeholder="キーワードを入力"
           value={inputValue}
           onChange={(e) => onInputChange(e.target.value)}
           className={[
-            "min-w-0 flex-1 rounded-l-md border border-black bg-transparent",
-            "px-3 outline-none placeholder-black/50 focus:ring-2 focus:ring-black",
+            "min-w-0 flex-1 rounded-l-md bg-[#F2F4F1]",
+            "px-3 outline-none placeholder-black/50  appearance-none",
+             "focus:outline-none focus:ring-0 focus:border-transparent active:outline-none",
             "min-h-[clamp(40px,calc(100vw/1440*44),44px)]",
             inputTextCls,
           ].join(" ")}
@@ -85,7 +86,7 @@ export default function BlogTopBar({
           ].join(" ")}
           title="Search"
         >
-          <span>Search</span>
+          <span>検索</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="relative"
@@ -107,7 +108,7 @@ export default function BlogTopBar({
       </form>
 
       {/* Tags */}
-      <div className="w-full max-w-[1280px] flex flex-wrap items-center justify-center gap-2">
+      <div className="w-full max-w-[1280px] flex flex-wrap items-center justify-center gap-6">
         <TagChip label="All" active={allActive} onClick={onClearTags} />
         {tags.map((t) => (
           <TagChip key={t} label={t} active={selected.includes(t)} onClick={() => onToggleTag(t)} />

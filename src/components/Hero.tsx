@@ -14,10 +14,10 @@ export default function HomePage() {
               {/* Image replacing the heading/paragraph */}
               <div className="relative w-full aspect-[640/327.2979125977] mx-auto bg-transparent">
                 <Image
-                  src="/chii.png"
+                  src="/ciff-2.png"
                   alt="Intro visual"
                   fill
-                  className="object-contain"
+                  className="object-contain ml-2 mt-1 origin-left scale-[1] min-[1280px]:scale-[1]"
                   sizes="(max-width: 1023px) 100vw, 50vw"
                   priority
                 />
@@ -57,9 +57,9 @@ export default function HomePage() {
             </div>
 
 {/* RIGHT: video (replaces the image) */}
-<div className="order-2 relative w-full max-w-[640px] aspect-[640/695.04] rounded-lg overflow-hidden shadow mx-auto">
+<div className="order-2 relative w-full  max-w-[640px] aspect-[640/695.04] rounded-lg overflow-hidden mx-auto">
   <video
-    className="w-full h-full object-cover block"
+    className="w-full h-full object-cover mt-8 block"
     autoPlay
     loop
     muted

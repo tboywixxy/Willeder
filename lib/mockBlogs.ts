@@ -1,4 +1,4 @@
-// src/lib/mockBlogs.ts
+// src/lib/Blogs.ts
 export type MockBlog = {
   id: string;
   slug: string;
@@ -12,13 +12,13 @@ export type MockBlog = {
 export const MOCK_BLOGS: MockBlog[] = [
   {
     id: "1",
-    slug: "designing-with-clarity",
+    slug: "designing-with",
     title: "Designing with Clarity",
     thumbnail: "https://picsum.photos/seed/clarity/1200/630",
     tags: ["Design", "Branding"],
     createdAt: "2025-08-01",
     content: `
-      <h2>Clarity First</h2>
+      <h2>Clarity First</h2>Q
       <p>Good design starts with clear hierarchy, spacing, and readable type. This demo post exists so we can style the blog detail page before real data.</p>
       <img src="https://picsum.photos/seed/clarity-img/800/450" alt="Sample hero" />
       <p>Use semantic HTML, consistent rhythm, and accessible contrast. Later, you’ll replace this with content from JSON Server / API.</p>
@@ -125,7 +125,7 @@ export const MOCK_BLOGS: MockBlog[] = [
   {
     id: "9",
     slug: "lighthouse-scores-mobile",
-    title: "Hitting 90+ Lighthouse (Mobile)",
+    title: "Hitting 90+ (Mobile)",
     thumbnail: "https://picsum.photos/seed/lh/1200/630",
     tags: ["Engineering", "Design"],
     createdAt: "2025-08-09",

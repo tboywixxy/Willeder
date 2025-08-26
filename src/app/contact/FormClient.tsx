@@ -76,6 +76,7 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
         ref={formRef}
         action="/api/contact"
         method="POST"
+        
         onSubmit={async (e) => {
           e.preventDefault();
           const formEl = e.currentTarget;
@@ -114,7 +115,7 @@ export default function FormClient({ children }: { children: React.ReactNode }) 
             setMsg("Network error. Please try again.");
           }
         }}
-        className="mx-auto w-full flex flex-col items-center gap-12 md:gap-14 lg:gap-16 py-6 md:py-8"
+        className="mx-auto w-full flex flex-col items-center gap-12 md:gap-14 lg:gap-16 py-6 md:py-[20px]"
         noValidate
         aria-live="polite"
         aria-busy={isSending}

@@ -135,8 +135,8 @@ export default function BlogIndexClient() {
   })();
 
   return (
-    <div className="bg-[#F1F2F4]">
-      <section className="pt-10 md:pt-16">
+    <div className="bg-[#F1F2F4] md:pt-[85px]">
+      <section className="pt-10 md:pt-[3px]">
         <div className="mx-auto w-full max-w-[1440px] px-4 md:px-20 space-y-8">
           <BlogTopBar
             inputValue={input}

@@ -12,38 +12,45 @@ type Service = {
 
 const SERVICES: Service[] = [
   {
-    title: "UI/UX Design",
-    kicker: "Human-centered product design",
+    title: "高速PDCA",
+    kicker: "クリエイト",
     description:
-      "Wireframes, visual systems, and prototypes that translate requirements into intuitive flows.",
+      "多数のクリエイティブを用意。トーナメント方式で広告クリエイティブを高速で比較・テスト。最も高いCV率を素早く見極め、効果的な広告運用を実現。",
     img: "/1.png",
     alt: "UI/UX Design icon",
   },
   {
-    title: "Engineering",
-    kicker: "Reliable builds & integrations",
+    title: "高速PDCA",
+    kicker: "配信面",
     description:
-      "Frontend with Next.js + TypeScript, scalable APIs, and CI/CD tuned for fast releases.",
+      "キャンペーンの再構築、配信チャネルの見直し、入札単価の調整などを迅速に行い、広告配信を最適化。",
     img: "/2.png",
     alt: "Engineering icon",
   },
   {
-    title: "Brand Strategy",
-    kicker: "Identity & positioning",
+    title: "高速PDCA",
+    kicker: "LPO",
     description:
-      "Naming, tone, and visual language that align your product with audience and goals.",
+      "ヒートマップ等ユーザー動線を分析し、迅速にLPを修正。ページの精読率やクロール率を改善し、より高いCVを実現。",
     img: "/3.png",
     alt: "Brand Strategy icon",
   },
 ];
 
+// Per-card offsets relative to the first card (index 0)
+const CARD_OFFSETS = [
+  { base: { x: 0,  y: 0  }, lg: { x: 30,  y: 0   } },   // 1st card (anchor)
+  { base: { x: 0,  y: 0  }, lg: { x: 14,  y: -11 } },   // 2nd card
+  { base: { x: 0,  y: 0  }, lg: { x: 0,   y: 0   } },   // 3rd card
+] as const;
+
 export default function ServiceSection() {
   const headerJP = `${notoSansJp.className} font-bold text-[32px] leading-[150%] tracking-[0.05em] text-[#AD002D] text-center`;
-  const serviceWord = `${jost.className} font-medium text-[20px] leading-[150%] tracking-[0.05em] text-[#AD002D] text-center`;
+  const serviceWord = `${jost.className} font-medium text-[17px] leading-[150%] tracking-[0.05em] text-[#AD002D] text-center`;
 
   const cardKicker = `${notoSansJp.className} font-bold leading-[125%] text-center break-words [overflow-wrap:anywhere] hyphens-auto`;
   const cardTitle  = `${notoSansJp.className} font-bold leading-[125%] text-center break-words [overflow-wrap:anywhere] hyphens-auto`;
-  const cardDesc   = `${notoSansJp.className} font-medium leading-[150%] text-center break-words [overflow-wrap:anywhere] hyphens-auto`;
+  const cardDesc   = `${notoSansJp.className} font-medium leading-[130%] text-left break-words [overflow-wrap:anywhere] hyphens-auto`;
 
   return (
     <section className="bg-[#FFC8D7]">
@@ -69,87 +76,116 @@ export default function ServiceSection() {
           {/* Header */}
           <div className="w-full flex flex-col items-center justify-center gap-2">
             <h2 className={`${headerJP} whitespace-nowrap`}>サービス内容</h2>
-            <div className="w-full h-[30px] flex items-center justify-center gap-4">
-              <span className="flex-1 h-px bg-[#AD002D]" aria-hidden="true" />
-              <span className="w-auto min-w-[86px] h-[30px] grid place-items-center">
+            <div className="w-full h-[19px] flex items-center justify-center gap-1">
+              <span className="flex-1 max-w-[clamp(56px,calc(1120vw/1440*230),740px)] h-px bg-[#AD002D]" aria-hidden="true" />
+              <span className="w-auto min-w-[96px] h-[30px] grid place-items-center">
                 <span className={serviceWord}>SERVICE</span>
               </span>
-              <span className="flex-1 h-px bg-[#AD002D]" aria-hidden="true" />
+              <span className="flex-1 max-w=[clamp(56px,calc(1120vw/1440*230),740px)] h-px bg-[#AD002D]" aria-hidden="true" />
             </div>
           </div>
 
-          {/* GRID: 1×1 (mobile) → 1×1 (tablet) → 3 across (desktop) */}
           <ul
             className="
+              mt-[clamp(24px,calc(80vw/1440*72),72px)]
+              pr-0 min-[1024px]:pr-8     /* keep desktop as-is; remove padding on small screens */
               grid
               grid-cols-1
               min-[1024px]:grid-cols-3
-              place-items-center           /* <— hard-center each cell */
-              gap-y-[clamp(16px,calc(100vw/1440*32),32px)]
-              gap-x-[clamp(12px,calc(100vw/1440*24),24px)]
+              place-items-center
+              gap-y-[clamp(20px,calc(100vw/1440*40),40px)]
+              gap-x-[clamp(10px,calc(10vw/1440*20),20px)]
             "
           >
-            {SERVICES.map((s) => (
-              <li key={s.title} className="w-full flex justify-center">
-                {/* Card widths per breakpoint (centered via parent flex) */}
-                <div
-                  className="
-                    w-[343px]               /* ≤599 */
-                    min-[600px]:w-[672px]   /* 600–1023, centered within 720 */
-                    min-[1024px]:w-[410px]  /* ≥1024, fits 3 across */
-                    box-border
-                    flex flex-col items-center
-                    px-[clamp(8px,calc(100vw/1440*12),12px)]
-                  "
-                >
-                  {/* Image */}
-                  <div className="relative mx-auto w-[200px] h-[200px] min-[600px]:w-[240px] min-[600px]:h-[240px] min-[1024px]:w-[280px] min-[1024px]:h-[280px]">
-                    <Image
-                      src={s.img}
-                      alt={s.alt}
-                      fill
-                      className="object-contain"
-                      sizes="(max-width: 599px) 200px, (max-width: 1023px) 240px, 280px"
-                      decoding="async"
-                    />
-                  </div>
+            {SERVICES.map((s, i) => {
+              const off = CARD_OFFSETS[i] ?? CARD_OFFSETS[0];
+              const style = {
+                ["--tx" as any]: `${off.base.x}px`,
+                ["--ty" as any]: `${off.base.y}px`,
+                ["--tx-lg" as any]: `${off.lg.x}px`,
+                ["--ty-lg" as any]: `${off.lg.y}px`,
+              } as React.CSSProperties;
 
-                  {/* Texts */}
-                  <div className="w-full mt-[clamp(12px,calc(100vw/1440*16),16px)] flex flex-col items-center gap-[clamp(8px,calc(100vw/1440*12),12px)]">
-                    <p
-                      className={`
-                        ${cardKicker}
-                        text-[clamp(14px,calc(100vw/1440*18),18px)]
-                        min-[600px]:text-[20px]
-                        min-[1024px]:text-[22px]
-                        max-w-full
-                      `}
-                    >
-                      {s.kicker}
-                    </p>
-                    <h3
-                      className={`
-                        ${cardTitle}
-                        text-[clamp(16px,calc(100vw/1440*20),20px)]
-                        min-[1024px]:text-[22px]
-                        max-w-full
-                      `}
-                    >
-                      {s.title}
-                    </h3>
-                    <p
-                      className={`
-                        ${cardDesc}
-                        text-[clamp(12px,calc(100vw/1440*15),15px)]
-                        max-w-full
-                      `}
-                    >
-                      {s.description}
-                    </p>
+              return (
+                <li key={s.title} className="w-full flex justify-center">
+                  {/* Card widths per breakpoint (centered via parent flex) */}
+                  <div
+                    style={style}
+                    className="
+                      w-[343px]               /* ≤599 */
+                      min-[600px]:w-[672px]   /* 600–1023, centered within 720 */
+                      min-[1024px]:w-[410px]  /* ≥1024, fits 3 across */
+                      box-border
+                      flex flex-col items-center
+                      px-[clamp(8px,calc(100vw/1440*12),12px)]
+                      transform-gpu
+                      translate-x-[var(--tx)] translate-y-[var(--ty)]
+                      min-[1024px]:translate-x-[var(--tx-lg)] min-[1024px]:translate-y-[var(--ty-lg)]
+                    "
+                  >
+                    {/* Image */}
+                    <div className="relative mx-auto w-[200px] h-[200px] min-[600px]:w-[240px] min-[600px]:h-[240px] min-[1024px]:w-[260px] min-[1024px]:h-[280px]">
+                      <Image
+                        src={s.img}
+                        alt={s.alt}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 599px) 200px, (max-width: 1023px) 240px, 280px"
+                        decoding="async"
+                      />
+                    </div>
+
+                    {/* Texts */}
+                    <div className="w-full mt-0 min-[1024px]:-mt-4 flex flex-col items-center gap-[clamp(8px,calc(100vw/1440*8),8px)]">
+                      <p
+                        className={`
+                          ${cardKicker}
+                          text-[clamp(14px,calc(100vw/1440*18),18px)]
+                          min-[600px]:text-[20px]
+                          min-[1024px]:text-[42px]
+                          max-w-full
+                        `}
+                      >
+                        {s.kicker}
+                      </p>
+                      <h3
+                        className={`
+                          ${cardTitle}
+                          text-[clamp(16px,calc(100vw/1440*20),20px)]
+                          min-[1024px]:text-[28px]
+                          max-w-full
+                        `}
+                      >
+                        {s.title}
+                      </h3>
+
+                      {/* Gradient bar (stay inside card on mobile; keep original on ≥600) */}
+                      <div
+                        className="
+                          w-[343px] min-[600px]:w-[385px]
+                          h-[4px] opacity-100 mt-1
+                        "
+                        style={{
+                          background:
+                            "linear-gradient(270deg, #99FF66 0.11%, #55FF00 50.05%, #DCFFCA 100%)",
+                        }}
+                      />
+
+                      <p
+                        className={`
+                          ${cardDesc}
+                          text-[clamp(12px,calc(100vw/1440*15),15px)]
+                          w-full max-w-[410px] mx-auto
+                          pr-2
+                        `}
+                      >
+                        {s.description}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

@@ -21,7 +21,7 @@ export default function ContactPage() {
         "
       >
         {/* Heading */}
-        <div className="mx-auto w-full max-w-[1280px] flex flex-col items-center gap-4 mb-12">
+        <div className="mx-auto w-full max-w-[1280px] flex flex-col items-center gap-1.5 mb-15">
           <h1
             className="
               font-sans font-bold
@@ -34,26 +34,26 @@ export default function ContactPage() {
 
         {/* Divider + subheading + divider */}
           <div className="w-full flex items-center gap-4 justify-center" role="presentation" aria-hidden="true">
-            <span className="h-px w-[clamp(120px,calc(100vw/1440*571.5),571.5px)] bg-black" />
+            <span className="h-px w-[clamp(120px,calc(100vw/1440*551),551px)] bg-black" />
             <div
               className="
                 font-sans font-medium
-                text-[clamp(16px,calc(100vw/1440*20),20px)]
+                text-[clamp(16px,calc(100vw/1440*18),18px)]
                 leading-[1.5] tracking-[0.05em] text-center
               "
             >
               CONTACT
             </div>
-            <span className="h-px w-[clamp(120px,calc(100vw/1440*571.5),571.5px)] bg-black" />
+            <span className="h-px w-[clamp(120px,calc(100vw/1440*551),551px)] bg-black" />
           </div>
         </div>
 
         {/* Form container */}
         <div
           className="
-            mx-auto w-full max-w-[1280px] bg-[#F1F2F4] rounded-[16px]
-            p-[clamp(24px,calc(100vw/1440*100),100px)]
-            min-h-[clamp(640px,calc(100vw/1440*1099),1099px)]
+            mx-auto w-full max-w-[1280px] bg-[#F1F2F4] rounded-[16px] 
+            p-[clamp(24px,calc(100vw/1440*75),75px)]
+            min-h-[clamp(640px,calc(100vw/1440*1099),1099px)] mb-11
           "
         >
           <FormClient>
@@ -64,7 +64,7 @@ export default function ContactPage() {
             </div>
 
             {/* Name */}
-            <div className="w-full max-w-[1080px] space-y-2">
+            <div className="w-full max-w-[1010px] mt-[10px] mr-2 space-y-[22px]">
               <label htmlFor="name" className="block font-sans font-medium text-black text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1]">
                 お名前*
               </label>
@@ -79,7 +79,7 @@ export default function ContactPage() {
             </div>
 
             {/* Email */}
-            <div className="w-full max-w-[1080px] space-y-2">
+            <div className="w-full max-w-[1010px] mt-[-13px] mr-2 space-y-5">
               <label htmlFor="email" className="block font-sans font-medium text-black text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1]">
                 メールアドレス*
               </label>
@@ -94,7 +94,7 @@ export default function ContactPage() {
             </div>
 
             {/* Phone */}
-            <div className="w-full max-w-[1080px] space-y-2">
+            <div className="w-full max-w-[1010px] mt-[-12px] mr-2 space-y-[21px]">
               <label htmlFor="phone" className="block font-sans font-medium text-black text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1]">
                 電話番号*
               </label>
@@ -109,7 +109,7 @@ export default function ContactPage() {
             </div>
 
             {/* Message */}
-            <div className="w-full max-w-[1080px] space-y-2">
+            <div className="w-full max-w-[1010px] mt-[-13px] mr-2 space-y-[22px]">
               <label htmlFor="message" className="block font-sans font-medium text-black text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1]">
                 お問い合わせ内容*
               </label>
@@ -124,9 +124,9 @@ export default function ContactPage() {
             </div>
 
             {/* Checkbox */}
-            <div className="w-full max-w-[1080px] flex items-start gap-3">
-              <input id="agree" name="agree" type="checkbox" required className="w-[30px] h-[30px] border border-black rounded-[4px] accent-black" aria-required="true" />
-              <label htmlFor="agree" className="font-sans font-medium underline underline-offset-0 decoration-solid text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1.25]">
+            <div className="w-full max-w-[1010px] flex items-start gap-3 mr-2 mt-[-28px]">
+              <input id="agree" name="agree" type="checkbox" required className="w-[30px] h-[30px] border border-black accent-black" aria-required="true" />
+              <label htmlFor="agree" className="font-sans font-medium underline underline-offset-0 mt-1 decoration-solid text-[clamp(18px,calc(100vw/1440*24),24px)] leading-[1.25]">
                 プライバシーポリシーに同意する
               </label>
             </div>
@@ -137,13 +137,13 @@ export default function ContactPage() {
                 type="submit"
                 className="inline-flex items-center justify-center rounded-[16px] text-white bg-[#AD002D]
                            focus:outline-none focus-visible:ring-2 focus-visible:ring-black
-                           w-[clamp(193px,calc(100vw/1440*279),279px)]
-                           gap-[clamp(16px,calc(100vw/1440*24),24px)]
-                           px-[clamp(24px,calc(100vw/1440*48),48px)] py-4 disabled:opacity-60 disabled:cursor-not-allowed"
+                           w-[clamp(193px,calc(100vw/1440*279),279px)] mt-[-8px]
+                           gap-[clamp(16px,calc(100vw/1440*19),19px)]
+                           px-[clamp(24px,calc(100vw/1440*28),28px)] py-4 disabled:opacity-60 disabled:cursor-not-allowed"
                 aria-label="Submit contact form"
               >
                 <span className="font-sans font-bold leading-[1.5] tracking-[0.05em] text-[clamp(20px,calc(100vw/1440*24),24px)]">
-                  Submit
+                  確認画面へ
                 </span>
                 <span className="relative block -top-[0.12px] w-[clamp(25px,calc(100vw/1440*34),34px)] h-[clamp(18px,calc(100vw/1440*24),24px)]" aria-hidden="true">
                   {/* Use plain <img> for tiny icon */}

@@ -469,8 +469,8 @@ export const blogPosts = [
     },
     {
       "id": "13",
-      "slug": "case-study-redesign",
-      "title": "Case Study: Marketing Redesign",
+      "slug": "クラウド活用とデザインの融合で実現する次世代Webシステム",
+      "title": "クラウド活用とデザインの融合で実現する次世代Webシステム",
       "thumbnail": "https://picsum.photos/seed/cs/1200/630",
       "tags": ["Branding", "Design"],
       "createdAt": "2025-08-13",
@@ -508,8 +508,8 @@ export const blogPosts = [
     },
     {
       "id": "14",
-      "slug": "design-tokens-to-production",
-      "title": "From Design Tokens to Production",
+      "slug": "UI/UX改善で業務効率を高めるデザイン思考",
+      "title": "UI/UX改善で業務効率を高めるデザイン思考",
       "thumbnail": "https://picsum.photos/seed/tokens/1200/630",
       "tags": ["Design", "Engineering"],
       "createdAt": "2025-08-14",
@@ -547,8 +547,8 @@ export const blogPosts = [
     },
     {
       "id": "15",
-      "slug": "writing-clear-ui-copy",
-      "title": "Writing Clear UI Copy",
+      "slug": "Figmaで始める！効率的なWebサイト設計のコツ",
+      "title": "Figmaで始める！効率的なWebサイト設計のコツ",
       "thumbnail": "https://picsum.photos/seed/uicopy/1200/630",
       "tags": ["Branding", "Other"],
       "createdAt": "2025-08-15",

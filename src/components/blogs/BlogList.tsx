@@ -70,6 +70,7 @@ export default function BlogList({ posts, loading }: { posts: Blog[]; loading: b
                   createdAt={p.createdAt}
                   variant="showcase"
                   grayTags={grayTags}
+                  textMinHeights={{ base: 160, md: 200, lg: 220 }}
                 />
               </motion.li>
             );

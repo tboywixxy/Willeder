@@ -10,43 +10,55 @@ export default function Header() {
   const pathname = usePathname() || "/";
   const detailsRef = useRef<HTMLDetailsElement | null>(null);
 
+  // Close helper
   const closeMobileMenu = useCallback(() => {
     if (detailsRef.current?.open) detailsRef.current.open = false;
   }, []);
 
+  // Close on outside click and on scroll
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
       const el = detailsRef.current;
       if (!el || !el.open) return;
       const target = e.target as Node | null;
-      if (target && el.contains(target)) return;
+      if (target && el.contains(target)) return; // click inside -> ignore
       el.open = false;
     };
+
     const onScroll = () => {
       const el = detailsRef.current;
       if (el?.open) el.open = false;
     };
+
     document.addEventListener("click", onDocClick, true);
     window.addEventListener("scroll", onScroll, { passive: true });
+
     return () => {
       document.removeEventListener("click", onDocClick, true);
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
+  // Close when route changes
   useEffect(() => {
     closeMobileMenu();
   }, [pathname, closeMobileMenu]);
 
+  // Active states
   const isBlogActive = pathname === "/blog" || pathname.startsWith("/blog/");
   const isHomeActive = pathname === "/" && !isBlogActive;
 
   const BASE = 1440;
   const headerHClamp = "clamp(48px,calc(100vw/1440*64),64px)";
+
   const navText =
-    `font-sans font-bold text-[clamp(14px,calc(100vw/${BASE}*16),16px)] leading-[1.5] tracking-[0.05em] align-middle`;
+    `font-sans font-bold ` +
+    `text-[clamp(14px,calc(100vw/${BASE}*16),16px)] ` +
+    `leading-[1.5] tracking-[0.05em] align-middle`;
+
   const linkCls = (active: boolean) =>
     `${navText} ${active ? "text-[#AD002D]" : "text-black"} hover:underline`;
+
   const mobileCtaText =
     `font-sans font-bold text-[clamp(18px,calc(100vw/${BASE}*24),24px)] leading-[1.5] tracking-[0.05em]`;
 
@@ -66,32 +78,31 @@ export default function Header() {
             <Link
               href="/"
               prefetch={false}
+              className="
+                flex items-center
+                h-12
+                w-[clamp(128px,calc(100vw/1440*176),230px)]
+                p-1 min-[600px]:py-1 min-[600px]:px-0
+                gap-[10px]
+              "
               aria-label="Willeder Home"
-              className="flex items-center h-full p-0"
             >
-              {/* Fixed-size wrapper prevents CLS on the logo */}
-              <span
-                className="
-                  relative block
-                  w-[128px] h-[44px]         /* ≤600px: 128×44 */
-                  min-[600px]:w-[176px] 
-                  min-[600px]:h-[60px]       /* ≥600px: 176×60 */
-                "
-              >
-                <Image
-                  src="/willeder-logo.png"
-                  alt="Willeder logo"
-                  fill
-                  priority
-                  sizes="(max-width:600px) 128px, 176px"
-                  className="object-contain"
-                />
-              </span>
+              <Image
+                src="/willeder-logo.png"
+                alt="Willeder logo"
+                width={176}
+                height={60}
+                sizes="(max-width:600px) 128px, 176px"
+                decoding="async"
+                priority={false}
+                className="block"
+              />
             </Link>
           </div>
 
           {/* Right side */}
           <div className="flex items-stretch flex-1 min-w-0">
+            {/* ≥600: Nav + Contact */}
             <div className="hidden min-[600px]:flex items-stretch ml-auto">
               <nav
                 className="
@@ -105,13 +116,14 @@ export default function Header() {
                   <Link href="/" prefetch={false} className={linkCls(isHomeActive)}>
                     TOP
                   </Link>
+                  {/* Blogs list; stays active for /blog and /blog/[slug] */}
                   <Link href="/blog" prefetch={false} className={linkCls(isBlogActive)}>
                     ブログ
                   </Link>
                 </div>
               </nav>
 
-              {/* Contact (desktop) */}
+              {/* Contact (desktop) — CTA style only */}
               <div
                 className="
                   hidden min-[600px]:flex shrink-0
@@ -152,8 +164,22 @@ export default function Header() {
               >
                 <span className="sr-only">Menu</span>
                 <span className="relative h-5 w-6 block">
-                  <span className="absolute left-0 right-0 top-1/2 block h-0.5 bg-black -translate-y-1.5 transition-transform duration-200 group-open:translate-y-0 group-open:rotate-45" />
-                  <span className="absolute left-0 right-0 top-1/2 block h-0.5 bg-black translate-y-1.5 transition-transform duration-200 group-open:translate-y-0 group-open:-rotate-45" />
+                  {/* top bar */}
+                  <span
+                    className="
+                      absolute left-0 right-0 top-1/2 block h-0.5 bg-black
+                      -translate-y-1.5 transition-transform duration-200
+                      group-open:translate-y-0 group-open:rotate-45
+                    "
+                  />
+                  {/* bottom bar */}
+                  <span
+                    className="
+                      absolute left-0 right-0 top-1/2 block h-0.5 bg-black
+                      translate-y-1.5 transition-transform duration-200
+                      group-open:translate-y-0 group-open:-rotate-45
+                    "
+                  />
                 </span>
               </summary>
 
@@ -171,12 +197,22 @@ export default function Header() {
               >
                 <ul className="flex flex-col items-center justify-center text-center divide-y divide-black/10">
                   <li className="w-full">
-                    <Link href="/" prefetch={false} onClick={closeMobileMenu} className={`${linkCls(isHomeActive)} block px-4 py-3`}>
+                    <Link
+                      href="/"
+                      prefetch={false}
+                      onClick={closeMobileMenu}
+                      className={`${linkCls(isHomeActive)} block px-4 py-3`}
+                    >
                       Home
                     </Link>
                   </li>
                   <li className="w-full">
-                    <Link href="/blog" prefetch={false} onClick={closeMobileMenu} className={`${linkCls(isBlogActive)} block px-4 py-3`}>
+                    <Link
+                      href="/blog"
+                      prefetch={false}
+                      onClick={closeMobileMenu}
+                      className={`${linkCls(isBlogActive)} block px-4 py-3`}
+                    >
                       Blogs
                     </Link>
                   </li>
@@ -193,7 +229,13 @@ export default function Header() {
                     >
                       <span className={mobileCtaText}>Contact</span>
                       <span className="relative block w-[21px] h-[24.25px] -top-[0.12px] transition-transform duration-200 group-hover:translate-x-1">
-                        <Image src="/images/services/arrow 2.png" alt="" fill sizes="21px" className="object-contain" />
+                        <Image
+                          src="/images/services/arrow 2.png"
+                          alt=""
+                          fill
+                          sizes="21px"
+                          className="object-contain"
+                        />
                       </span>
                     </Link>
                   </li>

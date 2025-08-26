@@ -36,19 +36,19 @@ export default function BlogSection({
   const topTextCls =
     `${notoSansJp.className} font-bold text-[32px] leading-[150%] tracking-[0.05em] text-center`;
   const mainTextCls =
-    `${jost.className} font-medium text-[20px] leading-[150%] tracking-[0.05em] text-center`;
+    `${jost.className} font-medium text-[17px] leading-[150%] tracking-[0.05em] text-center`;
 
   return (
     <section>
-      <div className="mx-auto w-full max-w-[1440px] px-4 md:px-20 pt-24 pb-40 space-y-16">
+      <div className="mx-auto w-full max-w-[1440px] px-4 md:px-19 pt-22 pb-55 space-y-15">
         {/* Header */}
-        <div className="mx-auto w-full max-w-[1280px] flex flex-col items-center justify-center gap-2">
+        <div className="mx-auto w-full max-w-[1280px] flex flex-col items-center justify-center gap-1.5">
           <div className={topTextCls}>ブログ</div>
           <div className="w-full flex items-center gap-4">
-            <span className="hidden md:block w-[592px] h-px bg-black" aria-hidden />
+            <span className="hidden md:block w-[590px] h-px bg-black" aria-hidden />
             <span className="md:hidden flex-1 h-px bg-black" aria-hidden />
             <h2 className={mainTextCls}>BLOG</h2>
-            <span className="hidden md:block w-[592px] h-px bg-black" aria-hidden />
+            <span className="hidden md:block w-[590px] h-px bg-black" aria-hidden />
             <span className="md:hidden flex-1 h-px bg-black" aria-hidden />
           </div>
         </div>

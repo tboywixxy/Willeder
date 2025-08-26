@@ -17,7 +17,7 @@ export default function StanSection({
 }: Props) {
   // Figma text style: Noto Sans JP, 700, line-height 150%, letter-spacing 5%, centered
   const figmaTextCommon =
-    `${notoSansJp.className} font-bold leading-[150%] tracking-[0.05em] text-center`;
+    `${notoSansJp.className} font-bold leading-[130%] tracking-[0.0009em] text-center`;
 
   return (
     <section className="bg-[#B9BDC6] dark:bg-[#B9BDC6]">
@@ -29,10 +29,10 @@ export default function StanSection({
       <div
         className="
           mx-auto w-full max-w-[1440px]
-          h-[334px] sm:h-[328px] md:h-[328px]
-          pt-24 pb-24
+          h-[324px] sm:h-[328px] md:h-[306px]
+          pt-22 pb-24
           px-4 sm:px-6 md:px-6 lg:px-20
-          space-y-8
+          space-y-7
         "
       >
         {/* Centered heading box
@@ -43,7 +43,7 @@ export default function StanSection({
         <div
           className="
             mx-auto w-full
-            max-w-[343px] h-12
+            max-w-[345px] h-12
             sm:max-w-[720px] sm:h-9
             lg:max-w-[1280px]
             flex items-center justify-center
@@ -66,9 +66,9 @@ export default function StanSection({
             href={buttonHref}
             className={`
               inline-flex items-center justify-center
-              gap-4 sm:gap-6
-              w-[298px] h-[62px] sm:w-[405px] sm:h-[68px]
-              px-6 py-4 sm:px-12 sm:py-4
+              gap-2 sm:gap-2 
+              w-[278px] h-[62px] sm:w-[375px] sm:h-[64px]
+              px-2 py-4 sm:px-12 sm:py-4
               rounded-[16px]
               bg-[#AD002D] dark:bg-[#AD002D]
               text-white dark:text-white

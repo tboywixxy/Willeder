@@ -3,7 +3,7 @@
     {
       "id": "1",
       "slug": "designing-with-clarity",
-      "title": "Designing with Clarity",
+      "title": "eeeee",
       "thumbnail": "https://picsum.photos/seed/clarity/1200/630",
       "tags": [
         "Design",
@@ -41,7 +41,7 @@
         },
         "callout": "Clarity is a team sport—codify choices and stick to them."
       },
-      "content": "<h2>Designing with Clarity</h2><p>Clarity begins with intent—every pixel should serve understanding. We reduce choices per screen and group content by meaning. Typography sets rhythm; spacing reinforces hierarchy.</p><img src=\"https://picsum.photos/seed/clarity-img1/800/450\" alt=\"Type scale sample\" /><p>Accessible contrast and strong focus styles build trust. Empty states teach and guide the next action. Copy should state outcomes, not destinations.</p><p>Design reviews focus on user outcomes, not decoration. Document decisions so future changes stay aligned. Tokens map Figma choices to CSS variables.</p><img src=\"https://picsum.photos/seed/clarity-img2/800/450\" alt=\"Layout spacing grid\" /><p>Consistency scales teams without slowing creativity. Measure success via completion and errors avoided. Ship small, learn quickly, refine deliberately. Clarity is a habit formed by constraints and care.</p><img src=\"https://picsum.photos/seed/clarity-img3/800/450\" alt=\"Accessible color examples\" />",
+      "content": "<h2>Jeaning</h2><p>Clarity begins with intent—every pixel should serve understanding. We reduce choices per screen and group content by meaning. Typography sets rhythm; spacing reinforces hierarchy.</p><img src=\"https://picsum.photos/seed/clarity-img1/800/450\" alt=\"Type scale sample\" /><p>Accessible contrast and strong focus styles build trust. Empty states teach and guide the next action. Copy should state outcomes, not destinations.</p><p>Design reviews focus on user outcomes, not decoration. Document decisions so future changes stay aligned. Tokens map Figma choices to CSS variables.</p><img src=\"https://picsum.photos/seed/clarity-img2/800/450\" alt=\"Layout spacing grid\" /><p>Consistency scales teams without slowing creativity. Measure success via completion and errors avoided. Ship small, learn quickly, refine deliberately. Clarity is a habit formed by constraints and care.</p><img src=\"https://picsum.photos/seed/clarity-img3/800/450\" alt=\"Accessible color examples\" />",
       "tagsText": "Design, Branding"
     },
     {

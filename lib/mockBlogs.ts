@@ -13,7 +13,7 @@ export const MOCK_BLOGS: MockBlog[] = [
   {
     id: "1",
     slug: "designing-with",
-    title: "Designing with Clarity",
+    title: "eeeeee",
     thumbnail: "https://picsum.photos/seed/clarity/1200/630",
     tags: ["Design", "Branding"],
     createdAt: "2025-08-01",

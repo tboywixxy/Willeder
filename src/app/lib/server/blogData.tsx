@@ -2,7 +2,7 @@ export const blogPosts = [
     {
       "id": "1",
       "slug": "designing-with-clarity",
-      "title": "Designing with Clarity",
+      "title": "wea",
       "thumbnail": "https://picsum.photos/seed/clarity/1200/630",
       "tags": ["Design", "Branding"],
       "createdAt": "2025-08-01",

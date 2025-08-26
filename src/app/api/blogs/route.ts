@@ -71,6 +71,8 @@ function matchQuery(post: Blog, q: string): boolean {
   return hay.includes(needle);
 }
 
+const stamp = (s: string) => new Date(s).getTime() || 0;
+
 /* ---------------- GET ---------------- */
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -83,34 +85,35 @@ export async function GET(req: Request) {
     .filter(Boolean);
 
   try {
-    /* ---------- DEV: JSON Server ---------- */
+    /* ---------- DEV: JSON Server (fetch all, then paginate locally) ---------- */
     if (useJson) {
-      const params = new URLSearchParams();
-      params.set("_page", String(page));
-      params.set("_limit", String(limit));
-      if (q) params.set("q", q);
-      if (tagsWanted.length) params.set("tags_like", tagsWanted.join("|"));
-
-      const devUrl = `${JSON_SERVER_URL!.replace(/\/$/, "")}/blogs?${params.toString()}`;
-      const r = await fetch(devUrl, { cache: "no-store" });
-
+      const base = `${JSON_SERVER_URL!.replace(/\/$/, "")}/blogs`;
+      const r = await fetch(base, { cache: "no-store" });
       if (r.ok) {
-        const items = (await r.json() as Blog[]).map(ensureContent);
-        const total = Number(r.headers.get("X-Total-Count")) || items.length;
+        const raw = (await r.json()) as Blog[];
 
-        console.log("[/api/blogs] source=json-server", {
-          url: devUrl,
+        // Normalize + enforce same behavior as prod
+        const all = raw.map(ensureContent);
+        const filtered = all
+          .filter((b) => matchTags(b, tagsWanted) && matchQuery(b, q))
+          .sort((a, b) => stamp(b.createdAt) - stamp(a.createdAt));
+
+        const start = (page - 1) * limit;
+        const items = filtered.slice(start, start + limit);
+
+        console.log("[/api/blogs] source=json-server (local paginate)", {
+          url: base,
           page, limit, q, tags: tagsWanted,
-          count: items.length, total,
+          count: items.length, total: filtered.length,
         });
 
         return NextResponse.json(
-          { items, page, limit, total },
+          { items, page, limit, total: filtered.length },
           { headers: { "x-data-source": "json-server" } },
         );
       }
 
-      console.warn("[/api/blogs] JSON Server returned non-OK; falling back to blogData", {
+      console.warn("[/api/blogs] JSON Server non-OK; falling back to blogData", {
         status: r.status, statusText: r.statusText,
       });
       // fall through to static
@@ -120,7 +123,7 @@ export async function GET(req: Request) {
     const all = (blogPosts as Blog[]).map(ensureContent);
     const filtered = all
       .filter((b) => matchTags(b, tagsWanted) && matchQuery(b, q))
-      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+      .sort((a, b) => stamp(b.createdAt) - stamp(a.createdAt));
 
     const start = (page - 1) * limit;
     const items = filtered.slice(start, start + limit);

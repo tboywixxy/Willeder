@@ -29,31 +29,34 @@ function ensureContent(post: Blog): Blog {
   return { ...post, content: pad(html) };
 }
 
+async function parseJsonServerDetailResponse(r: Response): Promise<Blog | null> {
+  if (!r.ok) return null;
+  const body = await r.json();
+  const arr: any[] =
+    Array.isArray(body) ? body
+    : Array.isArray(body?.data) ? body.data
+    : Array.isArray(body?.items) ? body.items
+    : [];
+  return arr?.[0] ?? null;
+}
+
 export async function GET(req: Request) {
   try {
     const { pathname } = new URL(req.url);
     const rawSlug = decodeURIComponent(pathname.split("/").pop() || "").trim();
     if (!rawSlug) return NextResponse.json({ error: "Bad request" }, { status: 400 });
 
-    /* ---------- DEV: JSON Server ---------- */
+    /* ---------- DEV: JSON Server v1 beta ---------- */
     if (useJson) {
       try {
-        const u = `${JSON_SERVER_URL!.replace(/\/$/, "")}/blogs?slug=${encodeURIComponent(rawSlug)}&_limit=1`;
+        // Ask by slug; v1 may return { data: [...] }
+        const u = `${JSON_SERVER_URL!.replace(/\/$/, "")}/blogs?slug=${encodeURIComponent(rawSlug)}&_per_page=1`;
         const r = await fetch(u, { cache: "no-store" });
-        if (r.ok) {
-          const arr = (await r.json()) as Blog[];
-          if (arr && arr[0]) {
-            console.log("[/api/blogs/[slug]] source=json-server", {
-              url: u, slug: rawSlug, match: arr[0]?.slug,
-            });
-            return NextResponse.json(ensureContent(arr[0]), {
-              headers: { "x-data-source": "json-server" },
-            });
-          }
-        } else {
-          console.warn("[/api/blogs/[slug]] JSON Server non-OK; fallback to blogData", {
-            status: r.status, statusText: r.statusText,
-          });
+        const found = await parseJsonServerDetailResponse(r);
+        if (found) {
+          const ensured = ensureContent(found as Blog);
+          console.log("[/api/blogs/[slug]] source=json-server", { url: u, slug: rawSlug, match: (found as any)?.slug });
+          return NextResponse.json(ensured, { headers: { "x-data-source": "json-server" } });
         }
       } catch (err) {
         console.warn("[/api/blogs/[slug]] JSON Server fetch error; fallback to blogData", err);
@@ -81,9 +84,7 @@ export async function GET(req: Request) {
       match: found.slug,
     });
 
-    return NextResponse.json(ensureContent(found), {
-      headers: { "x-data-source": "blogData" },
-    });
+    return NextResponse.json(ensureContent(found), { headers: { "x-data-source": "blogData" } });
   } catch (e) {
     console.error("[/api/blogs/[slug]] error", e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

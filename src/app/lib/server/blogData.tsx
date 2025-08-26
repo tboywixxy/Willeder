@@ -2,24 +2,27 @@ export const blogPosts = [
     {
       "id": "1",
       "slug": "designing-with-clarity",
-      "title": "wea",
+      "title": "Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/clarity/1200/630",
-      "tags": ["Design", "Branding"],
+      "tags": [
+        "Design",
+        "Branding"
+      ],
       "createdAt": "2025-08-01",
       "detail": {
-        "t1": "Clarity begins with intent—every pixel should serve understanding.",
-        "t2": "We reduce choices per screen and group content by meaning.",
-        "t5": "Typography sets rhythm; spacing reinforces hierarchy.",
-        "t6": "Accessible contrast and strong focus styles build trust.",
-        "t7": "Empty states teach and guide the next action.",
-        "t8": "Copy should state outcomes, not destinations.",
-        "t11": "Design reviews focus on user outcomes, not decoration.",
-        "t12a": "Document decisions so future changes stay aligned.",
-        "t12c": "Tokens map Figma choices to CSS variables.",
-        "t12d": "Consistency scales teams without slowing creativity.",
-        "t15a": "Measure success via completion and errors avoided.",
-        "t15b": "Ship small, learn quickly, refine deliberately.",
-        "t15c": "Clarity is a habit formed by constraints and care.",
+        "t1": "Clarity begins with intent—every pixel should serve understanding, removing visual noise so meaning comes through first.",
+        "t2": "We reduce   per screen and group content by meaning, letting structure guide the next decision naturally.",
+        "t5": "Typography sets rhythm; spacing reinforces hierarchy, and consistent scales keep interfaces honest—{{red}}making clarity feel intentional on every screen{{/red}}.",
+        "t6": "Accessible contrast and strong focus styles build trust; sensible motion and readable lengths keep fatigue low.",
+        "t7": "Empty states teach and guide the next action, turning dead ends into micro-onboarding moments.",
+        "t8": "Copy should state outcomes, not destinations, so users always know what happens when they commit.",
+        "t11": "Design reviews focus on user outcomes, not decoration; we ask if the next step is obvious and safe.",
+        "t12a": "Document decisions so future changes stay aligned; a brief rationale and link to examples helps—{{red}}the decision record becomes the single source of truth{{/red}}.",
+        "t12c": "Tokens map Figma   to CSS variables so names reflect purpose, not raw values.",
+        "t12d": "Consistency scales teams without slowing creativity by removing trivia from daily decisions.",
+        "t15a": "Measure success via completion and errors avoided; {{red}}favor outcomes over output{{/red}} and review targets monthly.",
+        "t15b": "Ship small, learn quickly, refine deliberately; insight beats certainty.",
+        "t15c": "Clarity is a habit formed by constraints and care, repeated release by release.",
         "img1": {
           "src": "https://picsum.photos/seed/clarity-img1/800/450",
           "alt": "Type scale sample",
@@ -35,30 +38,35 @@ export const blogPosts = [
           "alt": "Accessible color examples",
           "caption": "Contrast meets AA for body and UI text."
         },
-        "callout": "Clarity is a team sport—codify choices and stick to them."
-      }
+        "callout": "Clarity is a team sport—codify   and stick to them."
+      },
+      "content": "<h2>Jeaning</h2><p>Clarity begins with intent—every pixel should serve understanding. We reduce   per screen and group content by meaning. Typography sets rhythm; spacing reinforces hierarchy.</p><img src=\"https://picsum.photos/seed/clarity-img1/800/450\" alt=\"Type scale sample\" /><p>Accessible contrast and strong focus styles build trust. Empty states teach and guide the next action. Copy should state outcomes, not destinations.</p><p>Design reviews focus on user outcomes, not decoration. Document decisions so future changes stay aligned. Tokens map Figma   to CSS variables.</p><img src=\"https://picsum.photos/seed/clarity-img2/800/450\" alt=\"Layout spacing grid\" /><p>Consistency scales teams without slowing creativity. Measure success via completion and errors avoided. Ship small, learn quickly, refine deliberately. Clarity is a habit formed by constraints and care.</p><img src=\"https://picsum.photos/seed/clarity-img3/800/450\" alt=\"Accessible color examples\" />",
+      "tagsText": "Design, Branding"
     },
     {
       "id": "2",
       "slug": "nextjs-app-router-basics",
-      "title": "Next.js App Router Basics",
+      "title": "Next.js App Router Basics Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/approuter/1200/630",
-      "tags": ["Engineering", "Other"],
+      "tags": [
+        "Engineering",
+        "Other"
+      ],
       "createdAt": "2025-08-02",
       "detail": {
-        "t1": "Think in layouts and nested routes for fast transitions.",
-        "t2": "Keep server work on the server and ship less JS to clients.",
-        "t5": "Route handlers unify caching and validation.",
-        "t6": "Stream primary content first; hydrate islands later.",
-        "t7": "Use metadata and revalidation per page need.",
-        "t8": "Co-locate data with UI for clear ownership.",
-        "t11": "Prefer suspense where it aids orientation.",
-        "t12a": "Measure field performance, not just lab.",
-        "t12c": "Define cache boundaries that match content change.",
-        "t12d": "Split bundles by route; avoid shared giants.",
-        "t15a": "Automate guardrails in CI to catch regressions.",
-        "t15b": "Pick boring, reliable patterns.",
-        "t15c": "Small, clear code wins over cleverness.",
+        "t1": "Think in layouts and nested routes for fast transitions, sharing shells to avoid re-rendering everything.",
+        "t2": "Keep server work on the server and ship less JS to clients; data close to components stays understandable.",
+        "t5": "Route handlers unify caching and validation while {{red}}turning cross-cutting concerns into composable utilities{{/red}}.",
+        "t6": "Stream primary content first; hydrate islands later so users see progress before interactivity lands.",
+        "t7": "Use metadata and revalidation per page need, aligning freshness with business value.",
+        "t8": "Co-locate data with UI for clear ownership, keeping boundaries predictable.",
+        "t11": "Prefer suspense where it aids orientation; placeholders should suggest real structure.",
+        "t12a": "Measure field performance, not just lab; {{red}}RUM catches the surprises that synthetic tests miss{{/red}}.",
+        "t12c": "Define cache boundaries that match content change to avoid stale illusions.",
+        "t12d": "Split bundles by route; avoid shared giants that couple unrelated features.",
+        "t15a": "Automate guardrails in CI to catch regressions, {{red}}failing fast before users ever feel it{{/red}}.",
+        "t15b": "Pick boring, reliable patterns; durability wins long-term.",
+        "t15c": "Small, clear code beats cleverness when teams rotate.",
         "img1": {
           "src": "https://picsum.photos/seed/router1/800/450",
           "alt": "Layout tree",
@@ -75,29 +83,34 @@ export const blogPosts = [
           "caption": "Stream deliberately; avoid layout thrash."
         },
         "callout": "Push complexity to the server, not the browser."
-      }
+      },
+      "content": "<h2>Next.js App Router Basics</h2><p>Think in layouts and nested routes for fast transitions. Keep server work on the server and ship less JS to clients. Route handlers unify caching and validation.</p><img src=\"https://picsum.photos/seed/router1/800/450\" alt=\"Layout tree\" /><p>Stream primary content first; hydrate islands later. Use metadata and revalidation per page need. Co-locate data with UI for clear ownership.</p><p>Prefer suspense where it aids orientation. Measure field performance, not just lab. Define cache boundaries that match content change.</p><img src=\"https://picsum.photos/seed/router2/800/450\" alt=\"Revalidation flow\" /><p>Split bundles by route; avoid shared giants. Automate guardrails in CI to catch regressions. Pick boring, reliable patterns. Small, clear code wins over cleverness.</p><img src=\"https://picsum.photos/seed/router3/800/450\" alt=\"Streaming UI\" />",
+      "tagsText": "Engineering, Other"
     },
     {
       "id": "3",
       "slug": "performance-first",
-      "title": "Performance First",
+      "title": "Performance First Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/perf/1200/630",
-      "tags": ["Engineering", "Design"],
+      "tags": [
+        "Engineering",
+        "Design"
+      ],
       "createdAt": "2025-08-03",
       "detail": {
-        "t1": "Define a performance budget on day one.",
-        "t2": "Every dependency must earn its bytes.",
-        "t5": "Images matter most—serve the right size and ratio.",
-        "t6": "Preload key fonts; use swap to avoid FOIT.",
-        "t7": "Reserve space to prevent CLS.",
-        "t8": "Prefer CSS over JS for simple effects.",
-        "t11": "Audit third-party scripts regularly.",
-        "t12a": "Use RUM to see real devices and networks.",
-        "t12c": "Skeletons should match final layout.",
-        "t12d": "Communicate delays with honest microcopy.",
-        "t15a": "Delete code; it’s the best optimization.",
-        "t15b": "Measure, iterate, repeat.",
-        "t15c": "Fast feels trustworthy.",
+        "t1": "Define a performance budget on day one and defend it as features grow.",
+        "t2": "Every dependency must earn its bytes; lazy load what’s optional.",
+        "t5": "Images matter most—serve the right size and ratio; {{red}}optimize formats and set explicit dimensions to avoid CLS{{/red}}.",
+        "t6": "Preload key fonts; use swap to avoid FOIT and audit weights you truly need.",
+        "t7": "Reserve space to prevent CLS and keep interactions steady under load.",
+        "t8": "Prefer CSS over JS for simple effects to save main-thread time.",
+        "t11": "Audit third-party scripts regularly and kill the ones that no longer pay rent.",
+        "t12a": "Use RUM to see real devices and networks; {{red}}lab wins only matter when field data agrees{{/red}}.",
+        "t12c": "Skeletons should match final layout so users don’t lose position.",
+        "t12d": "Communicate delays with honest microcopy to maintain trust.",
+        "t15a": "Delete code; {{red}}removing work is the best optimization{{/red}}.",
+        "t15b": "Measure, iterate, repeat; treat speed as behavior, not a milestone.",
+        "t15c": "Fast feels trustworthy and invites exploration.",
         "img1": {
           "src": "https://picsum.photos/seed/perf1/800/450",
           "alt": "Lighthouse mobile report",
@@ -114,29 +127,34 @@ export const blogPosts = [
           "caption": "Dead code is silent but costly."
         },
         "callout": "Speed is a product feature, not an afterthought."
-      }
+      },
+      "content": "<h2>Performance First</h2><p>Define a performance budget on day one. Every dependency must earn its bytes. Images matter most—serve the right size and ratio.</p><img src=\"https://picsum.photos/seed/perf1/800/450\" alt=\"Lighthouse mobile report\" /><p>Preload key fonts; use swap to avoid FOIT. Reserve space to prevent CLS. Prefer CSS over JS for simple effects.</p><p>Audit third-party scripts regularly. Use RUM to see real devices and networks. Skeletons should match final layout.</p><img src=\"https://picsum.photos/seed/perf2/800/450\" alt=\"Network waterfall\" /><p>Communicate delays with honest microcopy. Delete code; it’s the best optimization. Measure, iterate, repeat. Fast feels trustworthy.</p><img src=\"https://picsum.photos/seed/perf3/800/450\" alt=\"Coverage tool\" />",
+      "tagsText": "Engineering, Design"
     },
     {
       "id": "4",
       "slug": "content-strategy-for-blogs",
-      "title": "Content Strategy for Blogs",
+      "title": "Content Strategy for Blogs Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/strategy/1200/630",
-      "tags": ["Branding", "Other"],
+      "tags": [
+        "Branding",
+        "Other"
+      ],
       "createdAt": "2025-08-04",
       "detail": {
-        "t1": "Treat the blog like a publication with goals.",
-        "t2": "Define audience, themes, cadence, and owners.",
-        "t5": "Balance evergreen guides with timely posts.",
-        "t6": "Link related content to deepen engagement.",
-        "t7": "Write summaries that set expectations.",
-        "t8": "Add UTMs and measure outcomes monthly.",
-        "t11": "Accessibility checks belong in the PR template.",
-        "t12a": "Alt text should add context, not noise.",
-        "t12c": "Headings must form a logical outline.",
-        "t12d": "Contrast should meet AA at minimum.",
-        "t15a": "Quality beats frequency.",
-        "t15b": "Fewer, better posts win.",
-        "t15c": "Consistency builds trust.",
+        "t1": "Treat the blog like a publication with goals, not a dumping ground for updates.",
+        "t2": "Define audience, themes, cadence, and owners so expectations stay clear.",
+        "t5": "Balance evergreen guides with timely posts; {{red}}surface series and related links to deepen reading paths{{/red}}.",
+        "t6": "Link related content to deepen engagement and reduce bounce.",
+        "t7": "Write summaries that set expectations and promise value early.",
+        "t8": "Add UTMs and measure outcomes monthly to learn what resonates.",
+        "t11": "Accessibility checks belong in the PR template so quality is habitual.",
+        "t12a": "Alt text should add context, not noise; {{red}}describe purpose, not just appearance{{/red}}.",
+        "t12c": "Headings must form a logical outline for skimmers and screen readers.",
+        "t12d": "Contrast should meet AA at minimum across themes and images.",
+        "t15a": "Quality beats frequency; {{red}}publishing less can produce more results{{/red}}.",
+        "t15b": "Fewer, better posts win and are easier to maintain.",
+        "t15c": "Consistency builds trust with subscribers and search alike.",
         "img1": {
           "src": "https://picsum.photos/seed/strategy1/800/450",
           "alt": "Editorial board",
@@ -153,29 +171,34 @@ export const blogPosts = [
           "caption": "Related posts increase depth of reading."
         },
         "callout": "Editorial discipline compounds results."
-      }
+      },
+      "content": "<h2>Content Strategy for Blogs</h2><p>Treat the blog like a publication with goals. Define audience, themes, cadence, and owners. Balance evergreen guides with timely posts.</p><img src=\"https://picsum.photos/seed/strategy1/800/450\" alt=\"Editorial board\" /><p>Link related content to deepen engagement. Write summaries that set expectations. Add UTMs and measure outcomes monthly.</p><p>Accessibility checks belong in the PR template. Alt text should add context, not noise. Headings must form a logical outline.</p><img src=\"https://picsum.photos/seed/strategy2/800/450\" alt=\"Analytics charts\" /><p>Contrast should meet AA at minimum. Quality beats frequency. Fewer, better posts win. Consistency builds trust.</p><img src=\"https://picsum.photos/seed/strategy3/800/450\" alt=\"Content linking structure\" />",
+      "tagsText": "Branding, Other"
     },
     {
       "id": "5",
       "slug": "scaling-with-json-server",
-      "title": "Scaling Local Dev with JSON Server",
+      "title": "Scaling Local Dev with JSON Server Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/jsonserver/1200/630",
-      "tags": ["IT Consulting", "Engineering"],
+      "tags": [
+        "IT Consulting",
+        "Engineering"
+      ],
       "createdAt": "2025-08-05",
       "detail": {
-        "t1": "Mocks unblock UI while APIs mature.",
-        "t2": "Mirror production shapes to avoid churn.",
-        "t5": "Use page, limit, tag, and q like prod.",
-        "t6": "Simulate latency to test loading states.",
-        "t7": "Capture edge cases: empty, error, partial.",
-        "t8": "Keep fixtures versioned with UI changes.",
-        "t11": "Proxy routes hide dev/prod differences.",
-        "t12a": "Visual tests love deterministic data.",
-        "t12c": "Parity prevents last-minute surprises.",
-        "t12d": "Update mocks as contracts evolve.",
-        "t15a": "One contract, many implementations.",
-        "t15b": "Speed with safety.",
-        "t15c": "Demo with confidence.",
+        "t1": "Mocks unblock UI while APIs mature, letting design move without backend delays.",
+        "t2": "Mirror production shapes to avoid churn when you swap sources.",
+        "t5": "Use page, limit, tag, and q like prod—{{red}}one contract, many environments{{/red}}.",
+        "t6": "Simulate latency to test loading states and skeletons thoroughly.",
+        "t7": "Capture edge cases: empty, error, partial; don’t demo only the happy path.",
+        "t8": "Keep fixtures versioned with UI changes for reproducible diffs.",
+        "t11": "Proxy routes hide dev/prod differences so clients stay stable.",
+        "t12a": "Visual tests love deterministic data; {{red}}stable seeds make flakiness rare{{/red}}.",
+        "t12c": "Parity prevents last-minute surprises when promoting to prod.",
+        "t12d": "Update mocks as contracts evolve to retain trust.",
+        "t15a": "One contract, many implementations; {{red}}a shared schema reduces risk{{/red}}.",
+        "t15b": "Speed with safety means faster feedback cycles.",
+        "t15c": "Demo with confidence because states are covered.",
         "img1": {
           "src": "https://picsum.photos/seed/js1/800/450",
           "alt": "Mocked endpoints",
@@ -192,29 +215,34 @@ export const blogPosts = [
           "caption": "Determinism makes bugs reproducible."
         },
         "callout": "Mocks reduce risk by making assumptions explicit."
-      }
+      },
+      "content": "<h2>Scaling Local Dev with JSON Server</h2><p>Mocks unblock UI while APIs mature. Mirror production shapes to avoid churn. Use page, limit, tag, and q like prod.</p><img src=\"https://picsum.photos/seed/js1/800/450\" alt=\"Mocked endpoints\" /><p>Simulate latency to test loading states. Capture edge cases: empty, error, partial. Keep fixtures versioned with UI changes.</p><p>Proxy routes hide dev/prod differences. Visual tests love deterministic data. Parity prevents last-minute surprises.</p><img src=\"https://picsum.photos/seed/js2/800/450\" alt=\"Delay simulation\" /><p>Update mocks as contracts evolve. One contract, many implementations. Speed with safety. Demo with confidence.</p><img src=\"https://picsum.photos/seed/js3/800/450\" alt=\"Fixture table\" />",
+      "tagsText": "IT Consulting, Engineering"
     },
     {
       "id": "6",
       "slug": "nodemailer-on-vercel",
-      "title": "Nodemailer on Vercel",
+      "title": "Nodemailer on Vercel Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/nodemailer/1200/630",
-      "tags": ["Engineering", "Other"],
+      "tags": [
+        "Engineering",
+        "Other"
+      ],
       "createdAt": "2025-08-06",
       "detail": {
-        "t1": "Use Node runtime and SMTP credentials via env.",
-        "t2": "Validate input and handle errors clearly.",
-        "t5": "Honeypot fields deter basic spam.",
-        "t6": "Reply-To helps ops respond quickly.",
-        "t7": "Announce status with aria-live.",
-        "t8": "Keep success and failure copy human.",
-        "t11": "Rate limit and cap field lengths.",
-        "t12a": "Prefer Ethereal for local previews.",
-        "t12c": "Log metadata, not secrets.",
-        "t12d": "Document a small runbook for on-call.",
-        "t15a": "Reliable forms build trust.",
-        "t15b": "Small, robust handlers win.",
-        "t15c": "Security is UX.",
+        "t1": "Use Node runtime and SMTP credentials via env so secrets stay out of code.",
+        "t2": "Validate input and handle errors clearly with user-friendly messages.",
+        "t5": "Honeypot fields deter basic spam while {{red}}rate limits curb abuse{{/red}}.",
+        "t6": "Reply-To helps ops respond quickly; include request metadata.",
+        "t7": "Announce status with aria-live and disable the submit button during send.",
+        "t8": "Keep success and failure copy human and specific.",
+        "t11": "Rate limit and cap field lengths to protect resources.",
+        "t12a": "Prefer Ethereal for local previews—{{red}}zero-risk inbox testing{{/red}}.",
+        "t12c": "Log metadata, not secrets; redact anything sensitive.",
+        "t12d": "Document a small runbook for on-call so anyone can debug.",
+        "t15a": "Reliable forms build trust; {{red}}delivery guarantees matter{{/red}}.",
+        "t15b": "Small, robust handlers win under pressure.",
+        "t15c": "Security is UX because safe flows feel smooth.",
         "img1": {
           "src": "https://picsum.photos/seed/mail1/800/450",
           "alt": "Transport config",
@@ -231,29 +259,34 @@ export const blogPosts = [
           "caption": "Preview links speed up testing."
         },
         "callout": "Trust grows when communication is predictable."
-      }
+      },
+      "content": "<h2>Nodemailer on Vercel</h2><p>Use Node runtime and SMTP credentials via env. Validate input and handle errors clearly. Honeypot fields deter basic spam.</p><img src=\"https://picsum.photos/seed/mail1/800/450\" alt=\"Transport config\" /><p>Reply-To helps ops respond quickly. Announce status with aria-live. Keep success and failure copy human.</p><p>Rate limit and cap field lengths. Prefer Ethereal for local previews. Log metadata, not secrets.</p><img src=\"https://picsum.photos/seed/mail2/800/450\" alt=\"Form states\" /><p>Document a small runbook for on-call. Reliable forms build trust. Small, robust handlers win. Security is UX.</p><img src=\"https://picsum.photos/seed/mail3/800/450\" alt=\"Inbox preview\" />",
+      "tagsText": "Engineering, Other"
     },
     {
       "id": "7",
       "slug": "responsive-figma-to-css",
-      "title": "Responsive Figma → CSS with clamp()",
+      "title": "Responsive Figma → CSS with clamp() Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/figmacss/1200/630",
-      "tags": ["Design", "IT Consulting"],
+      "tags": [
+        "Design",
+        "IT Consulting"
+      ],
       "createdAt": "2025-08-07",
       "detail": {
-        "t1": "Fluid systems scale without media query soup.",
-        "t2": "Clamp values bound extremes on tiny and huge screens.",
-        "t5": "Fix small icons to px for crisp rendering.",
-        "t6": "Set borders to 1px and mind contrast.",
-        "t7": "Use container widths to keep readable line lengths.",
-        "t8": "Document conversions in README.",
-        "t11": "Verify on Safari and Firefox early.",
-        "t12a": "Font metrics differ across engines.",
-        "t12c": "Prefer system fonts unless brand requires.",
-        "t12d": "Preload critical weights only.",
-        "t15a": "Predictability beats cleverness.",
-        "t15b": "Ship principles, not hacks.",
-        "t15c": "Own the rhythm of your UI.",
+        "t1": "Fluid systems scale without media query soup when the math is explicit.",
+        "t2": "Clamp values bound extremes on tiny and huge screens so rhythm stays intact.",
+        "t5": "Fix small icons to px for crisp rendering; {{red}}reserve fluid sizes for type and spacing{{/red}}.",
+        "t6": "Set borders to 1px and mind contrast against backgrounds and imagery.",
+        "t7": "Use container widths to keep readable line lengths across devices.",
+        "t8": "Document conversions in README so future teammates trust the numbers.",
+        "t11": "Verify on Safari and Firefox early to catch metric differences.",
+        "t12a": "Font metrics differ across engines; {{red}}test fallback stacks intentionally{{/red}}.",
+        "t12c": "Prefer system fonts unless brand requires custom faces.",
+        "t12d": "Preload critical weights only to avoid blocking render.",
+        "t15a": "Predictability beats cleverness; {{red}}boring CSS scales beautifully{{/red}}.",
+        "t15b": "Ship principles, not hacks; remove magic numbers as you go.",
+        "t15c": "Own the rhythm of your UI with a few clear tokens.",
         "img1": {
           "src": "https://picsum.photos/seed/clamp1/800/450",
           "alt": "Clamp formula",
@@ -270,29 +303,34 @@ export const blogPosts = [
           "caption": "Safari keeps us honest."
         },
         "callout": "Write once, scale everywhere."
-      }
+      },
+      "content": "<h2>Responsive Figma → CSS with clamp()</h2><p>Fluid systems scale without media query soup. Clamp values bound extremes on tiny and huge screens. Fix small icons to px for crisp rendering.</p><img src=\"https://picsum.photos/seed/clamp1/800/450\" alt=\"Clamp formula\" /><p>Set borders to 1px and mind contrast. Use container widths to keep readable line lengths. Document conversions in README.</p><p>Verify on Safari and Firefox early. Font metrics differ across engines. Prefer system fonts unless brand requires.</p><img src=\"https://picsum.photos/seed/clamp2/800/450\" alt=\"Responsive grid\" /><p>Preload critical weights only. Predictability beats cleverness. Ship principles, not hacks. Own the rhythm of your UI.</p><img src=\"https://picsum.photos/seed/clamp3/800/450\" alt=\"Cross-browser test\" />",
+      "tagsText": "Design, IT Consulting"
     },
     {
       "id": "8",
       "slug": "accessibility-aa-checklist",
-      "title": "Accessibility AA Checklist",
+      "title": "Accessibility AA Checklist Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/a11y/1200/630",
-      "tags": ["Design", "Other"],
+      "tags": [
+        "Design",
+        "Other"
+      ],
       "createdAt": "2025-08-08",
       "detail": {
-        "t1": "Accessibility is quality work, not an add-on.",
-        "t2": "Use landmarks, ordered headings, and visible focus.",
-        "t5": "Color is never the only signal.",
-        "t6": "Labels must be clear and persistent.",
-        "t7": "Keyboard users complete every flow.",
-        "t8": "aria-live announces async updates.",
-        "t11": "Provide transcripts and alt text with context.",
-        "t12a": "Test with a screen reader weekly.",
-        "t12c": "Check contrast against AA.",
-        "t12d": "Avoid motion that harms vestibular comfort.",
-        "t15a": "Inclusive by default scales best.",
-        "t15b": "Make checks part of PRs.",
-        "t15c": "Everyone benefits from accessible choices.",
+        "t1": "Accessibility is quality work, not an add-on, and it compounds over time.",
+        "t2": "Use landmarks, ordered headings, and visible focus so structure is perceivable.",
+        "t5": "Color is never the only signal; {{red}}pair it with icons or text cues{{/red}}.",
+        "t6": "Labels must be clear and persistent; placeholders are not labels.",
+        "t7": "Keyboard users complete every flow with sensible tabindex and traps avoided.",
+        "t8": "aria-live announces async updates so screen readers aren’t left behind.",
+        "t11": "Provide transcripts and alt text with context, not noise.",
+        "t12a": "Test with a screen reader weekly; {{red}}NVDA/VoiceOver will humble your assumptions{{/red}}.",
+        "t12c": "Check contrast against AA including hover and disabled states.",
+        "t12d": "Avoid motion that harms vestibular comfort; honor reduced motion.",
+        "t15a": "Inclusive by default scales best; {{red}}accessibility helps everyone{{/red}}.",
+        "t15b": "Make checks part of PRs so regressions don’t sneak in.",
+        "t15c": "Everyone benefits from accessible   in the end.",
         "img1": {
           "src": "https://picsum.photos/seed/a11y1/800/450",
           "alt": "Focus ring",
@@ -309,29 +347,34 @@ export const blogPosts = [
           "caption": "Tab order reveals structure quality."
         },
         "callout": "Habits, not heroics, make products accessible."
-      }
+      },
+      "content": "<h2>Accessibility AA Checklist</h2><p>Accessibility is quality work, not an add-on. Use landmarks, ordered headings, and visible focus. Color is never the only signal.</p><img src=\"https://picsum.photos/seed/a11y1/800/450\" alt=\"Focus ring\" /><p>Labels must be clear and persistent. Keyboard users complete every flow. aria-live announces async updates.</p><p>Provide transcripts and alt text with context. Test with a screen reader weekly. Check contrast against AA.</p><img src=\"https://picsum.photos/seed/a11y2/800/450\" alt=\"Contrast tool\" /><p>Avoid motion that harms vestibular comfort. Inclusive by default scales best. Make checks part of PRs. Everyone benefits from accessible  .</p><img src=\"https://picsum.photos/seed/a11y3/800/450\" alt=\"Keyboard testing\" />",
+      "tagsText": "Design, Other"
     },
     {
       "id": "9",
       "slug": "lighthouse-scores-mobile",
-      "title": "Hitting 90+ Lighthouse (Mobile)",
+      "title": "Hitting 90+ Lighthouse (Mobile) Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/lh/1200/630",
-      "tags": ["Engineering", "Design"],
+      "tags": [
+        "Engineering",
+        "Design"
+      ],
       "createdAt": "2025-08-09",
       "detail": {
-        "t1": "Great scores follow good choices.",
-        "t2": "Control the critical path and reduce JS.",
-        "t5": "Serve modern formats and explicit sizes.",
-        "t6": "Hydrate fewer components by default.",
-        "t7": "Audit fonts and third-party scripts.",
-        "t8": "Prefer route-level code splitting.",
-        "t11": "Measure on a mid-tier phone.",
-        "t12a": "Field data validates lab wins.",
-        "t12c": "Avoid layout thrash; reserve space.",
-        "t12d": "Skeletons should feel deliberate.",
-        "t15a": "Guardrails in CI prevent regressions.",
-        "t15b": "Performance is product strategy.",
-        "t15c": "Fast feels trustworthy.",
+        "t1": "Great scores follow good   repeated consistently.",
+        "t2": "Control the critical path and reduce JS to what’s essential.",
+        "t5": "Serve modern formats and explicit sizes; {{red}}reserve space to tame CLS{{/red}}.",
+        "t6": "Hydrate fewer components by default; choose islands intentionally.",
+        "t7": "Audit fonts and third-party scripts; remove what you don’t measure.",
+        "t8": "Prefer route-level code splitting over shared mega-bundles.",
+        "t11": "Measure on a mid-tier phone to simulate real-world limits.",
+        "t12a": "Field data validates lab wins; {{red}}CrUX and RUM tell the truth{{/red}}.",
+        "t12c": "Avoid layout thrash; coordinate style and script timing.",
+        "t12d": "Skeletons should feel deliberate and align with final UI.",
+        "t15a": "Guardrails in CI prevent regressions; {{red}}break the build when budgets blow up{{/red}}.",
+        "t15b": "Performance is product strategy, not a post-launch task.",
+        "t15c": "Fast feels trustworthy and respectful.",
         "img1": {
           "src": "https://picsum.photos/seed/lh1/800/450",
           "alt": "Vitals chart",
@@ -348,29 +391,33 @@ export const blogPosts = [
           "caption": "Ship less by default."
         },
         "callout": "Set budgets early—then keep them."
-      }
+      },
+      "content": "<h2>Hitting 90+ Lighthouse (Mobile)</h2><p>Great scores follow good  . Control the critical path and reduce JS. Serve modern formats and explicit sizes.</p><img src=\"https://picsum.photos/seed/lh1/800/450\" alt=\"Vitals chart\" /><p>Hydrate fewer components by default. Audit fonts and third-party scripts. Prefer route-level code splitting.</p><p>Measure on a mid-tier phone. Field data validates lab wins. Avoid layout thrash; reserve space.</p><img src=\"https://picsum.photos/seed/lh2/800/450\" alt=\"Network panel\" /><p>Skeletons should feel deliberate. Guardrails in CI prevent regressions. Performance is product strategy. Fast feels trustworthy.</p><img src=\"https://picsum.photos/seed/lh3/800/450\" alt=\"Bundle report\" />",
+      "tagsText": "Engineering, Design"
     },
     {
       "id": "10",
       "slug": "branding-systems-101",
-      "title": "Branding Systems 101",
+      "title": "Branding Systems 101 Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/branding/1200/630",
-      "tags": ["Branding"],
+      "tags": [
+        "Branding"
+      ],
       "createdAt": "2025-08-10",
       "detail": {
-        "t1": "A brand is promises kept over time.",
-        "t2": "Systems make consistency achievable.",
-        "t5": "Templates lower cognitive load for creators.",
-        "t6": "Guardrails, not cages, enable creativity.",
-        "t7": "Voice, visuals, and velocity align.",
-        "t8": "Measure clarity and conversion, not taste.",
-        "t11": "Prune patterns that no longer serve.",
-        "t12a": "Publish where people work—Figma, code, docs.",
-        "t12c": "Show examples, not just rules.",
-        "t12d": "Evolve the system with the product.",
-        "t15a": "Coherence compounds trust.",
-        "t15b": "Consistency beats novelty.",
-        "t15c": "Make the right thing easy.",
+        "t1": "A brand is promises kept over time—consistency people can feel.",
+        "t2": "Systems make consistency achievable without stifling creativity.",
+        "t5": "Templates lower cognitive load for creators; {{red}}guardrails beat ad-hoc policing{{/red}}.",
+        "t6": "Guardrails, not cages, enable creativity at scale.",
+        "t7": "Voice, visuals, and velocity align when artifacts live together.",
+        "t8": "Measure clarity and conversion, not taste or novelty.",
+        "t11": "Prune patterns that no longer serve to keep the set lean.",
+        "t12a": "Publish where people work—Figma, code, docs; {{red}}findability is adoption{{/red}}.",
+        "t12c": "Show examples, not just rules; examples travel better.",
+        "t12d": "Evolve the system with the product so it never fossilizes.",
+        "t15a": "Coherence compounds trust; {{red}}small wins add up quickly{{/red}}.",
+        "t15b": "Consistency beats novelty when budgets are tight.",
+        "t15c": "Make the right thing easy and you’ll see it more.",
         "img1": {
           "src": "https://picsum.photos/seed/branding1/800/450",
           "alt": "Brand moodboard",
@@ -387,29 +434,34 @@ export const blogPosts = [
           "caption": "Rules only matter when findable."
         },
         "callout": "Consistency is a competitive advantage."
-      }
+      },
+      "content": "<h2>Branding Systems 101</h2><p>A brand is promises kept over time. Systems make consistency achievable. Templates lower cognitive load for creators.</p><img src=\"https://picsum.photos/seed/branding1/800/450\" alt=\"Brand moodboard\" /><p>Guardrails, not cages, enable creativity. Voice, visuals, and velocity align. Measure clarity and conversion, not taste.</p><p>Prune patterns that no longer serve. Publish where people work—Figma, code, docs. Show examples, not just rules.</p><img src=\"https://picsum.photos/seed/branding2/800/450\" alt=\"Component library\" /><p>Evolve the system with the product. Coherence compounds trust. Consistency beats novelty. Make the right thing easy.</p><img src=\"https://picsum.photos/seed/branding3/800/450\" alt=\"Usage guidelines\" />",
+      "tagsText": "Branding"
     },
     {
       "id": "11",
       "slug": "design-ops-in-practice",
-      "title": "Design Ops in Practice",
+      "title": "Design Ops in Practice Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/dops/1200/630",
-      "tags": ["Design", "IT Consulting"],
+      "tags": [
+        "Design",
+        "IT Consulting"
+      ],
       "createdAt": "2025-08-11",
       "detail": {
-        "t1": "Ops aligns people, process, and tools.",
-        "t2": "Make intake clear; reduce DM archaeology.",
-        "t5": "Status should be visible without meetings.",
-        "t6": "Teach the system, not the file.",
-        "t7": "Libraries and tokens pay compounding dividends.",
-        "t8": "Prototype when unknowns are high.",
-        "t11": "Define success criteria per initiative.",
-        "t12a": "Pair quant with qualitative insight.",
-        "t12c": "Review and prune quarterly.",
-        "t12d": "Ops creates a runway for creativity.",
-        "t15a": "Good ops feels invisible.",
-        "t15b": "Friction down, throughput up.",
-        "t15c": "Process serves outcomes.",
+        "t1": "Ops aligns people, process, and tools so work flows smoothly.",
+        "t2": "Make intake clear; reduce DM archaeology with shared queues.",
+        "t5": "Status should be visible without meetings; {{red}}dashboards beat slide decks{{/red}}.",
+        "t6": "Teach the system, not the file; mentor on principles.",
+        "t7": "Libraries and tokens pay compounding dividends when maintained.",
+        "t8": "Prototype when unknowns are high to retire risk early.",
+        "t11": "Define success criteria per initiative and revisit quarterly.",
+        "t12a": "Pair quant with qualitative insight; {{red}}numbers explain, stories persuade{{/red}}.",
+        "t12c": "Review and prune quarterly to avoid entropy.",
+        "t12d": "Ops creates a runway for creativity when friction is low.",
+        "t15a": "Good ops feels invisible; {{red}}the work feels lighter{{/red}}.",
+        "t15b": "Friction down, throughput up—that’s the loop.",
+        "t15c": "Process serves outcomes, not the other way around.",
         "img1": {
           "src": "https://picsum.photos/seed/dops1/800/450",
           "alt": "Kanban board",
@@ -426,46 +478,53 @@ export const blogPosts = [
           "caption": "Reusable parts speed delivery."
         },
         "callout": "Make the best path the easiest path."
-      }
+      },
+      "content": "<h2>Design Ops in Practice</h2><p>Ops aligns people, process, and tools. Make intake clear; reduce DM archaeology. Status should be visible without meetings.</p><img src=\"https://picsum.photos/seed/dops1/800/450\" alt=\"Kanban board\" /><p>Teach the system, not the file. Libraries and tokens pay compounding dividends. Prototype when unknowns are high.</p><p>Define success criteria per initiative. Pair quant with qualitative insight. Review and prune quarterly.</p><img src=\"https://picsum.photos/seed/dops2/800/450\" alt=\"Metrics dashboard\" /><p>Ops creates a runway for creativity. Good ops feels invisible. Friction down, throughput up. Process serves outcomes.</p><img src=\"https://picsum.photos/seed/dops3/800/450\" alt=\"Design library\" />",
+      "tagsText": "Design, IT Consulting"
     },
     {
       "id": "12",
-      "slug": "frontend-architecture-choices",
-      "title": "Frontend Architecture Choices",
+      "slug": "frontend-architecture- ",
+      "title": "Frontend Architecture   for the pref budget sheet",
       "thumbnail": "https://picsum.photos/seed/fa/1200/630",
-      "tags": ["Engineering", "IT Consulting"],
+      "tags": [
+        "Engineering",
+        "IT Consulting"
+      ],
       "createdAt": "2025-08-12",
       "detail": {
-        "t1": "Architecture is a set of tradeoffs.",
-        "t2": "Choose state tools based on scope.",
-        "t5": "Keep presentational components pure.",
-        "t6": "Move effects to the edges.",
-        "t7": "Composition beats inheritance.",
-        "t8": "Co-locate by feature for speed.",
-        "t11": "Shared boundaries make refactors safe.",
-        "t12a": "Establish budgets and splitting early.",
-        "t12c": "Hydrate less by default.",
-        "t12d": "Measure in the field continuously.",
-        "t15a": "Boring is good when it scales.",
-        "t15b": "Pick predictable over fashionable.",
-        "t15c": "Small pieces, loosely coupled.",
+        "t1": "Webサイト制作において、初期の設計段階はプロジェクト全体のスピードと品質を左右する重要なステップです。近年ではクラウド型のデザインツール「Figma」を使うことで、従来の静的なワイヤーフレームやデザイン作業が、チーム全体で共有しやすくなり、修正も素早く反映できるようになりました。本記事では、Figmaを使った効率的なWebサイト設計のコツを3つの観点からご紹介します。",
+        "t2": "コンポーネント化でデザインの一貫性を保つ",
+        "t5": "Webサイトのデザインでは「ボタン」「ナビゲーション」「カード」など、同じ要素を繰り返し利用する場面が多くあります。Figmaのコンポーネント機能を活用することで、一度作成したUIパーツを何度でも再利用でき、後からデザインを変更した際も全ページに自動で反映されます。これにより、{{red}}一貫性のあるデザインを保ちながら修正作業の手間を最小限に抑えることが可能{{/red}}です。",
+        "t6": "Auto Layoutとレスポンシブ設計を組み合わせる",
+        "t7": "初期の設計段階",
+        "t8": "現代のWebサイトでは、PC・タブレット・スマートフォンといった複数のデバイスに対応するレスポンシブデザインが当たり前になっています。FigmaのAuto Layout機能を使うと、テキストの増減や画面サイズの違いに応じて要素が自動でリサイズされるため、実際のブラウザ挙動に近い状態でデザインを検証できます。",
+        "t11": "応用段階",
+        "t12a": "さらに、{{red}}3つの代表的なブレイクポイント（モバイル／タブレット／デスクトップ）をFigma上で用意しておくこと{{/red}}で、開発者への指示も明確になり、実装との齟齬を防ぐことができます。",
+        "t12c": "現代のWebサイト制作において、初期の設計段階はプロジェクト全体のスピードと品質を左右する重要なステップです。近年ではクラウド型のデザインツール「Figma」を使うことで、従来の静的なワイヤーフレームやデザイン作業が、チーム全体で共有しやすくなり、修正も素早く反映できるようになりました。本記事では、Figmaを使った効率的なWebサイト設計のコツを3つの観点からご紹介します。",
+        "t12d": "コメントとプロトタイプ機能でチーム全体を巻き込む",
+        "t15a": "Figmaの大きな強みは「共同作業」にあります。デザイナーだけでなく、{{red}}エンジニアやクライアントも同じファイルを開き、コメント機能を使って直接フィードバックを残せます。{{/red}}さらに、プロトタイプ機能でページ遷移やアニメーションを設定しておけば、実際のWebサイトの動きに近い形で確認でき、完成イメージの共有が容易になります。結果として、要件のすり合わせや修正が初期段階で済み、開発後の手戻りを減らすことができます。",
+        "t15b": "まとめ",
+        "t15c": "Figmaを活用したWebサイト設計のコツは、①コンポーネント化で一貫性を確保、②Auto Layoutでレスポンシブを想定したデザイン、③コメントやプロトタイプでチーム全体を巻き込む、の3点に集約されます。これらを意識することで、効率的かつ質の高いWebサイト制作が可能になり、開発の現場でも大きなメリットを得られるでしょう。",
         "img1": {
           "src": "https://picsum.photos/seed/fa1/800/450",
           "alt": "Component boundaries",
-          "caption": "Small testable units survive change."
+          "caption": "Figmaのコンポーネントの設定例"
         },
         "img2": {
           "src": "https://picsum.photos/seed/fa2/800/450",
           "alt": "Perf budget sheet",
-          "caption": "Guardrails keep entropy in check."
+          "caption": "FigmaのAuto Layoutの仕組み"
         },
         "img3": {
           "src": "https://picsum.photos/seed/fa3/800/450",
           "alt": "Module graph",
-          "caption": "Feature folders reduce thrash."
+          "caption": "Figmaの標準機能であるコメントを使ったコミュニケーショ"
         },
-        "callout": "Architecture is what remains when features change."
-      }
+        "callout": "Webサイト制作において、初期の設計段階はプロジェクト全体のスピードと品質を左右する重要なステップです。近年ではクラウド型のデザインツール「Figma」を使うことで、従来の静的なワイヤーフレームやデザイン作業が、チーム全体で共有しやすくなり、修正も素早く反映できるようになりました。本記事では、Figmaを使った効率的なWebサイト設計のコツを3つの観点からご紹介します。"
+      },
+      "content": "<h2>Frontend Architecture  </h2><p>Architecture is a set of tradeoffs. Choose state tools based on scope. Keep presentational components pure.</p><img src=\"https://picsum.photos/seed/fa1/800/450\" alt=\"Component boundaries\" /><p>Move effects to the edges. Composition beats inheritance. Co-locate by feature for speed.</p><p>Shared boundaries make refactors safe. Establish budgets and splitting early. Hydrate less by default.</p><img src=\"https://picsum.photos/seed/fa2/800/450\" alt=\"Perf budget sheet\" /><p>Measure in the field continuously. Boring is good when it scales. Pick predictable over fashionable. Small pieces, loosely coupled.</p><img src=\"https://picsum.photos/seed/fa3/800/450\" alt=\"Module graph\" />",
+      "tagsText": "Engineering, IT Consulting"
     },
     {
       "id": "13",

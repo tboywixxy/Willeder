@@ -81,7 +81,7 @@ export default function HomePage() {
                 aria-label="See more"
               >
                 <span className="font-bold leading-[150%] tracking-[0.05em] text-[20px] min-[600px]:text-[24px]">
-                  See more
+                  お問い合わせはこちら
                 </span>
                 <span className="relative inline-block w-[25px] h-[18px] min-[600px]:w-[34px] min-[600px]:h-[24px] transition-transform duration-200 ease-out group-hover:translate-x-2">
                   <Image

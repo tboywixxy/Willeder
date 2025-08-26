@@ -3,25 +3,31 @@ import Hero from "../components/Hero";
 import ServiceSection from "../components/ServiceSection";
 import StanSection from "../components/StanSection";
 import LatestBlogShowcase from "../components/LatestBlogShowcase";
-import { MOCK_BLOGS } from "../../lib/mockBlogs";
+import { absoluteUrl } from "@/lib/absolute-url";
 
-export const dynamic = "force-static";
-export const revalidate = false;
+type Teaser = { slug: string; title: string; thumbnail: string; createdAt: string };
 
-export default function HomePage() {
-  const posts = MOCK_BLOGS.slice(0, 3);
-  const displayDates = posts.map((p) =>
+async function getLatest(limit = 3): Promise<Teaser[]> {
+  const r = await fetch(
+    absoluteUrl(`/api/blogs?page=1&limit=${limit}`),
+    { cache: "no-store" } // same as your blog list client fetch => always fresh in dev
+  );
+  if (!r.ok) throw new Error(`Failed to load blogs: ${r.status}`);
+  const data = (await r.json()) as { items?: Teaser[] };
+  return data.items ?? [];
+}
+
+export default async function HomePage() {
+  // set to 12 if you want 12 cards on the homepage:
+  const posts = await getLatest(3);
+
+  const displayDates = posts.map(p =>
     p.createdAt.includes("-") ? p.createdAt.replaceAll("-", ".") : p.createdAt
   );
-  const graySets = [
-    ["IT Consulting", "Engineering", "Other"],
-    ["Engineering", "Branding", "Other"],
-    ["Branding", "Other"],
-  ];
+  const graySets = posts.map(() => [] as string[]);
 
   return (
     <>
-      {/* Keep Hero minimal + server-only (no "use client" inside Hero) */}
       <Hero />
 
       <div style={{ contentVisibility: "auto", containIntrinsicSize: "1100px" }}>
@@ -29,11 +35,7 @@ export default function HomePage() {
       </div>
 
       <div style={{ contentVisibility: "auto", containIntrinsicSize: "1000px" }}>
-        <LatestBlogShowcase
-          posts={posts}
-          displayDates={displayDates}
-          graySets={graySets}
-        />
+        <LatestBlogShowcase posts={posts} displayDates={displayDates} graySets={graySets} />
       </div>
 
       <div style={{ contentVisibility: "auto", containIntrinsicSize: "900px" }}>

@@ -108,7 +108,7 @@ export default function BlogTopBar({
       </form>
 
       {/* Tags */}
-      <div className="w-full max-w-[1280px] flex flex-wrap items-center justify-center gap-6">
+      <div className="w-full max-w-[1280px] flex flex-wrap items-center justify-center gap-6 -mb-6 -mt-10">
         <TagChip label="All" active={allActive} onClick={onClearTags} />
         {tags.map((t) => (
           <TagChip key={t} label={t} active={selected.includes(t)} onClick={() => onToggleTag(t)} />
@@ -131,7 +131,7 @@ function TagChip({
     "inline-flex items-center rounded-[4px] border " +
     "h-[clamp(26px,calc(100vw/1440*28),28px)] " +
     "px-[clamp(12px,calc(100vw/1440*16),16px)] " +
-    "text-[clamp(11px,calc(100vw/1440*12),12px)] " +
+    "text-[clamp(11px,calc(100vw/1440*8),8px)] " +
     "leading-[1]";
 
   const style = active ? "border-black text-black" : "border-[#B9BDC6] text-[#B9BDC6]";

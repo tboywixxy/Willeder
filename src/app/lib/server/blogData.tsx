@@ -469,25 +469,28 @@ export const blogPosts = [
     },
     {
       "id": "13",
-      "slug": "クラウド活用とデザインの融合で実現する次世代Webシステム",
-      "title": "クラウド活用とデザインの融合で実現する次世代Webシステム",
+      "slug": "Shared components kept look and feel consistent everywhere",
+      "title": "Shared components kept look and feel consistent everywhere",
       "thumbnail": "https://picsum.photos/seed/cs/1200/630",
-      "tags": ["Branding", "Design"],
+      "tags": [
+        "Branding",
+        "Design"
+      ],
       "createdAt": "2025-08-13",
       "detail": {
-        "t1": "We simplified navigation and clarified copy.",
-        "t2": "Whitespace and structure improved comprehension.",
-        "t5": "We reduced blocking scripts and heavy assets.",
-        "t6": "Conversion events show value first.",
-        "t7": "Forms became shorter and clearer.",
-        "t8": "Internal linking improved discovery.",
-        "t11": "Shared components kept look and feel consistent.",
-        "t12a": "Image optimization drove LCP down.",
-        "t12c": "Server rendering reduced TTFB variability.",
-        "t12d": "Iterative releases avoided risky big-bangs.",
-        "t15a": "Mobile KPIs lifted meaningfully.",
-        "t15b": "Bounce rate fell after simplification.",
-        "t15c": "The brand felt calmer, more confident.",
+        "t1": "We simplified navigation and clarified copy, surfacing real benefits.",
+        "t2": "Whitespace and structure improved comprehension across flows.",
+        "t5": "We reduced blocking scripts and heavy assets, {{red}}protecting the main thread on mobile{{/red}}.",
+        "t6": "Conversion events show value first to build momentum early.",
+        "t7": "Forms became shorter and clearer with inline guidance.",
+        "t8": "Internal linking improved discovery and depth per session.",
+        "t11": "Shared components kept look and feel consistent everywhere.",
+        "t12a": "Image optimization drove LCP down; {{red}}explicit sizes prevented jumps{{/red}}.",
+        "t12c": "Server rendering reduced TTFB variability on slow networks.",
+        "t12d": "Iterative releases avoided risky big-bangs and regressions.",
+        "t15a": "Mobile KPIs lifted meaningfully; {{red}}fast feels modern{{/red}}.",
+        "t15b": "Bounce rate fell after simplification and clarity work.",
+        "t15c": "The brand felt calmer, more confident, and usable.",
         "img1": {
           "src": "https://picsum.photos/seed/cs1/800/450",
           "alt": "Before/after hero",
@@ -504,29 +507,34 @@ export const blogPosts = [
           "caption": "Shared parts enabled velocity."
         },
         "callout": "Saying less, better, can be the biggest win."
-      }
+      },
+      "content": "<h2>Case Study: Marketing Redesign</h2><p>We simplified navigation and clarified copy. Whitespace and structure improved comprehension. We reduced blocking scripts and heavy assets.</p><img src=\"https://picsum.photos/seed/cs1/800/450\" alt=\"Before/after hero\" /><p>Conversion events show value first. Forms became shorter and clearer. Internal linking improved discovery.</p><p>Shared components kept look and feel consistent. Image optimization drove LCP down. Server rendering reduced TTFB variability.</p><img src=\"https://picsum.photos/seed/cs2/800/450\" alt=\"Conversion chart\" /><p>Iterative releases avoided risky big-bangs. Mobile KPIs lifted meaningfully. Bounce rate fell after simplification. The brand felt calmer, more confident.</p><img src=\"https://picsum.photos/seed/cs3/800/450\" alt=\"Component snapshots\" />",
+      "tagsText": "Branding, Design"
     },
     {
       "id": "14",
-      "slug": "UI/UX改善で業務効率を高めるデザイン思考",
-      "title": "UI/UX改善で業務効率を高めるデザイン思考",
+      "slug": "Frontend Architecture  ",
+      "title": "Version tokens like APIs so consumers can upgrade safely.",
       "thumbnail": "https://picsum.photos/seed/tokens/1200/630",
-      "tags": ["Design", "Engineering"],
+      "tags": [
+        "Design",
+        "Engineering"
+      ],
       "createdAt": "2025-08-14",
       "detail": {
-        "t1": "Name tokens by intent, not value.",
-        "t2": "Keep spacing steps limited and consistent.",
-        "t5": "Automate exports to CSS variables.",
-        "t6": "Version tokens like APIs.",
-        "t7": "Update components with the tokens.",
-        "t8": "Docs show purpose with examples.",
-        "t11": "Build stories for states and sizes.",
-        "t12a": "Write lint rules for spacing and color.",
-        "t12c": "Encourage contributions with simple guides.",
-        "t12d": "Evolution beats fossilization.",
-        "t15a": "Tokens matter only when used.",
-        "t15b": "Strong defaults free teams.",
-        "t15c": "Production validates the system.",
+        "t1": "Name tokens by intent, not value, so meaning survives refactors.",
+        "t2": "Keep spacing steps limited and consistent for learnability.",
+        "t5": "Automate exports to CSS variables; {{red}}humans pick names, bots sync files{{/red}}.",
+        "t6": "Version tokens like APIs so consumers can upgrade safely.",
+        "t7": "Update components with the tokens to ensure real adoption.",
+        "t8": "Docs show purpose with examples that mirror production.",
+        "t11": "Build stories for states and sizes to prove coverage.",
+        "t12a": "Write lint rules for spacing and color; {{red}}enforce the system at compile time{{/red}}.",
+        "t12c": "Encourage contributions with simple guides and checklists.",
+        "t12d": "Evolution beats fossilization; deprecate before removal.",
+        "t15a": "Tokens matter only when used; {{red}}shipping validates the system{{/red}}.",
+        "t15b": "Strong defaults free teams to focus on behavior.",
+        "t15c": "Production is the judge—close the loop.",
         "img1": {
           "src": "https://picsum.photos/seed/tokens1/800/450",
           "alt": "Token table",
@@ -543,29 +551,34 @@ export const blogPosts = [
           "caption": "One source of truth across stacks."
         },
         "callout": "Tokens are a means, not an end."
-      }
+      },
+      "content": "<h2>Figmaで始める効率的なWebサイト設計のコツ</h2><p>Name tokens by intent, not value. Keep spacing steps limited and consistent. Automate exports to CSS variables.</p><img src=\"https://picsum.photos/seed/tokens1/800/450\" alt=\"Token table\" /><p>Version tokens like APIs. Update components with the tokens. Docs show purpose with examples.</p><p>Build stories for states and sizes. Write lint rules for spacing and color. Encourage contributions with simple guides.</p><img src=\"https://picsum.photos/seed/tokens2/800/450\" alt=\"Storybook tokens\" /><p>Evolution beats fossilization. Tokens matter only when used. Strong defaults free teams. Production validates the system.</p><img src=\"https://picsum.photos/seed/tokens3/800/450\" alt=\"Variables in code\" />",
+      "tagsText": "Design, Engineering"
     },
     {
       "id": "15",
-      "slug": "Figmaで始める！効率的なWebサイト設計のコツ",
-      "title": "Figmaで始める！効率的なWebサイト設計のコツ",
+      "slug": "Frontend Architecture  ",
+      "title": "Frontend Architecture   Frontend Architecture  ",
       "thumbnail": "https://picsum.photos/seed/uicopy/1200/630",
-      "tags": ["Branding", "Other"],
+      "tags": [
+        "Branding",
+        "Other"
+      ],
       "createdAt": "2025-08-15",
       "detail": {
-        "t1": "Words are the smallest, strongest system.",
-        "t2": "Buttons describe outcomes, not destinations.",
-        "t5": "Confirmation copy explains what changed.",
-        "t6": "Error messages tell how to fix the issue.",
-        "t7": "Tone adapts to context and audience.",
-        "t8": "Avoid idioms and culture-locked phrases.",
-        "t11": "Short sentences improve scanning.",
-        "t12a": "Specific nouns beat abstract ones.",
-        "t12c": "Icons clarify; they don’t replace text.",
-        "t12d": "Rewrite until meaning is obvious.",
-        "t15a": "A small style guide prevents drift.",
-        "t15b": "Clarity reduces hesitation.",
-        "t15c": "Write for first-glance understanding.",
+        "t1": "Words are the smallest, strongest system when chosen precisely.",
+        "t2": "Buttons describe outcomes, not destinations; verbs win.",
+        "t5": "Confirmation copy explains what changed and {{red}}what the user can expect next{{/red}}.",
+        "t6": "Error messages tell how to fix the issue with clear steps.",
+        "t7": "Tone adapts to context and audience without losing clarity.",
+        "t8": "Avoid idioms and culture-locked phrases that don’t translate.",
+        "t11": "Short sentences improve scanning and comprehension.",
+        "t12a": "Specific nouns beat abstract ones; {{red}}names reduce ambiguity{{/red}}.",
+        "t12c": "Icons clarify; they don’t replace text—label important actions.",
+        "t12d": "Rewrite until meaning is obvious; cut twice as much as you add.",
+        "t15a": "A small style guide prevents drift; {{red}}shared examples speed consistency{{/red}}.",
+        "t15b": "Clarity reduces hesitation and support tickets.",
+        "t15c": "Write for first-glance understanding, then refine.",
         "img1": {
           "src": "https://picsum.photos/seed/uicopy1/800/450",
           "alt": "Button label examples",
@@ -582,7 +595,9 @@ export const blogPosts = [
           "caption": "Shared language builds consistency."
         },
         "callout": "Say it simply; say it once."
-      }
+      },
+      "content": "<h2>Writing Clear UI Copy</h2><p>Words are the smallest, strongest system. Buttons describe outcomes, not destinations. Confirmation copy explains what changed.</p><img src=\"https://picsum.photos/seed/uicopy1/800/450\" alt=\"Button label examples\" /><p>Error messages tell how to fix the issue. Tone adapts to context and audience. Avoid idioms and culture-locked phrases.</p><p>Short sentences improve scanning. Specific nouns beat abstract ones. Icons clarify; they don’t replace text.</p><img src=\"https://picsum.photos/seed/uicopy2/800/450\" alt=\"Inline validation\" /><p>Rewrite until meaning is obvious. A small style guide prevents drift. Clarity reduces hesitation. Write for first-glance understanding.</p><img src=\"https://picsum.photos/seed/uicopy3/800/450\" alt=\"Copy review doc\" />",
+      "tagsText": "Branding, Other"
     }
   ]
 

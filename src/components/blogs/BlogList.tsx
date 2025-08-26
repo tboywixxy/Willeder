@@ -39,8 +39,9 @@ export default function BlogList({ posts, loading }: { posts: Blog[]; loading: b
           min-[600px]:grid-cols-2
           min-[1024px]:grid-cols-3
           gap-x-[clamp(16px,calc(100vw/1440*24),24px)]
-          gap-y-[clamp(24px,calc(100vw/1440*40),40px)]
+          gap-y-[clamp(24px,calc(100vw/1440*26),26px)]
           mb-[clamp(24px,calc(100vw/1440*40),40px)]
+          
         "
         transition={reduce ? { duration: 0.2 } : { layout: { duration: 0.35 } }}
         aria-busy={loading}
@@ -70,7 +71,6 @@ export default function BlogList({ posts, loading }: { posts: Blog[]; loading: b
                   createdAt={p.createdAt}
                   variant="showcase"
                   grayTags={grayTags}
-                  textMinHeights={{ base: 160, md: 200, lg: 220 }}
                 />
               </motion.li>
             );

@@ -38,7 +38,7 @@ export default function HomePage() {
                     transition-colors duration-200 ease-out
                     hover:bg-[#921A31]
                   "
-                  aria-label="See more"
+                  aria-label="お問い合わせはこちら"
                 >
                   <span className="font-bold text-[19px] pr-1 leading-[150%] tracking-[0.25em]">
                     お問い合わせはこちら

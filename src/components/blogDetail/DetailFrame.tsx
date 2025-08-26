@@ -44,7 +44,7 @@ export default function DetailFrame({
   `;
 
   // Reusable text-side padding (kept off the image so it can be full-bleed)
-  const sidePad = "px-[clamp(16px,calc(100vw/1440*109),109px)]";
+  const sidePad = "px-[clamp(16px,calc(100vw/1440*105),109px)]";
 
   return (
     // Center the white card; enforce exact max-widths per breakpoint
@@ -62,15 +62,15 @@ export default function DetailFrame({
         <div
           className={`
             ${sidePad}
-            pt-[clamp(48px,calc(100vw/1440*96),96px)]
-            pb-[clamp(24px,calc(100vw/1440*32),32px)]
+            pt-[clamp(48px,calc(100vw/1440*74),74px)]
+            pb-[clamp(24px,calc(100vw/1440*63),63px)]
           `}
         >
           {/* Title block widths: 327 / 672 / 1062 */}
           <div className="w-full max-w-[327px] min-[600px]:max-w-[672px] min-[1024px]:max-w-[1062px]">
             <h1 className={titleCls}>{title}</h1>
             {/* small gap below title */}
-            <div className="mt-[clamp(8px,calc(100vw/1440*16),16px)]" />
+            <div className="mt-[clamp(8px,calc(100vw/1440*21),21px)]" />
           </div>
 
           {/* Date + Tags widths & layout
@@ -121,7 +121,7 @@ export default function DetailFrame({
               w-full
               h-[214.375px]                 /* mobile height */
               min-[600px]:h-[450px]         /* tablet height */
-              min-[1024px]:h-[800px]        /* desktop height */
+              min-[1024px]:h-[748px]        /* desktop height */
             "
           >
             <Image
@@ -139,7 +139,7 @@ export default function DetailFrame({
         <div
           className={`
             ${sidePad}
-            pt-[clamp(48px,calc(100vw/1440*64),64px)]
+            pt-[clamp(48px,calc(100vw/1440*34),34px)]
             pb-[clamp(96px,calc(100vw/1440*96),96px)]
           `}
         >

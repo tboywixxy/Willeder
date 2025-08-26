@@ -65,29 +65,29 @@ export default function DetailBlocks({
 
   const CALL_OUT = detail?.callout ?? "Highlighted callout block — width matches text/images.";
 
-  const tBase16     = `${notoSansJp.className} font-medium text-[15px] sm:text-[16px] leading-[155%] sm:leading-[150%] break-words [overflow-wrap:anywhere] hyphens-auto`;
-  const tBoldBoxed  = `${notoSansJp.className} font-bold text-[20px] sm:text-[24px] md:text-[32px] leading-[145%] sm:leading-[150%] tracking-[0.05em] break-words [overflow-wrap:anywhere] hyphens-auto`;
+  const tBase16     = `${notoSansJp.className} font-medium text-[15px] sm:text-[14px] leading-[135%] sm:leading-[150%] break-words [overflow-wrap:anywhere] hyphens-auto`;
+  const tBoldBoxed  = `${notoSansJp.className} font-bold text-[20px] sm:text-[24px] md:text-[32px] leading-[145%] sm:leading-[130%] tracking-[0.01em] break-words [overflow-wrap:anywhere] hyphens-auto`;
   const tBold24Red  = `${notoSansJp.className} font-bold text-[18px] sm:text-[22px] md:text-[24px] leading-[150%] text-[#AD002D] break-words [overflow-wrap:anywhere] hyphens-auto`;
   const capGray14   = `${notoSansJp.className} font-medium text-[13px] sm:text-[14px] leading-[150%] text-[#393E46] break-words [overflow-wrap:anywhere] hyphens-auto`;
-  const cap14       = `${notoSansJp.className} font-medium text-[13px] sm:text-[14px] leading-[150%] break-words [overflow-wrap:anywhere] hyphens-auto`;
+  const cap14       = `${notoSansJp.className} font-medium text-[13px] sm:text-[13px] leading-[150%] break-words [overflow-wrap:anywhere] hyphens-auto`;
 
-  const LeftBar = () => <span aria-hidden="true" className="shrink-0 w-2 self-stretch bg-[#AD002D]" />;
+  const LeftBar = () => <span aria-hidden="true" className="shrink-0 w-[6px] self-stretch bg-[#AD002D]" />;
 
   return (
     <div className="w-full flex justify-center">
-      <div className="w-full max-w-[327px] min-[600px]:max-w-[672px] min-[1024px]:max-w-[846px]">
-        <div className="pt-6 sm:pt-8">
+      <div className="w-full max-w-[327px] min-[600px]:max-w-[672px] min-[1024px]:max-w-[790px]">
+        <div className="pt-6 sm:pt-[29px]">
           <p className={tBase16}>{T1}</p>
         </div>
 
-        <div className="pt-6 sm:pt-8">
-          <div className="flex items-start gap-3">
+        <div className="pt-6 sm:pt-[93px]">
+          <div className="flex items-start gap-6">
             <LeftBar />
             <p className={tBoldBoxed}>{T2}</p>
           </div>
         </div>
 
-        <div className="pt-6 sm:pt-8">
+        <div className="pt-6 sm:pt-[35px]">
           <div className="relative w-full overflow-hidden rounded-[16px] aspect-[16/10]">
             <Image
               src={I1}
@@ -107,14 +107,14 @@ export default function DetailBlocks({
           <p className={tBase16}>{renderWithRed(T5)}</p>
         </div>
 
-        <div className="pt-6 sm:pt-8">
-          <div className="flex items-start gap-3">
+        <div className="pt-6 sm:pt-24">
+          <div className="flex items-start gap-5">
             <LeftBar />
             <p className={tBoldBoxed}>{T6}</p>
           </div>
         </div>
 
-        <div className="pt-6 sm:pt-8">
+        <div className="pt-6 sm:pt-[42px]">
           <p className={tBold24Red}>{T7}</p>
         </div>
 
@@ -123,7 +123,7 @@ export default function DetailBlocks({
         </div>
 
         <div className="pt-6 sm:pt-8">
-          <div className="relative w-full overflow-hidden rounded-[16px] aspect-[3/2]">
+          <div className="relative w-full overflow-hidden rounded-[16px] aspect-[7.1/5]">
             <Image
               src={I2}
               alt={I2alt}
@@ -134,11 +134,11 @@ export default function DetailBlocks({
           </div>
         </div>
 
-        <div className="mt-[4px] w-full">
+        <div className="mt-[25px] w-full">
           <p className={cap14}>{I2cap}</p>
         </div>
 
-        <div className="pt-6 sm:pt-8">
+        <div className="pt-6 sm:pt-[44px]">
           <p className={tBold24Red}>{T11}</p>
         </div>
 
@@ -147,24 +147,24 @@ export default function DetailBlocks({
         </div>
 
         <div className="pt-6 sm:pt-8">
-          <div className="w-full rounded-[8px] bg-[#F1F2F4] p-4 sm:p-6">
+          <div className="w-full rounded-[8px] bg-[#F1F2F4] p-4 sm:p-[20px]">
             <p className={cap14}>{CALL_OUT}</p>
           </div>
         </div>
 
-        <div className="pt-6 sm:pt-8">
+        <div className="pt-6 sm:pt-4">
           <p className={tBase16}>{T12c}</p>
         </div>
 
-        <div className="pt-6 sm:pt-8">
-          <div className="flex items-start gap-3">
-            <LeftBar />
+        <div className="pt-6 sm:pt-[72px]">
+          <div className="flex items-start gap-[12px]">
+            <LeftBar /> 
             <p className={tBoldBoxed}>{T12d}</p>
           </div>
         </div>
 
         <div className="pt-6 sm:pt-8">
-          <div className="relative w-full overflow-hidden rounded-[16px] aspect-[4/3]">
+          <div className="relative w-full overflow-hidden rounded-[16px] aspect-[7.1/4]">
             <Image
               src={I3}
               alt={I3alt}
@@ -175,7 +175,7 @@ export default function DetailBlocks({
           </div>
         </div>
 
-        <div className="mt-[4px] w-full">
+        <div className="mt-[22px] w-full">
           <p className={capGray14}>{I3cap}</p>
         </div>
 
@@ -183,14 +183,14 @@ export default function DetailBlocks({
           <p className={tBase16}>{renderWithRed(T15a)}</p>
         </div>
 
-        <div className="pt-6 sm:pt-8">
-          <div className="flex items-start gap-3">
+        <div className="pt-6 sm:pt-[93px]">
+          <div className="flex items-start gap-5">
             <LeftBar />
             <p className={tBoldBoxed}>{T15b}</p>
           </div>
         </div>
 
-        <div className="pt-6 sm:pt-8 pb-2">
+        <div className="pt-6 sm:pt-8 -pb-3">
           <p className={tBase16}>{T15c}</p>
         </div>
       </div>

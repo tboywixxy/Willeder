@@ -77,7 +77,7 @@ const stamp = (s: string) => new Date(s).getTime() || 0;
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const page  = Math.max(1, parseInt(url.searchParams.get("page")  || "1", 10));
-  const limit = Math.max(1, parseInt(url.searchParams.get("limit") || "9", 10));
+  const limit = Math.max(1, parseInt(url.searchParams.get("limit") || "12", 10));
   const q = url.searchParams.get("q")?.trim() || "";
   const tagsWanted = (url.searchParams.get("tag")?.trim() || "")
     .split(",")

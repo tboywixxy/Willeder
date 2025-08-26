@@ -203,7 +203,7 @@ export default function Header() {
                       onClick={closeMobileMenu}
                       className={`${linkCls(isHomeActive)} block px-4 py-3`}
                     >
-                      Home
+                      TOP
                     </Link>
                   </li>
                   <li className="w-full">
@@ -213,7 +213,7 @@ export default function Header() {
                       onClick={closeMobileMenu}
                       className={`${linkCls(isBlogActive)} block px-4 py-3`}
                     >
-                      Blogs
+                      ブログ
                     </Link>
                   </li>
                   <li className="w-full">
@@ -227,7 +227,7 @@ export default function Header() {
                         transition-colors duration-200 hover:bg-[#c51644]
                       "
                     >
-                      <span className={mobileCtaText}>Contact</span>
+                      <span className={mobileCtaText}>お問い合わせ</span>
                       <span className="relative block w-[21px] h-[24.25px] -top-[0.12px] transition-transform duration-200 group-hover:translate-x-1">
                         <Image
                           src="/images/services/arrow 2.png"

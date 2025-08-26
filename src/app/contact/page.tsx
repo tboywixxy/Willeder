@@ -138,12 +138,12 @@ export default function ContactPage() {
                 type="submit"
                 className="inline-flex items-center justify-center rounded-[16px] text-white bg-[#AD002D]
                            focus:outline-none focus-visible:ring-2 focus-visible:ring-black
-                           w-[clamp(193px,calc(100vw/1440*279),279px)] mt-[-8px]
+                           w-[clamp(193px,calc(100vw/1440*279),279px)] mt-[-8px] flex-nowrap
                            gap-[clamp(16px,calc(100vw/1440*19),19px)]
                            px-[clamp(24px,calc(100vw/1440*28),28px)] py-4 disabled:opacity-60 disabled:cursor-not-allowed"
                 aria-label="Submit contact form"
               >
-                <span className="font-sans font-bold leading-[1.5] tracking-[0.05em] text-[clamp(20px,calc(100vw/1440*24),24px)]">
+                <span className="font-sans font-bold leading-[1.5] tracking-[0.05em] max-[600px]:tracking-[0.01em] whitespace-nowrap text-[clamp(10px,2.8vw,24px)]">
                   確認画面へ
                 </span>
                 <span className="relative block -top-[0.12px] w-[clamp(25px,calc(100vw/1440*34),34px)] h-[clamp(18px,calc(100vw/1440*24),24px)]" aria-hidden="true">

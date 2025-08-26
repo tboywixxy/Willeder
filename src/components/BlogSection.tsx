@@ -40,7 +40,7 @@ export default function BlogSection({
 
   return (
     <section>
-      <div className="mx-auto w-full max-w-[1440px] px-4 md:px-19 pt-22 pb-55 space-y-15">
+      <div className="mx-auto w-full max-w-[1440px] px-4 md:px-19 pt-22 pb-[154px] space-y-15">
         {/* Header */}
         <div className="mx-auto w-full max-w-[1280px] flex flex-col items-center justify-center gap-1.5">
           <div className={topTextCls}>ブログ</div>
@@ -82,9 +82,9 @@ export default function BlogSection({
           </ul>
 
           {/* See more */}
-          <div className="mt-8 w-full flex justify-center min-[600px]:justify-end">
-            <Link href="/blog" className="inline-flex items-center gap-2 text-black hover:underline">
-              <span>See more</span>
+          <div className="mt-16 w-full flex justify-center min-[375px]:justify-end">
+            <Link href="/blog" className="inline-flex items-center gap-4 text-black font-bold text-[16px] tracking-[0.20em] hover:underline">
+              <span>もっと見る</span>
               <Image src="/images/services/arrow.png" alt="" width={34} height={24} />
             </Link>
           </div>

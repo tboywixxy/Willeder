@@ -7,6 +7,8 @@ import DetailBlocks from "@/components/blogDetail/DetailBlocks";
 import BlogCard from "@/components/BlogCard";
 import { absoluteUrl } from "@/lib/absolute-url";
 import { blogPosts } from "@/app/lib/server/blogData";
+import Image from "next/image";
+import StanSection from "../../../components/StanSection";
 
 export const revalidate = 60;
 export const dynamic = "force-dynamic";
@@ -186,36 +188,68 @@ export default async function BlogDetailPage({
                 aria-label="Post pagination"
                 className="w-full flex justify-center"
               >
-                <div className="flex flex-col min-[600px]:flex-row items-center justify-center gap-4">
+                <div className="flex flex-col min-[600px]:flex-row items-center -mt-1 justify-center gap-13">
                   {/* Prev (newer) */}
                   {prev && (
                     <Link
                       href={`/blog/${encodeURIComponent(prev.slug)}?from=${encodeURIComponent(post.slug)}`}
                       className="
-                        inline-flex items-center gap-3 rounded-[8px] border border-black
-                        px-4 py-2 bg-white text-black hover:bg-black hover:text-white
+                        inline-flex items-center gap-2 text-[14px] text-black
                         focus:outline-none focus-visible:ring-2 focus-visible:ring-black
-                        transition
                       "
                     >
-                      <span aria-hidden>←</span>
-                      <span className="truncate">Previous: {prev.title}</span>
+                      <svg
+                        aria-hidden="true"
+                        width={6}
+                        height={16}
+                        viewBox="0 0 12 24"
+                        fill="none"
+                        stroke="#AD002D"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        style={{ opacity: 1, transform: "rotate(0deg)" }}
+                      >
+                        <polyline points="8 4, 2 12, 8 20" />
+                      </svg>
+                      <span className="ml-5">Prev</span>
                     </Link>
                   )}
+
+                  {prev && next && (
+                  <Image
+                    src="/blog-list.png"   // <-- use your image path
+                    alt=""
+                    width={28}
+                    height={14}
+                    className="mx-2"
+                  />
+                )}
 
                   {/* Next (older) */}
                   {next && (
                     <Link
                       href={`/blog/${encodeURIComponent(next.slug)}?from=${encodeURIComponent(post.slug)}`}
                       className="
-                        inline-flex items-center gap-3 rounded-[8px] border border-black
-                        px-4 py-2 bg-white text-black hover:bg-black hover:text-white
+                        inline-flex items-center gap-2 text-black text-[14px]
                         focus:outline-none focus-visible:ring-2 focus-visible:ring-black
-                        transition
                       "
                     >
-                      <span className="truncate">Next: {next.title}</span>
-                      <span aria-hidden>→</span>
+                      <span className="mr-5">Next</span>
+<svg
+  aria-hidden="true"
+  width={6}
+  height={16}
+  viewBox="0 0 12 24"
+  fill="none"
+  stroke="#AD002D"
+  strokeWidth={2}
+  strokeLinecap="round"
+  strokeLinejoin="round"
+  style={{ opacity: 1, transform: "rotate(0deg)" }}
+>
+  <polyline points="4 4, 10 12, 4 20" />
+</svg>
                     </Link>
                   )}
                 </div>
@@ -224,14 +258,15 @@ export default async function BlogDetailPage({
 
             {/* Suggested (exactly 3) + See more (right) */}
             {suggestions.length > 0 && (
-              <section aria-labelledby="suggested-heading" className="pb-16">
-                <h2 id="suggested-heading" className="sr-only">
-                  Suggested posts
+              <section aria-labelledby="suggested-heading" className="pb-16 mt-7">
+                <h2 id="suggested-heading" className="text-black text-center font-bold text-[clamp(16px,calc(100vw/1440*20),20px)] leading-[1.5]">
+                  おすすめの記事
                 </h2>
+
 
                 <ul
                   className="
-                    grid gap-6
+                    grid gap-6 mt-15
                     grid-cols-1 min-[600px]:grid-cols-2 min-[1025px]:grid-cols-3
                   "
                 >
@@ -254,20 +289,27 @@ export default async function BlogDetailPage({
                 </ul>
 
                 {/* See more, aligned right */}
-                <div className="mt-8 w-full flex justify-end">
+                <div className="mt-17 mb-22 w-full flex justify-end">
                   <Link
                     href="/blog"
                     className="inline-flex items-center gap-2 text-black hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
                   >
-                    <span>See more</span>
-                    <span aria-hidden>→</span>
+                    <span>もっと見る</span>
+                      <Image
+                        src="/images/services/arrow.png"   // <-- use your image path
+                        alt=""
+                        width={26}
+                        height={36}
+                      />
                   </Link>
                 </div>
+
               </section>
             )}
           </div>
         </div>
       </section>
+            <StanSection />
     </div>
   );
 }

@@ -1,6 +1,8 @@
-// src/app/page.tsx
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import HeroLottieWC from "@/components/HeroLottieWC";
 
 export default function HomePage() {
   return (
@@ -56,23 +58,8 @@ export default function HomePage() {
               </div>
             </div>
 
-{/* RIGHT: video (replaces the image) */}
-<div className="order-2 relative w-full  max-w-[640px] aspect-[640/695.04] rounded-lg overflow-hidden mx-auto">
-  <video
-    className="w-full h-full object-cover mt-8 block"
-    autoPlay
-    loop
-    muted
-    playsInline
-    preload="metadata"            // good Lighthouse score & quick first frame
-    aria-label="Hero animation"
-  >
-    <source src="/IT-video.webm" type="video/webm" />
-    {/* Optional fallback for browsers without WebM */}
-    <source src="/media/hero.mp4" type="video/mp4" />
-    {/* If both fail */}
-    Your browser does not support the video tag.
-  </video>
+<div className="order-2 relative w-full max-w-[640px] mt-8 aspect-[640/695.04] rounded-lg overflow-hidden mx-auto bg-transparent min-h-[320px]">
+  <HeroLottieWC />
 </div>
 
 

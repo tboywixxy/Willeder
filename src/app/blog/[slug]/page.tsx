@@ -182,79 +182,90 @@ export default async function BlogDetailPage({
               <DetailBlocks img1={img1} img2={img2} img3={img3} detail={d} />
             </DetailFrame>
 
-            {/* Prev/Next — centered bar */}
-            {(prev || next) && (
-              <nav
-                aria-label="Post pagination"
-                className="w-full flex justify-center"
-              >
-                <div className="flex flex-col min-[600px]:flex-row items-center -mt-1 justify-center gap-13">
-                  {/* Prev (newer) */}
-                  {prev && (
-                    <Link
-                      href={`/blog/${encodeURIComponent(prev.slug)}?from=${encodeURIComponent(post.slug)}`}
-                      className="
-                        inline-flex items-center gap-2 text-[14px] text-black
-                        focus:outline-none focus-visible:ring-2 focus-visible:ring-black
-                      "
-                    >
-                      <svg
-                        aria-hidden="true"
-                        width={6}
-                        height={16}
-                        viewBox="0 0 12 24"
-                        fill="none"
-                        stroke="#AD002D"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        style={{ opacity: 1, transform: "rotate(0deg)" }}
-                      >
-                        <polyline points="8 4, 2 12, 8 20" />
-                      </svg>
-                      <span className="ml-5">Prev</span>
-                    </Link>
-                  )}
+{/* Prev/Next — single line, shrinks on small screens */}
+{(prev || next) && (
+  <nav aria-label="Post pagination" className="w-full flex justify-center">
+    <div
+      className="
+        flex flex-row flex-nowrap items-center justify-center
+        gap-6 sm:gap-12 -mt-1 max-w-full
+      "
+    >
+      {/* Prev (newer) */}
+      {prev && (
+        <Link
+          href={`/blog/${encodeURIComponent(prev.slug)}?from=${encodeURIComponent(post.slug)}`}
+          className="
+            inline-flex min-w-0 items-center whitespace-nowrap
+            gap-1.5 sm:gap-3
+            text-black text-[12px] sm:text-[14px] leading-none
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-black
+          "
+          title="Previous post"
+        >
+          <svg
+            aria-hidden="true"
+            className="shrink-0"
+            width={4}
+            height={12}
+            viewBox="0 0 12 24"
+            fill="none"
+            stroke="#AD002D"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="8 4, 2 12, 8 20" />
+          </svg>
+          <span className="leading-none">Prev</span>
+        </Link>
+      )}
 
-                  {prev && next && (
-                  <Image
-                    src="/blog-list.png"   // <-- use your image path
-                    alt=""
-                    width={28}
-                    height={14}
-                    className="mx-2"
-                  />
-                )}
+      {/* Divider (hide on very small screens) */}
+      {prev && next && (
+        <Image
+          src="/blog-list.png"
+          alt=""
+          width={28}
+          height={14}
+          className="mx-2 sm:mx-4 max-[360px]:hidden"
+          priority={false}
+        />
+      )}
 
-                  {/* Next (older) */}
-                  {next && (
-                    <Link
-                      href={`/blog/${encodeURIComponent(next.slug)}?from=${encodeURIComponent(post.slug)}`}
-                      className="
-                        inline-flex items-center gap-2 text-black text-[14px]
-                        focus:outline-none focus-visible:ring-2 focus-visible:ring-black
-                      "
-                    >
-                      <span className="mr-5">Next</span>
-<svg
-  aria-hidden="true"
-  width={6}
-  height={16}
-  viewBox="0 0 12 24"
-  fill="none"
-  stroke="#AD002D"
-  strokeWidth={2}
-  strokeLinecap="round"
-  strokeLinejoin="round"
-  style={{ opacity: 1, transform: "rotate(0deg)" }}
->
-  <polyline points="4 4, 10 12, 4 20" />
-</svg>
-                    </Link>
-                  )}
-                </div>
-              </nav>
-            )}
+      {/* Next (older) */}
+      {next && (
+        <Link
+          href={`/blog/${encodeURIComponent(next.slug)}?from=${encodeURIComponent(post.slug)}`}
+          className="
+            inline-flex min-w-0 items-center whitespace-nowrap
+            gap-1.5 sm:gap-3
+            text-black text-[12px] sm:text-[14px] leading-none
+            focus:outline-none focus-visible:ring-2 focus-visible:ring-black
+          "
+          title="Next post"
+        >
+          <span className="leading-none">Next</span>
+          <svg
+            aria-hidden="true"
+            className="shrink-0"
+            width={4}
+            height={12}
+            viewBox="0 0 12 24"
+            fill="none"
+            stroke="#AD002D"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polyline points="4 4, 10 12, 4 20" />
+          </svg>
+        </Link>
+      )}
+    </div>
+  </nav>
+)}
+
 
             {/* Suggested (exactly 3) + See more (right) */}
             {suggestions.length > 0 && (

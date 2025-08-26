@@ -1,7 +1,8 @@
 // app/contact/page.tsx
 import type { Metadata } from "next";
 import FormClient from "./FormClient";
-
+import Image from "next/image";
+ 
 export const metadata: Metadata = {
   title: "Contact | Willeder",
   description: "Get in touch with Willeder",
@@ -147,7 +148,7 @@ export default function ContactPage() {
                 </span>
                 <span className="relative block -top-[0.12px] w-[clamp(25px,calc(100vw/1440*34),34px)] h-[clamp(18px,calc(100vw/1440*24),24px)]" aria-hidden="true">
                   {/* Use plain <img> for tiny icon */}
-                  <img
+                  <Image
                     src="/images/services/arrow%202.png"
                     width={34}
                     height={24}

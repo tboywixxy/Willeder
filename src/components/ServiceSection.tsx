@@ -44,6 +44,14 @@ const CARD_OFFSETS = [
   { base: { x: 0,  y: 0  }, lg: { x: 0,   y: 0   } },   // 3rd card
 ] as const;
 
+type CardStyleVars = React.CSSProperties & {
+  "--tx": string;
+  "--ty": string;
+  "--tx-lg": string;
+  "--ty-lg": string;
+};
+
+
 export default function ServiceSection() {
   const headerJP = `${notoSansJp.className} font-bold text-[32px] leading-[150%] tracking-[0.05em] text-[#AD002D] text-center`;
   const serviceWord = `${jost.className} font-medium text-[17px] leading-[150%] tracking-[0.05em] text-[#AD002D] text-center`;
@@ -81,7 +89,7 @@ export default function ServiceSection() {
               <span className="w-auto min-w-[96px] h-[30px] grid place-items-center">
                 <span className={serviceWord}>SERVICE</span>
               </span>
-              <span className="flex-1 max-w=[clamp(56px,calc(1120vw/1440*230),740px)] h-px bg-[#AD002D]" aria-hidden="true" />
+<span className="flex-1 max-w-[clamp(56px,calc(1120vw/1440*230),740px)] h-px bg-[#AD002D]" aria-hidden="true" />
             </div>
           </div>
 
@@ -99,13 +107,13 @@ export default function ServiceSection() {
           >
             {SERVICES.map((s, i) => {
               const off = CARD_OFFSETS[i] ?? CARD_OFFSETS[0];
-              const style = {
-                ["--tx" as any]: `${off.base.x}px`,
-                ["--ty" as any]: `${off.base.y}px`,
-                ["--tx-lg" as any]: `${off.lg.x}px`,
-                ["--ty-lg" as any]: `${off.lg.y}px`,
-              } as React.CSSProperties;
-
+              // AFTER
+              const style: CardStyleVars = {
+                "--tx": `${off.base.x}px`,
+                "--ty": `${off.base.y}px`,
+                "--tx-lg": `${off.lg.x}px`,
+                "--ty-lg": `${off.lg.y}px`,
+              };
               return (
                 <li key={s.title} className="w-full flex justify-center">
                   {/* Card widths per breakpoint (centered via parent flex) */}

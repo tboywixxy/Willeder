@@ -600,4 +600,3 @@ export const blogPosts = [
       "tagsText": "Branding, Other"
     }
   ]
-

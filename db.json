@@ -442,7 +442,7 @@
     {
       "id": "11",
       "slug": "design-ops-in-practice",
-      "title": "Design Ops in Practice Frontend Architecture  ",
+      "title": "Design Ops in Practice Frontend Architecture",
       "thumbnail": "https://picsum.photos/seed/dops/1200/630",
       "tags": [
         "Design",
@@ -485,8 +485,8 @@
     },
     {
       "id": "12",
-      "slug": "frontend-architecture- ",
-      "title": "Frontend Architecture   for the pref budget sheet",
+      "slug": "Frontend Architecture Choices",
+      "title": "Frontend Architecture Choices",
       "thumbnail": "https://picsum.photos/seed/fa/1200/630",
       "tags": [
         "Engineering",
@@ -612,7 +612,7 @@
         },
         "callout": "Tokens are a means, not an end."
       },
-      "content": "<h2>Figmaで始める効率的なWebサイト設計のコツ</h2><p>Name tokens by intent, not value. Keep spacing steps limited and consistent. Automate exports to CSS variables.</p><img src=\"https://picsum.photos/seed/tokens1/800/450\" alt=\"Token table\" /><p>Version tokens like APIs. Update components with the tokens. Docs show purpose with examples.</p><p>Build stories for states and sizes. Write lint rules for spacing and color. Encourage contributions with simple guides.</p><img src=\"https://picsum.photos/seed/tokens2/800/450\" alt=\"Storybook tokens\" /><p>Evolution beats fossilization. Tokens matter only when used. Strong defaults free teams. Production validates the system.</p><img src=\"https://picsum.photos/seed/tokens3/800/450\" alt=\"Variables in code\" />",
+      "content": "<h2>Design Ops in Practice Frontend Architecture</h2><p>Name tokens by intent, not value. Keep spacing steps limited and consistent. Automate exports to CSS variables.</p><img src=\"https://picsum.photos/seed/tokens1/800/450\" alt=\"Token table\" /><p>Version tokens like APIs. Update components with the tokens. Docs show purpose with examples.</p><p>Build stories for states and sizes. Write lint rules for spacing and color. Encourage contributions with simple guides.</p><img src=\"https://picsum.photos/seed/tokens2/800/450\" alt=\"Storybook tokens\" /><p>Evolution beats fossilization. Tokens matter only when used. Strong defaults free teams. Production validates the system.</p><img src=\"https://picsum.photos/seed/tokens3/800/450\" alt=\"Variables in code\" />",
       "tagsText": "Design, Engineering"
     },
     {

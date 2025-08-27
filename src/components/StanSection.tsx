@@ -1,12 +1,15 @@
+// src/components/StanSection.tsx
 import Image from "next/image";
 import Link from "next/link";
 import { notoSansJp } from "@/app/fonts";
+import Reveal from "@/components/Reveal";
 
+// ✅ define props
 type Props = {
-  heading?: string;     // centered text in the top bar
-  buttonText?: string;  // CTA text
-  buttonHref?: string;  // link target
-  iconSrc?: string;     // icon path
+  heading?: string;
+  buttonText?: string;
+  buttonHref?: string;
+  iconSrc?: string;
 };
 
 export default function StanSection({
@@ -15,17 +18,11 @@ export default function StanSection({
   buttonHref = "/blog",
   iconSrc = "/images/services/arrow 2.png",
 }: Props) {
-  // Figma text style: Noto Sans JP, 700, line-height 150%, letter-spacing 5%, centered
   const figmaTextCommon =
     `${notoSansJp.className} font-bold leading-[130%] tracking-[0.0009em] text-center`;
 
   return (
     <section className="bg-[#B9BDC6] dark:bg-[#B9BDC6]">
-      {/* Whole box
-          - Mobile (375–600): 375×334, p: 96/16, gap: 32
-          - 600–1024: 768×328, p: 96/24, gap: 32
-          - Desktop: 1440×328, p: 96/80, gap: 32
-      */}
       <div
         className="
           mx-auto w-full max-w-[1440px]
@@ -35,12 +32,14 @@ export default function StanSection({
           space-y-7
         "
       >
-        {/* Centered heading box
-            - Mobile: max-w 343, h 48
-            - ≥600: max-w 720, h 36
-            - ≥1024: max-w 1280, h 36
-        */}
-        <div
+        {/* Heading: slide in from LEFT, and slide back out when leaving */}
+        <Reveal
+          as="div"
+          x={-40}
+          y={0}
+          duration={600}
+          once={false}
+          threshold={0.35}
           className="
             mx-auto w-full
             max-w-[345px] h-12
@@ -58,15 +57,24 @@ export default function StanSection({
           >
             {heading}
           </h2>
-        </div>
+        </Reveal>
 
-        {/* Button row (centered) */}
-        <div className="mx-auto w-full flex items-center justify-center">
+        {/* Button row: slide in from RIGHT, and slide back out when leaving */}
+        <Reveal
+          as="div"
+          x={40}
+          y={0}
+          delay={80}
+          duration={600}
+          once={false}
+          threshold={0.35}
+          className="mx-auto w-full flex items-center justify-center"
+        >
           <Link
             href={buttonHref}
-            className={`
+            className="
               inline-flex items-center justify-center
-              gap-2 sm:gap-2 
+              gap-2 sm:gap-2
               w-[278px] h-[62px] sm:w-[375px] sm:h-[64px]
               px-2 py-4 sm:px-12 sm:py-4
               rounded-[16px]
@@ -74,23 +82,17 @@ export default function StanSection({
               text-white dark:text-white
               shadow-sm
               focus:outline-none focus-visible:ring-2 focus-visible:ring-black
-            `}
+            "
             aria-label={buttonText}
           >
-            {/* Button text (Figma: Noto Sans JP 700, 24 on ≥600; 16 on mobile) */}
             <span
-              className={`${figmaTextCommon} text-white dark:text-white text-[16px] sm:text-[24px]`}
+              className={`${figmaTextCommon} text-white dark:text-white text-[16px] sm:text-[24px] whitespace-nowrap`}
               style={{ lineHeight: "150%" }}
             >
               {buttonText}
             </span>
 
-            {/* Icon:
-               - Mobile: 25×18
-               - ≥600: 21×24.248… with tiny upward nudge (-0.12px)
-            */}
             <span className="relative block">
-              {/* Mobile icon */}
               <span className="sm:hidden inline-block align-middle">
                 <Image
                   src={iconSrc}
@@ -101,8 +103,6 @@ export default function StanSection({
                   priority={false}
                 />
               </span>
-
-              {/* ≥600 icon */}
               <span className="hidden sm:inline-block align-middle relative top-[-0.12px]">
                 <Image
                   src={iconSrc}
@@ -115,7 +115,7 @@ export default function StanSection({
               </span>
             </span>
           </Link>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

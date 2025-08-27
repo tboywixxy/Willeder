@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { notoSansJp } from "@/app/fonts";
+import Reveal from "@/components/Reveal";
 
 type DetailImage = { src: string; alt?: string; caption?: string };
 type DetailPayload = {
@@ -74,7 +75,7 @@ export default function DetailBlocks({
   const LeftBar = () => <span aria-hidden="true" className="shrink-0 w-[6px] self-stretch bg-[#AD002D]" />;
 
   return (
-    <div className="w-full flex justify-center">
+    <Reveal className="w-full flex justify-center">
       <div className="w-full max-w-[327px] min-[600px]:max-w-[672px] min-[1024px]:max-w-[790px]">
         <div className="pt-6 sm:pt-[29px]">
           <p className={tBase16}>{T1}</p>
@@ -194,6 +195,6 @@ export default function DetailBlocks({
           <p className={tBase16}>{T15c}</p>
         </div>
       </div>
-    </div>
+    </Reveal>
   );
 }

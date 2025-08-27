@@ -4,6 +4,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Spinner from "../ui/Spinner";
 import BlogCard from "../BlogCard";
+import Reveal from "@/components/Reveal";
 
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 

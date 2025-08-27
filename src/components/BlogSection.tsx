@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import BlogCard from "./BlogCard";
 import { notoSansJp, jost } from "@/app/fonts";
+import Reveal from "@/components/Reveal";
 
 type Teaser = { slug: string; title: string; thumbnail: string; createdAt: string };
 
@@ -42,7 +43,7 @@ export default function BlogSection({
     <section>
       <div className="mx-auto w-full max-w-[1440px] px-4 md:px-19 pt-22 pb-[154px] space-y-15">
         {/* Header */}
-        <div className="mx-auto w-full max-w-[1280px] flex flex-col items-center justify-center gap-1.5">
+        <Reveal className="mx-auto w-full max-w-[1280px] flex flex-col items-center justify-center gap-1.5">
           <div className={topTextCls}>ブログ</div>
           <div className="w-full flex items-center gap-4">
             <span className="hidden md:block w-[590px] h-px bg-black" aria-hidden />
@@ -51,10 +52,10 @@ export default function BlogSection({
             <span className="hidden md:block w-[590px] h-px bg-black" aria-hidden />
             <span className="md:hidden flex-1 h-px bg-black" aria-hidden />
           </div>
-        </div>
+        </Reveal>
 
         {/* Posts */}
-        <div className="mx-auto w-full max-w-[1280px]">
+        <Reveal className="mx-auto w-full max-w-[1280px]">
           <ul
             className="
               grid
@@ -88,7 +89,7 @@ export default function BlogSection({
               <Image src="/images/services/arrow.png" alt="" width={34} height={24} />
             </Link>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

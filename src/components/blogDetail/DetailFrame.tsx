@@ -1,6 +1,7 @@
 // components/blogDetail/DetailFrame.tsx
 import Image from "next/image";
 import { notoSansJp, jost } from "@/app/fonts";
+import Reveal from "@/components/Reveal";
 
 const FIXED_TAGS = ["IT Consulting", "Engineering", "Branding", "Design", "Other"];
 
@@ -59,7 +60,7 @@ export default function DetailFrame({
         "
       >
         {/* HEADER (title + date/tags) — padded, left-aligned */}
-        <div
+        <Reveal
           className={`
             ${sidePad}
             pt-[clamp(48px,calc(100vw/1440*74),74px)]
@@ -106,7 +107,7 @@ export default function DetailFrame({
               })}
             </div>
           </div>
-        </div>
+        </Reveal>
 
         {/* HERO IMAGE — full-bleed to the card edges at each breakpoint
             Exact sizes:
@@ -114,7 +115,7 @@ export default function DetailFrame({
               - 600–1023: 720 × 450
               - ≥1024: 1280 × 800
         */}
-        <div className="w-full">
+        <Reveal className="w-full">
           <div
             className="
               relative overflow-hidden
@@ -134,7 +135,7 @@ export default function DetailFrame({
               decoding="async"
             />
           </div>
-        </div>
+        </Reveal>
 
         <div
           className={`

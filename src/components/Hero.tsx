@@ -3,11 +3,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import HeroLottieWC from "@/components/HeroLottieWC";
+import Reveal from "@/components/Reveal";
 
 export default function HomePage() {
   return (
     <div>
-      <section className="bg-gray-50 min-[1024px]:min-h-[756px]">
+      <Reveal className="bg-gray-50 min-[1024px]:min-h-[756px]">
         <div className="mx-auto w-full max-w-[1440px] px-4 md:px-18 py-10 md:py-10">
           {/* 1 col by default & 600–1023; 2 cols at ≥1024 */}
           <div className="grid gap-8 min-[1024px]:grid-cols-2 min-[1024px]:gap-16 place-items-center">
@@ -97,7 +98,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
     </div>
   );
 }

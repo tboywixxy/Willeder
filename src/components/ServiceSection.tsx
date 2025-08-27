@@ -1,6 +1,7 @@
 // components/ServiceSection.tsx
 import Image from "next/image";
 import { notoSansJp, jost } from "@/app/fonts";
+import Reveal from "@/components/Reveal";
 
 type Service = {
   title: string;
@@ -82,7 +83,7 @@ export default function ServiceSection() {
           "
         >
           {/* Header */}
-          <div className="w-full flex flex-col items-center justify-center gap-2">
+          <Reveal className="w-full flex flex-col items-center justify-center gap-2">
             <h2 className={`${headerJP} whitespace-nowrap`}>サービス内容</h2>
             <div className="w-full h-[19px] flex items-center justify-center gap-1">
               <span className="flex-1 max-w-[clamp(56px,calc(1120vw/1440*230),740px)] h-px bg-[#AD002D]" aria-hidden="true" />
@@ -91,7 +92,7 @@ export default function ServiceSection() {
               </span>
 <span className="flex-1 max-w-[clamp(56px,calc(1120vw/1440*230),740px)] h-px bg-[#AD002D]" aria-hidden="true" />
             </div>
-          </div>
+          </Reveal>
 
           <ul
             className="
@@ -115,7 +116,7 @@ export default function ServiceSection() {
                 "--ty-lg": `${off.lg.y}px`,
               };
               return (
-                <li key={s.title} className="w-full flex justify-center">
+                <Reveal key={s.title} className="w-full flex justify-center">
                   {/* Card widths per breakpoint (centered via parent flex) */}
                   <div
                     style={style}
@@ -191,7 +192,7 @@ export default function ServiceSection() {
                       </p>
                     </div>
                   </div>
-                </li>
+                </Reveal>
               );
             })}
           </ul>

@@ -1,16 +1,17 @@
 // src/components/Reveal.tsx
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode, type ElementType } from "react";
+import React, { useEffect, useRef, useState, type ReactNode } from "react";
 
 type RevealProps = {
   children: ReactNode;
   delay?: number;
-  x?: number;           // ⬅️ NEW
+  x?: number;
   y?: number;
   duration?: number;
   className?: string;
-  as?: ElementType;
+  /** Use any intrinsic tag or a component (if it forwards refs) */
+  as?: React.ElementType;
   once?: boolean;
   threshold?: number;
   rootMargin?: string;
@@ -19,7 +20,7 @@ type RevealProps = {
 export default function Reveal({
   children,
   delay = 0,
-  x = 0,               // ⬅️ NEW default
+  x = 0,
   y = 16,
   duration = 500,
   className = "",
@@ -28,16 +29,19 @@ export default function Reveal({
   threshold = 0.1,
   rootMargin = "0px",
 }: RevealProps) {
-  const ref = useRef<HTMLElement | null>(null);
+  const ref = useRef<Element | null>(null);
+  const Tag = (as ?? "div") as React.ElementType;
+
   const [show, setShow] = useState(false);
-  const Tag = (as ?? "div") as ElementType;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setShow(true);
       return;
     }
+
     const el = ref.current;
     if (!el) return;
 
@@ -59,15 +63,16 @@ export default function Reveal({
 
   return (
     <Tag
-      ref={ref as any}
+      // ✅ Explicitly type the callback param
+      ref={(node: Element | null) => {
+        ref.current = node;
+      }}
       className={className}
       style={{
         opacity: show ? 1 : 0,
-        transform: show
-          ? "translate3d(0,0,0)"
-          : `translate3d(${x}px, ${y}px, 0)`,
+        transform: show ? "translate3d(0,0,0)" : `translate3d(${x}px, ${y}px, 0)`,
         transition: `opacity ${duration}ms ease-out ${delay}ms, transform ${duration}ms ease-out ${delay}ms`,
-        willChange: show ? undefined : ("opacity, transform" as any),
+        willChange: show ? undefined : "opacity, transform",
       }}
     >
       {children}

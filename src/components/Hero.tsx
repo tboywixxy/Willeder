@@ -80,18 +80,19 @@ export default function HomePage() {
                 "
                 aria-label="See more"
               >
-                <span className="font-bold leading-[150%] tracking-[0.05em] text-[20px] min-[600px]:text-[24px]">
-                  お問い合わせはこちら
-                </span>
-                <span className="relative inline-block w-[25px] h-[18px] min-[600px]:w-[34px] min-[600px]:h-[24px] transition-transform duration-200 ease-out group-hover:translate-x-2">
-                  <Image
-                    src="/images/services/arrow 2.png"
-                    alt=""
-                    fill
-                    className="object-contain"
-                    sizes="(max-width: 599px) 25px, 34px"
-                  />
-                </span>
+               <span className="font-bold leading-[150%] text-[18px] min-[600px]:text-[24px] min-[600px]:tracking-[0.05em] whitespace-nowrap">
+  お問い合わせはこちら
+</span>
+<span className="relative inline-block w-[25px] h-[18px] min-[600px]:w-[34px] min-[600px]:h-[24px] transition-transform duration-200 ease-out group-hover:translate-x-2 shrink-0">
+  <Image
+    src="/images/services/arrow 2.png"
+    alt=""
+    fill
+    className="object-contain"
+    sizes="(max-width: 599px) 25px, 34px"
+  />
+</span>
+
               </Link>
             </div>
           </div>

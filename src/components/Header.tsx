@@ -123,33 +123,28 @@ export default function Header() {
                 </div>
               </nav>
 
-              {/* Contact (desktop) — CTA style only */}
-              <div
-                className="
-                  hidden min-[600px]:flex shrink-0
-                  w-[190px]
-                  h-[clamp(48px,calc(100vw/1440*64),64px)]
-                  pt-2 pr-4 pb-2 pl-8 gap-4
-                  bg-black
-                "
-              >
-                <Link
-                  href="/contact"
-                  prefetch={false}
-                  className={`group flex h-full w-full items-center justify-center gap-2 text-white ${navText} transition-colors duration-200 hover:bg-[#1a1a1a]`}
-                >
-                  <span>お問い合わせ</span>
-                  <span className="relative block w-[34px] h-[24px]">
-                    <Image
-                      src="/images/services/arrow 2.png"
-                      alt=""
-                      fill
-                      sizes="34px"
-                      className="object-contain transition-transform duration-200 group-hover:translate-x-1"
-                    />
-                  </span>
-                </Link>
-              </div>
+{/* Contact (desktop) — CTA style only */}
+<div
+  className="
+    hidden min-[600px]:flex shrink-0
+    w-auto min-w-[210px]            /* 👈 was w-[190px] */
+    h-[clamp(48px,calc(100vw/1440*64),64px)]
+    pt-2 pr-4 pb-2 pl-8 gap-4
+    bg-black
+  "
+>
+  <Link
+    href="/contact"
+    prefetch={false}
+    className={`group flex h-full w-full items-center justify-center gap-2 text-white ${navText} whitespace-nowrap transition-colors duration-200 hover:bg-[#1a1a1a]`}  /* 👈 added whitespace-nowrap */
+  >
+    <span>お問い合わせ</span>
+    <span className="relative block w-[34px] h-[24px]">
+      <Image src="/images/services/arrow 2.png" alt="" fill sizes="34px" className="object-contain transition-transform duration-200 group-hover:translate-x-1" />
+    </span>
+  </Link>
+</div>
+
             </div>
 
             {/* <600: Hamburger */}

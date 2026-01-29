@@ -1,104 +1,55 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
-import HeroLottieWC from "@/components/HeroLottieWC";
-import Reveal from "@/components/Reveal";
 
-export default function HomePage() {
+export default function Hero() {
   return (
-    <div>
-      <Reveal className="bg-gray-50 min-[1024px]:min-h-[756px]">
-        <div className="mx-auto w-full max-w-[1440px] px-4 md:px-18 py-10 md:py-10">
-          {/* 1 col by default & 600–1023; 2 cols at ≥1024 */}
-          <div className="grid gap-8 min-[1024px]:grid-cols-2 min-[1024px]:gap-16 place-items-center">
-            {/* LEFT: image + (desktop CTA under this at ≥1024) */}
-            <div className="order-1 w-full max-w-[640px]">
-              {/* Image replacing the heading/paragraph */}
-              <div className="relative w-full aspect-[640/327.2979125977] mx-auto bg-transparent">
-                <Image
-                  src="/ciff-2.png"
-                  alt="Intro visual"
-                  fill
-                  className="object-contain ml-2 mt-1 origin-left scale-[1] min-[1280px]:scale-[1]"
-                  sizes="(max-width: 1023px) 100vw, 50vw"
-                  priority
-                />
-              </div>
+    <section className="relative overflow-hidden bg-white">
+      <div className="pointer-events-none absolute -top-24 left-[-120px] h-[420px] w-[420px] rounded-full bg-[#A228BB]/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-28 right-[-140px] h-[520px] w-[520px] rounded-full bg-[#A228BB]/10 blur-3xl" />
 
-              {/* Desktop CTA ONLY (≥1024) */}
-              <div className="mt-2 hidden min-[1024px]:flex items-center justify-start">
-                <Link
-                  href="/blog"
-                  className="
-                    group
-                    inline-flex items-center justify-center
-                    w-[382px] h-[64px]
-                    px-2 py-4 gap-4
-                    rounded-[16px]
-                    bg-[#AD002D] text-white
-                    shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-black
-                    transition-colors duration-200 ease-out
-                    hover:bg-[#921A31]
-                  "
-                  aria-label="お問い合わせはこちら"
-                >
-                  <span className="font-bold text-[19px] pr-1 leading-[150%] tracking-[0.25em]">
-                    お問い合わせはこちら
-                  </span>
-                  <span className="relative inline-block w-[32px] h-[26px] transition-transform duration-200 ease-out group-hover:translate-x-2">
-                    <Image
-                      src="/images/services/arrow 2.png"
-                      alt=""
-                      fill
-                      className="object-contain"
-                      sizes="34px"
-                    />
-                  </span>
-                </Link>
-              </div>
-            </div>
+      <div className="mx-auto w-full max-w-[1440px] px-4 pt-10 sm:px-6 md:pt-12">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+          <div>
+            <h1 className="text-[30px] leading-[1.08] font-extrabold tracking-tight text-slate-900 sm:text-[40px]">
+              Experience <span className="text-[#A228BB]">Swift</span> and{" "}
+              <span className="text-[#A228BB]">Seamless</span> Transactions
+              <br className="hidden sm:block" /> with EasyLife Exchange
+            </h1>
 
-<div className="order-2 relative w-full max-w-[640px] mt-8 aspect-[640/695.04] rounded-lg overflow-hidden mx-auto bg-transparent min-h-[320px]">
-  <HeroLottieWC />
-</div>
+            <p className="mt-4 max-w-xl text-[14.5px] leading-relaxed text-slate-600 sm:text-base">
+              EasyLife Exchange makes it seamless to buy and trade bitcoin and
+              other cryptocurrencies from any location, at your convenience.
+            </p>
 
-
-            {/* Mobile/Tablet CTA (<1024) */}
-            <div className="order-3 min-[1024px]:hidden w-full max-w-[640px] flex justify-center">
-              <Link
-                href="/blog"
-                className="
-                  group
-                  inline-flex items-center justify-center
-                  rounded-[16px] bg-[#AD002D] text-white shadow-sm
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-black
-                  gap-4 px-6 py-4 w-[298px] h-[62px]
-                  min-[600px]:gap-6 min-[600px]:px-12 min-[600px]:py-4
-                  min-[600px]:w-[405px] min-[600px]:h-[68px]
-                  transition-colors duration-200 ease-out
-                  hover:bg-[#921A31]
-                "
-                aria-label="See more"
+            <div className="mt-7">
+              <a
+                id="download"
+                href="#"
+                className="inline-flex h-11 items-center justify-center rounded-full bg-[#A228BB] px-7 text-sm font-semibold text-white shadow-sm transition-all hover:brightness-110 active:scale-[0.98] focus:outline-none focus-visible:ring-4 focus-visible:ring-[#A228BB]/25"
               >
-               <span className="font-bold leading-[150%] text-[18px] min-[600px]:text-[24px] min-[600px]:tracking-[0.05em] whitespace-nowrap">
-  お問い合わせはこちら
-</span>
-<span className="relative inline-block w-[25px] h-[18px] min-[600px]:w-[34px] min-[600px]:h-[24px] transition-transform duration-200 ease-out group-hover:translate-x-2 shrink-0">
-  <Image
-    src="/images/services/arrow 2.png"
-    alt=""
-    fill
-    className="object-contain"
-    sizes="(max-width: 599px) 25px, 34px"
-  />
-</span>
+                Download app now
+              </a>
+            </div>
+          </div>
 
-              </Link>
+          <div className="relative mx-auto w-full max-w-[640px]">
+            <div className="absolute -bottom-6 left-1/2 h-32 w-[88%] -translate-x-1/2 rounded-[999px] bg-[#A228BB]/55" />
+
+            <div className="relative z-10">
+              <Image
+                src="/images/hero-phone.png"
+                alt="EasyLife Exchange app preview"
+                width={1000}
+                height={800}
+                priority
+                className="h-auto w-full object-contain"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
             </div>
           </div>
         </div>
-      </Reveal>
-    </div>
+      </div>
+    </section>
   );
 }

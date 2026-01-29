@@ -1,4 +1,3 @@
-// src/components/Reveal.tsx
 "use client";
 
 import React, { useEffect, useRef, useState, type ReactNode } from "react";
@@ -10,7 +9,6 @@ type RevealProps = {
   y?: number;
   duration?: number;
   className?: string;
-  /** Use any intrinsic tag or a component (if it forwards refs) */
   as?: React.ElementType;
   once?: boolean;
   threshold?: number;
@@ -63,7 +61,6 @@ export default function Reveal({
 
   return (
     <Tag
-      // ✅ Explicitly type the callback param
       ref={(node: Element | null) => {
         ref.current = node;
       }}

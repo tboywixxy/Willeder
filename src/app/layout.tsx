@@ -1,4 +1,3 @@
-// src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "../components/Header";
@@ -11,10 +10,10 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Willeder",
-    template: "%s | Willeder",
+    default: "IGPAY",
+    template: "%s | IGPAY",
   },
-  description: "Willeder — Design, Engineering, and thoughtful product delivery.",
+  description: " ",
   alternates: { canonical: "/" },
   robots: {
     index: true,
@@ -40,8 +39,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        {/* Removed global preconnect/dns-prefetch to picsum.photos.
-            If needed, add those hints only on pages that actually load picsum images. */}
       </head>
       <body className="min-h-screen flex flex-col" suppressHydrationWarning>
         <Header />

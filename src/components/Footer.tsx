@@ -1,98 +1,165 @@
-// src/components/Footer.tsx  (Server Component)
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { FaLinkedinIn, FaFacebookF, FaInstagram } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
-export default function Footer() {
-  const navText = `font-sans font-bold text-[12px] leading-[150%] tracking-[0.05em] align-middle`;
-  const smallText = `font-sans font-medium text-[11.4px] leading-[150%] tracking-[0.05em] align-middle`;
-  const reservedText = `font-sans font-medium text-[10px] leading-[150%] tracking-[0.1em] text-center`;
+type Social = {
+  label: string;
+  href: string;
+  icon: React.ReactNode;
+  bg: string;
+};
+
+export default function FooterEasyLife() {
+  const socials: Social[] = [
+    {
+      label: "LinkedIn",
+      href: "https://linkedin.com",
+      icon: <FaLinkedinIn size={20} />,
+      bg: "bg-[#0A66C2]",
+    },
+    {
+      label: "X",
+      href: "https://x.com",
+      icon: <FaXTwitter size={18} />,
+      bg: "bg-black",
+    },
+    {
+      label: "Instagram",
+      href: "https://instagram.com",
+      icon: <FaInstagram size={20} />,
+      bg: "bg-gradient-to-br from-[#F58529] via-[#DD2A7B] to-[#515BD4]",
+    },
+    {
+      label: "Facebook",
+      href: "https://facebook.com",
+      icon: <FaFacebookF size={20} />,
+      bg: "bg-[#1877F2]",
+    },
+  ];
 
   return (
-    <footer className="bg-black text-white">
-      <div className="mx-auto w-full max-w-[1440px] h-auto min-[600px]:h-[301px] px-4 min-[600px]:px-[77px] py-4 flex flex-col gap-6">
-        <div className="w-full max-w-[1280px] h-auto min-[600px]:h-[212px] pt-6 pb-4 flex flex-col gap-[38px]">
-          <div className="flex items-center">
-            <Image
-              src="/Willeder-w.png"
-              alt="Willeder"
-              width={115}
-              height={20}
-              sizes="120px"
-              decoding="async"
-              priority={false}
-              style={{ display: "block", contain: "size layout", paddingRight: "4px" }}
-            />
+    <footer className="w-full bg-[#A228BB] text-white">
+      <div className="mx-auto w-full max-w-6xl px-4 py-12">
+        <div className="flex flex-col gap-10 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center gap-4">
+              <Image
+                src="/logo.png"
+                alt="EasyLife Exchange"
+                width={72}
+                height={44}
+                className="h-auto w-[72px]"
+                priority
+              />
+              <div className="leading-tight">
+                <p className="text-lg font-semibold">EasyLife Exchange</p>
+                <p className="text-xs text-white/80">Fast. Simple. Secure.</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <p className="text-sm text-white/90">
+                Follow us on our socials for daily updates:
+              </p>
+
+              <div className="flex items-center gap-4">
+                {socials.map((s) => (
+                  <Link
+                    key={s.label}
+                    href={s.href}
+                    aria-label={s.label}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={[
+                      "grid h-11 w-11 place-items-center rounded-xl",
+                      "ring-1 ring-white/20 shadow-sm",
+                      "transition-transform hover:scale-[1.03] active:scale-[0.98]",
+                      s.bg,
+                    ].join(" ")}
+                  >
+                    {s.icon}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
 
-          <nav className="flex items-center gap-[55px] h-[20px]" aria-label="Footer navigation">
-            <Link href="/" prefetch={false} className={`${navText} inline-block`}>TOP</Link>
-            <Link href="/blog" prefetch={false} className={`${navText} inline-block`}>ブログ</Link>
-            <Link href="/contact" prefetch={false} className={`${navText} inline-block`}>お問い合わせ</Link>
-          </nav>
+          <div className="flex flex-col items-start gap-4 md:items-center">
+            <p className="text-sm font-semibold">Get the app:</p>
 
-          {/* Addresses (mobile) */}
-          <div className="min-[600px]:hidden w-full max-w-[1280px]">
-            <p className={`${smallText} break-words min-h-[36px]`} style={{ contain: "layout" }}>
-              Willeder Inc.（アメリカ法人）<br />
-              501 Congress Avenue, Suite 150, Austin, Texas, 78701, USA
-            </p>
-            <span className="block h-[2px] w-full bg-white/60" aria-hidden="true" />
-            <p className={`${smallText} break-words min-h-[36px]`} style={{ contain: "layout" }}>
-              ウィルダー株式会社（日本法人）<br />
-              〒141-0022 東京都品川区東五反田1-4-9-606
+            <div className="flex flex-wrap items-center gap-6">
+              <Link
+                href="https://play.google.com"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Get it on Google Play"
+                className="group"
+              >
+                <div className="relative h-[68px] w-[140px]">
+                  <Image
+                    src="/google.png"
+                    alt="Get it on Google Play"
+                    fill
+                    className="object-contain transition-transform group-hover:scale-[1.02]"
+                    sizes="220px"
+                  />
+                </div>
+              </Link>
+
+              <Link
+                href="https://www.apple.com/app-store/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Download on the App Store"
+                className="group"
+              >
+                <div className="relative h-[68px] w-[140px]">
+                  <Image
+                    src="/apple.png"
+                    alt="Download on the App Store"
+                    fill
+                    className="object-contain transition-transform group-hover:scale-[1.02]"
+                    sizes="220px"
+                  />
+                </div>
+              </Link>
+            </div>
+
+            <p className="max-w-[440px] text-xs text-white/85 md:text-center">
+              Download EasyLife Exchange to buy/sell crypto, pay bills, send money,
+              and trade giftcards — anywhere, anytime.
             </p>
           </div>
 
-{/* Addresses (≥600px) — independently adjustable */}
-<div
-  className="
-    hidden min-[600px]:grid w-full max-w-[1280px] items-start gap-0 pb-[0px]
-    [--left-gap:6px] md:[--left-gap:45px]
-    [--right-gap:10px] md:[--right-gap:14px] -translate-y-[3px]
-    [--divider-w:1px]
-    [--left-shift:0px]   /* nudge LEFT text horizontally (+right / -left) */
-    [--right-shift:0px]  /* nudge RIGHT text horizontally (+right / -left) */
-    [grid-template-columns:max-content_var(--left-gap)_var(--divider-w)_var(--right-gap)_minmax(0,1fr)]
-  "
->
-  {/* LEFT text (you can also nudge via --left-shift) */}
-  <div className="pr-0 ml-[var(--left-shift)]">
-    <p className={`${smallText} break-words min-h-[36px]`} style={{ contain: "layout" }}>
-      Willeder Inc.（アメリカ法人）<br />
-      501 Congress Avenue, Suite 150, Austin, Texas, 78701, USA
-    </p>
-  </div>
+          <div className="text-left md:text-right">
+            <p className="text-sm text-white/90">Copyright © 2022</p>
+            <p className="text-sm font-semibold">EasyLifeExchange</p>
 
-  {/* spacer before the divider (width = --left-gap) */}
-  <div aria-hidden className="pointer-events-none" />
-
-  {/* divider (width = --divider-w) */}
-  <span className="self-stretch bg-white/70 w-[var(--divider-w)]" aria-hidden="true" />
-
-  {/* spacer after the divider (width = --right-gap) */}
-  <div aria-hidden className="pointer-events-none" />
-
-  {/* RIGHT text (you can also nudge via --right-shift) */}
-  <div className="pl-0 mr-[var(--right-shift)]">
-    <p className={`${smallText} break-words min-h-[36px]`} style={{ contain: "layout" }}>
-      ウィルダー株式会社（日本法人）<br />
-      〒141-0022　東京都品川区東五反田1-4-9-606
-    </p>
-  </div>
-</div>
-
-
-          <div className="w-full max-w-[1280px] -mt-[32px] min-[600px]:-mt-[30px]">
-            <a href="mailto:support@willeder.com" className={`${smallText} underline-none underline-offset-2 hover:no-underline break-words`}>
-              support@willeder.com
-            </a>
+            <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 ring-1 ring-white/15">
+              <span className="h-2 w-2 rounded-full bg-white" />
+              <span className="text-xs text-white/90">Support available 24/7</span>
+            </div>
           </div>
         </div>
 
-        <div className="w-full max-w-[1280px]">
-          <p className={`${reservedText} text-white/70 min-h-[15px]`} style={{ contain: "layout" }}>
-            Willeder Inc. all rights reserved.
-          </p>
+        <div className="mt-10 border-t border-white/15 pt-6">
+          <div className="flex flex-col gap-3 text-xs text-white/80 md:flex-row md:items-center md:justify-between">
+            <p>Built for seamless exchange & payments.</p>
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
+              <a href="#privacy" className="hover:text-white">
+                Privacy
+              </a>
+              <a href="#terms" className="hover:text-white">
+                Terms
+              </a>
+              <a href="#contact" className="hover:text-white">
+                Contact
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>
